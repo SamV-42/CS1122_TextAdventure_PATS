@@ -1,3 +1,5 @@
+import util.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,7 +35,7 @@ public final class AdventureServer implements AdventureServerAPI {
 
 	/*
 	 * ClientThread is a Thread where the input from the connection is accepted.
-	 * Accepted input is sent to registered ConnectionListener.
+	 * Accepted input is sent to registered util.ConnectionListener.
 	 *
 	 * The ClientThread allows for multiple connections.
 	 */
@@ -55,7 +57,7 @@ public final class AdventureServer implements AdventureServerAPI {
 		 */
 		public void run ( ) {
 			try {
-				ConnectionEvent event = new ConnectionEvent ( ConnectionEventCode.CONNECTION_ESTABLISHED, connection.connectionId, "CONNECTION_ESTABLISHED" );
+				ConnectionEvent event = new ConnectionEvent( ConnectionEventCode.CONNECTION_ESTABLISHED, connection.connectionId, "CONNECTION_ESTABLISHED" );
 				connection.adventureServer.listener.handle ( event );
 				String s = "";
 				while ( connection.adventureServer.isRunning && ( s = connection.input
@@ -180,7 +182,7 @@ public final class AdventureServer implements AdventureServerAPI {
 	 * Send text through the connection.
 	 */
 	public void sendMessage( long connectionId, String message ) throws
-	                                                             UnknownConnectionException {
+			UnknownConnectionException {
 		Connection connection = connectionMap.get ( connectionId );
 		if ( connection != null ) {
 			connection.output.println ( message );

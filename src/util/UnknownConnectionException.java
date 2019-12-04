@@ -1,3 +1,5 @@
+package util;
+
 public class UnknownConnectionException extends Exception {
 	private long connectionId = 0L;
 

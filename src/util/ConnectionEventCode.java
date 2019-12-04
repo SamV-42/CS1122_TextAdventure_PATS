@@ -1,3 +1,5 @@
+package util;
+
 public enum ConnectionEventCode {
 	CONNECTION_ESTABLISHED,
 	TRANSMISSION_RECEIVED,

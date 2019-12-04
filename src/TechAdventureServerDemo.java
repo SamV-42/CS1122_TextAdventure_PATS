@@ -1,3 +1,7 @@
+import util.ConnectionEvent;
+import util.ConnectionListener;
+import util.UnknownConnectionException;
+
 /*
  * This is an example of how to run the adventure server.
  * Your game class parses and responds to input by handling ConnectionEvents.
