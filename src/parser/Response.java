@@ -1,0 +1,87 @@
+package parser;
+
+import java.util.ArrayList;
+
+/*
+ *  Represents the result of performing a particular command: the message to the player *and* the list of actions that result (call run() to run them)
+ *  Note that if any part of this needs customization, you can make an anonynmous inner class to extend it without needing a new file.
+ *
+ *  Date Last Modified: 12/05/19
+ *	@author Sam VanderArk, Patrick Philbin, Thomas Grifka, Alex Hromada
+ *	CS1122, Fall 2019
+ *	Lab Section 2
+ */
+
+public class Response {
+
+    private int severity;   
+        /* 
+         * 0 -- This Response should not be run at all
+         * >0 -- The higher the severity, the higher priority it will be chosen over others
+         * <0 -- reserved for now for special uses, if any end up coming up
+         * if an action can't be performed for multiple reasons (eg a player can't
+         *  go north, both because the door is locked and the room is dark), then 
+         *  the more immediate problem is chosen as the response ("you can't see!") 
+         * - that is, the Response with the higher positive severity.
+         */
+
+    private String playerMessage; // The message returned to the player
+
+    private ArrayList<Action> actions;  //The actions, in order, performed during this response
+    
+
+    public Response(String playerMessage, int severity, Action... actions) {
+        this(playerMessage, severity, new ArrayList<Action>(Arrays.asList(actions)));
+    }
+
+    public Response(String playerMessage, int severity, Action[] actions) {
+        this(playerMessage, severity, new ArrayList<Action>(Arrays.asList(actions)));
+    }
+
+    public Response(String playerMessage, int severity, ArrayList<Action> actions) {
+        setSeverity(severity);
+        setPlayerMessage(playerMessage);
+        actions = actions;
+    }
+
+    public Response(String playerMessage, int severity) {
+        this(playerMessage, severity, new ArrayList<Action>());
+    }
+
+    public Response(String playerMessage) {
+        this(playerMessage, 0);
+    }
+
+
+    public void run(Player player) {
+        for(Action action : actions) {
+            action.run(player);
+        }
+    }
+
+    //Boilerplate below
+
+    public int getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(int severity) {
+        this.severity = severity;
+    }
+
+    public String getPlayerMessage() {
+        return playerMessage;
+    }
+
+    public void setPlayerMessage(String playerMessage) {
+        this.playerMessage = playerMessage;
+    }
+
+    public ArrayList<Action> getActions() {
+        return actions; //yes I am aware I should call clone(). No I won't do it.
+    }
+
+    public void setActions(ArrayList<Action> actions) {
+        this.actions = actions;
+    }
+}
