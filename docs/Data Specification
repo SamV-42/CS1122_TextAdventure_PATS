@@ -1,0 +1,68 @@
+**Quick Guide:**
+To create a new room:
+
+id>awesome_room_4           <-- put the internal name here, in one word
+title> Awesome Room         <-- the title that the player sees
+description>A crazy room is here. It's really neat! <-- this description can be long, but still only one line (use multiple tags for that).
+connection>north less_awesome_room      <-- one-way connection to other rooms. You can have multiple connections
+
+To create a new item:
+
+id>neat_item        <-- put the internal name here, in one word
+
+
+
+
+
+Parser specification:
+
+The parser will operate on a loop, reading until the end of file. The process is:
+    -Read until > is reached 
+    -Parse the tag (error and ignore line if it's an unrecognized tag)
+    -Read until newline
+    -Parse according to what kind of tag it is (possibly printing errors)
+
+The different kinds of tags:
+
+type> 
+Required
+Applicable to: all
+Allowed values: "room", "item", 
+*Must* be the first tag for any item/room/etc. If the previous object wasn't closed with an end tag, close it now (and print a warning for not closing your objects). 
+
+id>
+Required
+Applicable to: all
+*Must* be provided for all objects. The id is a single word that you use to refer to that object; it is not publically visible to the user. For instance, "leaflet", "dark_room_4", or "badly_named_object_4" are examples of ids (don't include the quotes). Prints warning if multiple words are provided
+
+description>
+Applicable to: all
+The user description. For rooms, this is what the user will read when they type 'look' or enter a new room. For items, this is the description provided when a user tries to 'look at' ('l at') or 'examine' ('x') the object.
+
+title>
+Applicable to: rooms
+When the parser sees 'title', it will parse the remainder of the line as the room's title. This is what the user will see.
+
+stuff>
+Applicable to: rooms
+A list of the ids of the items, characters, etc. that are present in the room.
+
+connection>
+Applicable to: rooms
+Two words exactly: the id of the direction ('north', 'east', etc.), and the id of the connected room. Note that this is NOT a bidirectional connection by default.
+
+name>
+Applicable to: items
+Basically the 'title' of items. The name is what the player will see (either on examining the object, or in room descriptions -- "You see a mailbox here.")
+
+altname>
+Applicable to: items
+Alternative names the player can use to refer to the item. This is very important to avoid "guess the word" problems, where the game doesn't let the player type "get in car" because you named the item "automobile" and the game doesn't own a thesaurus.
+
+attribs>
+Applicable to: items
+Item attributes. A short list includes below:
+static: This item cannot be picked up. Use for scenery items and such.
+container: This item can hold other items. This allows the inventory> tag, which specifies the ids of the items that start out in the item.
+
+
