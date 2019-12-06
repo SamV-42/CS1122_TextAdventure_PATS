@@ -12,27 +12,36 @@ import java.util.ArrayList;
  *	Lab Section 2
  */
 
-public abstract class Command {
+public class Command {
 
     /* Static variables and methods */
 
     /*
-     * Returns a registered Command object if one of its names (either primary or alt) matches 
-     * @param name The command name. Currently haven't decided whether to allow multi-word commands (eg WAKE UP, TALK TO, etc.)
+     * Returns a registered Command object if one of its names (case insensitive) (either primary or alt) matches 
+     * @param name The command name. If multiple words (eg WAKE UP, LOOK UNDER), it'll first try 1 word, then 2-word, etc. for the input
      * @return null if no such Command is found, or the chosen command if found.
      */
-    public static Command getCommandByName(String name) { /* ... */ }
+    public static Command searchCommandByName(String input) {
+        input = input.toLowerCase();
+        String[] splitCommand = input.split(" ");
+        String name = splitCommand[0]
+        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[++i]) {
+            return registeredCommandsByName.get(name);
+        }
+    }
 
     /*
      * Returns a registered Command object if its internal id matches 
      * @param id The command id.
      * @return null if no such Command is found, or the chosen command if found.
      */
-    public static Command getCommandById(String id) { /* ... */ }
+    public static Command getCommandById(String id) {
+        return registeredCommandsById.get(id);
+    }
 
 
-    private static HashMap<String, Command> registeredCommandsByName;   //maps names -> object (multiple keys -> one value)
-    private static HashMap<String, Command> registeredCommandsById;   //maps id -> object
+    private static HashMap<String, Command> registeredCommandsByName = new HashMap<>();   //maps names -> object (multiple keys -> one value)
+    private static HashMap<String, Command> registeredCommandsById = new HashMap<>();   //maps id -> object
 
 
     /* Instance variables and methods */
@@ -43,16 +52,15 @@ public abstract class Command {
 
     public Command(String id, Response response, ArrayList<String> names, boolean register) {
         this.id = id;
-        if(register) {
-            Command oldval = registeredCommandsById.put(command.getId(), command);
-            if(oldval != null) {
-                System.err.println("ERROR: Two commands with same id exist; registering the more recent one.\Id: " 
-                    + command.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + command.toString());
-            }
-        }
-
         this.response = response;
 
+        if(register) {
+            Command oldval = registeredCommandsById.put(this.getId(), this);
+            if(oldval != null) {
+                System.err.println("ERROR: Two commands with same id exist; registering the more recent one.\Id: " 
+                    + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
+            }
+        }
         if(register) {
             names = new ArrayList<String>();
             for(String name : names) {
@@ -64,7 +72,7 @@ public abstract class Command {
     }
 
     public Command(String id, Response response, ArrayList<String> names) {
-        super(id, response, names, true);
+        this(id, response, names, true);
     }
 
     public Command(String id, Response response, String... names) {
@@ -73,6 +81,18 @@ public abstract class Command {
 
     public Command(String id, Response response, String[] names) {
         this(id, response, new ArrayList<String>(names.asList()));
+    }
+
+
+    /*
+     * I put this here because it'll frequently be overridden by subclasses
+     * In general: Override this if the response depends on the player input specifically (eg extracts the noun object); 
+     *  on the other hand, just create a custom Response if it just depends on world status (player location, etc.)
+     * @param playerInput The player input that led to this command -- subclasses can extract the noun object the command will affect
+     * @return The response to this command
+     */
+    public Response getResponse(String playerInput) {
+        return response;
     }
 
     public boolean addName(String name) {
@@ -94,10 +114,6 @@ public abstract class Command {
 
     public String[] getNames() {
         return names.toArray();
-    }
-
-    public Response getResponse() {
-        return response;
     }
 
     public void setResponse(Response response) {

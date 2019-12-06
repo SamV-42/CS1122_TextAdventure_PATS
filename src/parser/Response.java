@@ -69,7 +69,7 @@ public class Response {
         this.severity = severity;
     }
 
-    public String getPlayerMessage() {
+    public String getPlayerMessage(Player player) {
         return playerMessage;
     }
 
@@ -77,7 +77,7 @@ public class Response {
         this.playerMessage = playerMessage;
     }
 
-    public ArrayList<Action> getActions() {
+    public ArrayList<Action> getActions(Player player) {
         return actions; //yes I am aware I should call clone(). No I won't do it.
     }
 
