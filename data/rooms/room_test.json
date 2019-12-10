@@ -1,0 +1,23 @@
+{
+  "room": {
+    "id": "room_test",
+    "title": "Test Room",
+    "description": "This room is a test room.  It has stuff in it or something.  There's some exits in directions and I think it has items?",
+    "connection": [
+      {
+        "north": "room_test_north",
+        "east": "room_test_east"
+      }
+    ],
+    "items": [
+      {
+        "item1:": {
+          "itemid": "item_test_1"
+        },
+        "item2:": {
+          "id": "item_test_2"
+        }
+      }
+    ]
+  }
+}
