@@ -30,6 +30,12 @@ Applicable to: all
 Allowed values: "room", "item", 
 *Must* be the first tag for any item/room/etc. If the previous object wasn't closed with an end tag, close it now (and print a warning for not closing your objects). 
 
+custom>
+Very Optional
+Applicable to: all
+Value: The name of the Java class
+This is an option for implementing custom rooms, items, etc. If an object displays behavior that's too complex to specify in JSON, create a custom subclass of Room, Item, etc., put it under game/, and then specify the subclass name in this tag.
+
 id>
 Required
 Applicable to: all

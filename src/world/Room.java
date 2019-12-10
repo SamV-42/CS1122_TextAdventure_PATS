@@ -10,6 +10,7 @@ import parser.Objection;
 
 public class Room {
 
+    private String id;
     private String description;
     private String title;
     private HashMap<Direction, Room> connections = new HashMap<>();
@@ -25,8 +26,8 @@ public class Room {
         fullDescription.append(getDescription());
 
         if( connections.size() == 0) {
-            
-        } else if( connections.size() == 1 ) { 
+
+        } else if( connections.size() == 1 ) {
             fullDescription.append("\n\nThere is an exit ");
             fullDescription.append(connections.keySet().toArray(new Direction[]{})[0].getName());
             fullDescription.append(".");
@@ -53,6 +54,10 @@ public class Room {
 
         fullDescription.append("\n");
         return fullDescription.toString();
+    }
+
+    public Room(String id) {
+        this.id = id;
     }
 
     public ObjectionComponent getObjectionComponent() {
@@ -89,5 +94,9 @@ public class Room {
 
     public boolean removeConnection(Direction dir) {
         return connections.remove(dir) != null;
+    }
+
+    public String getId() {
+        return id;
     }
 }
