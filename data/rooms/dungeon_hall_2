@@ -1,0 +1,14 @@
+{
+  "room": {
+    "id": "dungeon_hall_2",
+    "title": "Dungeon Hallway 2",
+    "description": "The hall continues to a rusty iron gate. A cell to the west hangs open, unlike the others.",
+    "connection": [
+      {
+        "north": "labyrinth_enter",
+        "west": "cell",
+        "south": "dungeon_hall_1"
+      }
+    ]
+  }
+}

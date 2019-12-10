@@ -1,0 +1,12 @@
+{
+  "room": {
+    "id": "supply_room",
+    "title": "Supply Room",
+    "description": "Crates of long-abandoned supplies litter the cavern. Most of the supplies are unusable, but a crate of torches seems surprisingly intact.",
+    "connection": [
+      {
+        "west": "spider_room"
+      }
+    ]
+  }
+}
