@@ -1,5 +1,12 @@
 {
   "room": {
-    "id": "entrance"
+    "id": "entrance",
+    "title": "Cave Entrance",
+    "description": "The exit of the cave is blocked by huge boulders from the cave-in. A flickering light from ahead creates dancing shadows on the rocky walls.",
+    "connection": [
+      {
+        "north": "spider_room"
+      }
+    ]
   }
 }

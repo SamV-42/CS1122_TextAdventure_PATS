@@ -1,0 +1,12 @@
+{
+  "room": {
+    "id": "labyrinth_enter",
+    "title": "Labyrinth Entrance",
+    "description": "Equally-spaced torches line the walls in both directions. In front of you, an inscription is carved into the wall.",
+    "connection": [
+      {
+        "east": "lab_r1"
+      }
+    ]
+  }
+}
