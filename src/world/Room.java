@@ -25,28 +25,29 @@ public class Room {
 
         fullDescription.append(getDescription());
 
-        if( connections.size() == 0) {
+        Direction[] connectionsList = connections.keySet().toArray(new Direction[]{});
 
-        } else if( connections.size() == 1 ) {
+        if( connectionsList.length == 0 ) {
+
+        } else if( connectionsList.length == 1 ) {
             fullDescription.append("\n\nThere is an exit ");
-            fullDescription.append(connections.keySet().toArray(new Direction[]{})[0].getName());
+            fullDescription.append(connectionsList[0].getName());
             fullDescription.append(".");
         } else {
             fullDescription.append("\n\nThere are exits ");
 
-            Iterator<Direction> iterator = connections.keySet().iterator();
-            fullDescription.append(iterator.next().getName());
+            fullDescription.append(connectionsList[0].getName());
 
-            for(int i = 1; i < connections.size() - 1; ++i ) {
+            for(int i = 1; i < connectionsList.length - 1; ++i ) {
                 fullDescription.append(", ");
-                fullDescription.append(iterator.next().getName());
+                fullDescription.append(connectionsList[i].getName());
             }
             if( connections.size() == 2 ) {
                 fullDescription.append(" and ");
             } else {
                 fullDescription.append(", and ");
             }
-            fullDescription.append(iterator.next().getName());
+            fullDescription.append(connectionsList[connectionsList.length - 1].getName());
             fullDescription.append(".");
         }
 
@@ -84,8 +85,8 @@ public class Room {
         return connections.get(dir);
     }
 
-    public Room[] getConnectionDirs() {
-        return connections.keySet().toArray(new Room[]{});
+    public Direction[] getConnectionDirs() {
+        return connections.keySet().toArray(new Direction[]{});
     }
 
     public boolean addConnection(Direction dir, Room room) {

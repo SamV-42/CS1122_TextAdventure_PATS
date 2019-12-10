@@ -5,10 +5,32 @@ import world.*;
 
 import parser.command.DirectionCommand;
 
+
+import game.CustomRoomSample;
+import world.Room;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+
 import java.util.Scanner;
 
 public class TechAdventure {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+
+        try {
+            String customClassName = "CustomRoomSample";
+            Class<?> customClass = Class.forName("game." + customClassName);
+            Constructor<?> ctor = customClass.getConstructor(String.class);
+            Room customRoom = (Room)(ctor.newInstance(new Object[]{ "custom_id" }));
+            customRoom.setTitle("Yuh");
+            customRoom.setDescription("Yuuuuuuuuuh");
+            System.out.println(customRoom.getTitle());
+            System.out.println(customRoom.getDescription());
+        } catch(ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new Exception(e);
+        }
+
+
         Parser parser = new Parser();
 
         /* The below couple lines should be read from JSON files in DataReader
@@ -36,6 +58,7 @@ public class TechAdventure {
         room4.setTitle("Mountaintop");
         room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
         room4.addConnection(Direction.SOUTH, room1);
+
 
         Objection upBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
