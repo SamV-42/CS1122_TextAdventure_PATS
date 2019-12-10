@@ -1,5 +1,7 @@
 package parser;
 
+import world.Player;
+
 /*
  *  A simple wrapper for a bit of runnable code.
  *  I recommend instantiating via lambda expression.

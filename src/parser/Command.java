@@ -1,6 +1,9 @@
 package parser;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  *  Represents a command typed by the player. Bridges the gap between various names that could be typed, and the actual effect.
@@ -23,11 +26,16 @@ public class Command {
      */
     public static Command searchCommandByName(String input) {
         input = input.toLowerCase();
-        String[] splitCommand = input.split(" ");
-        String name = splitCommand[0]
-        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[++i]) {
-            return registeredCommandsByName.get(name);
+        String[] splitCommand = input.trim().split("\\s+");
+
+        String name = splitCommand[0];
+        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[i++]) {
+            Command reg = registeredCommandsByName.get(name);
+            if(reg != null) {
+                return reg;
+            }
         }
+        return null;
     }
 
     /*
@@ -50,39 +58,34 @@ public class Command {
     private Response response;
     private ArrayList<String> names;
 
-    public Command(String id, Response response, ArrayList<String> names, boolean register) {
+    public Command(String id, Response response, List<String> names, boolean register) {
         this.id = id;
         this.response = response;
 
         if(register) {
             Command oldval = registeredCommandsById.put(this.getId(), this);
             if(oldval != null) {
-                System.err.println("ERROR: Two commands with same id exist; registering the more recent one.\Id: " 
+                System.err.println("ERROR: Two commands with same id exist; registering the more recent one.\tId: " 
                     + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
             }
         }
         if(register) {
-            names = new ArrayList<String>();
+            this.names = new ArrayList<String>();
             for(String name : names) {
                 addName(name);
             }
         } else {
-            this.names = names;
+            this.names = new ArrayList<String>(names);
         }
     }
 
-    public Command(String id, Response response, ArrayList<String> names) {
+    public Command(String id, Response response, List<String> names) {
         this(id, response, names, true);
     }
 
     public Command(String id, Response response, String... names) {
-        this(id, response, new ArrayList<String>(names.asList()));
+        this(id, response, Arrays.asList(names));
     }
-
-    public Command(String id, Response response, String[] names) {
-        this(id, response, new ArrayList<String>(names.asList()));
-    }
-
 
     /*
      * I put this here because it'll frequently be overridden by subclasses
@@ -98,10 +101,10 @@ public class Command {
     public boolean addName(String name) {
         names.add(name);
 
-        Command oldval = registeredCommandsByName.put(name, command);
+        Command oldval = registeredCommandsByName.put(name, this);
         if(oldval != null) {
             System.err.println("WARNING: Reassigning a command name input.\tName: " + name 
-                    + "\tOld Value: " + oldval.toString() + "\tNew Value: " + command.toString());
+                    + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
             return false;
         }
         return true;
@@ -113,7 +116,7 @@ public class Command {
     }
 
     public String[] getNames() {
-        return names.toArray();
+        return names.toArray(new String[]{});
     }
 
     public void setResponse(Response response) {

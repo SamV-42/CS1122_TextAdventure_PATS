@@ -1,8 +1,9 @@
 package game;
 
-import parser.*;
-import parser.command.*;
+import world.Direction;
+import parser.command.DirectionCommand;
 
+import parser.command.LookCommand;
 
 public class DataLoader {
     public void generateCommands() {
@@ -21,5 +22,7 @@ public class DataLoader {
         DirectionCommand downCommand = new DirectionCommand("down_command", Direction.DOWN, "down", "d");
         DirectionCommand inCommand = new DirectionCommand("in_command", Direction.IN, "in", "i");
         DirectionCommand outCommand = new DirectionCommand("out_command", Direction.OUT, "out", "o");
+
+        LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
     }
 }
