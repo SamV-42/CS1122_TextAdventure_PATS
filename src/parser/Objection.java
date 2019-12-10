@@ -1,4 +1,6 @@
-package action.objection;
+package parser;
+
+import world.Player;
 
 /*
  *  Represents anything that would prevent a player-character from performing a particular action.

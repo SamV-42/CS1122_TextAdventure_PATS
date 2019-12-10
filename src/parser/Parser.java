@@ -2,6 +2,13 @@ package parser;
 
 import game.DataLoader;
 
+import world.Player;
+import world.Direction;
+import world.ObjectionComponent;
+import parser.command.DirectionCommand;
+
+import java.util.ArrayList;
+
 /*
  *  Takes player input. Runs it. Returns the player output.
  *
@@ -17,20 +24,20 @@ public class Parser {
     static {    // I put this here because it's not really used outside of the Parser and might be changed with it
         UnrecognizedCommand = new Command(
             "unrecognized", 
-            new Response("Sorry, I don't recognize that command.|What's that?|Huh?|I'm not sure what you're trying to tell me.", 1, new Action[0]{}){
+            new Response("Sorry, I don't recognize that command.|What's that?|Huh?|I'm not sure what you're trying to tell me.", 1, new Action[]{}){
 
                 @Override
                 public String getPlayerMessage(Player player) {
-                    String[] answers = super.getPlayerMessage().split("|");
-                    return answers[math.randInt(0, answers.length)];
+                    String[] answers = super.getPlayerMessage(player).split("\\|");
+                    return answers[(int)(answers.length*Math.random())];
                 }
             }, 
-            new String[0]{},
+            new ArrayList<String>(),
             false
         );
     }
 
-    private ArrayList<Objection> globalObjections = new ArrayList<Objection>(); //List of miscellaneous objections not tied to a specific room or player
+    private ObjectionComponent globalObjections = new ObjectionComponent();
 
     public Parser() {
         DataLoader dataLoader = new DataLoader();
@@ -46,8 +53,9 @@ public class Parser {
         Response response = command.getResponse(playerInput);
         response = anyObjections(player, command, response);
 
-        response.run(player);
-        return response.getPlayerMessage(player);
+        String result = response.getPlayerMessage(player);
+        response.run(player);   //since result might be affected by running it early
+        return result;
     }
 
     /*
@@ -60,10 +68,10 @@ public class Parser {
     public Response anyObjections(Player player, Command command, Response currentResponse) {
         Response mostUrgentResponse = currentResponse;
 
-        objectionsList = new ArrayList<Objection>();
-        objectionsList.addAll(globalObjections);
-        objectionsList.addAll(player.getObjections());
-        objectionsList.addAll(player.getRoom().getObjections());
+        ArrayList<Objection> objectionsList = new ArrayList<>();
+        objectionsList.addAll(globalObjections.getObjections());
+        objectionsList.addAll(player.getObjectionComponent().getObjections());
+        objectionsList.addAll(player.getRoom().getObjectionComponent().getObjections());
 
         for(Objection obj : objectionsList) {
             Response tempResponse = obj.check(player, command);
@@ -76,11 +84,11 @@ public class Parser {
     }
 
     public void addGlobalObjection(Objection obj) {
-        globalObjections.add(obj);
+        globalObjections.addObjection(obj);
     }
 
     public void removeGlobalObjection(Objection obj) {
-        globalObjections.remove(obj);
+        globalObjections.removeObjection(obj);
     }
 
 }

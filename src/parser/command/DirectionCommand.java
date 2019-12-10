@@ -1,10 +1,19 @@
 package parser.command;
 
+import java.lang.StringBuilder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+
 import world.Direction;
+import world.Player;
+import world.Room;
+import parser.Command;
+import parser.Response;
+import parser.Action;
 
 //Currently relying on the following to be implemented: 
 // Room, with "public Room getConnection(Direction dir)" (null if none)
-// Player, with "public void getRoom()" and "public void moveTo(Room room)"
 
 /*
  *  Represents a command that leads to movement
@@ -18,21 +27,24 @@ import world.Direction;
 
 public class DirectionCommand extends Command {
 
-    private Direction direction;    //Please don't, eg, made a DirectionCommand named NorthCommand and then pass in Direction.SOUTH
+    private final Direction direction;    //Please don't, eg, made a DirectionCommand named NorthCommand and then pass in Direction.SOUTH
 
-    public DirectionCommand(String id, Direction direction, ArrayList<String> names, boolean register) {
-        this.direction = direction;
-
-        Response response = new Response("", 100, new Action[1] {}) {
+    public DirectionCommand(String id, Direction direction, List<String> names, boolean register) {
+        super(id, new Response("", 100, new Action[]{}) {
 
             @Override
             public String getPlayerMessage(Player player) {
+                StringBuilder message = new StringBuilder();
+
                 Room target = targetRoom(player);
                 if(target != null) {
-                    return target.getDescription();     //Print room description on entering room
+                    message.append("You go " + direction.getName() + ".\n\n");
+                    message.append(target.look());     //Print room description on entering room
                 } else {
-                    return "There doesn't appear to be an exit in that direction.";
+                    message.append("There doesn't appear to be an exit in that direction.");
                 }
+
+                return message.toString();
             }
 
             @Override
@@ -40,8 +52,8 @@ public class DirectionCommand extends Command {
                 Room target = targetRoom(player);
                 ArrayList<Action> actions = new ArrayList<Action>();
                 if(target != null) {
-                    actions.add( () -> {
-                        player.moveTo(target);
+                    actions.add( (p) -> {
+                        p.setRoom(target);
                     });
                 }
                 return actions;
@@ -49,22 +61,19 @@ public class DirectionCommand extends Command {
 
             private Room targetRoom(Player player) {
                 // We might want to move this functionality to another class
-                return player.getRoom().getConnection(direction) //anon. inner class should have access to direction
+                return player.getRoom().getConnection(direction); //anon. inner class should have access to direction
             }
+        }, names, register);
+
+        this.direction = direction;
     }
 
-        super(id, response, names, register);
-    }
-
-    public DirectionCommand(String id, Direction direction, ArrayList<String> names) {
+    public DirectionCommand(String id, Direction direction, List<String> names) {
         this(id, direction, names, true);
     }
 
     public DirectionCommand(String id, Direction direction, String... names) {
-        this(id, direction, new ArrayList<String>(names.asList()));
+        this(id, direction, new ArrayList<String>(Arrays.asList(names)));
     }
 
-    public DirectionCommand(String id, Direction direction, String[] names) {
-        this(id, direction, new ArrayList<String>(names.asList()));
-    }
 }

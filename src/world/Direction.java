@@ -1,5 +1,8 @@
 package world;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /*
  *  Represents a direction relating rooms in the world. 
  *  Note that this is distinct from the actual typed command needed to move
@@ -28,22 +31,47 @@ public class Direction {
     public static final Direction IN = new Direction("in");
     public static final Direction OUT = new Direction("out");
 
-    private static HashMap<String, Direction> registeredDirectionsById = new HashMap<>();
+    private static HashMap<String, Direction> registeredDirectionsById;// = new HashMap<>();
 
     /*
      * Returns a Direction object if its id matches 
      * @param name The direction id
      * @return null if no such Direction is found, or the chosen direction if found.
      */
-    public static Direction getDirectionByName(String name) { 
-        return registeredDirectionsById.get(name);
+    public static Direction getDirectionById(String id) { 
+        return registeredDirectionsById.get(id); 
+    }
+
+    private String id;
+    private String name;
+
+    public Direction(String id, String name) {
+        this.id = id;
+        this.name = name;
+
+        if(registeredDirectionsById == null) {
+            registeredDirectionsById = new HashMap<>();
+        }
+        Direction oldval = registeredDirectionsById.put(this.getId(), this);
+        if(oldval != null) {
+            System.err.println("ERROR: Two directions with same id exist; registering the more recent one.\tId: " 
+                + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
+        }
     }
 
     public Direction(String id) {
-        Direction oldval = registeredCommandsById.put(this.getId(), this);
-        if(oldval != null) {
-            System.err.println("ERROR: Two directions with same id exist; registering the more recent one.\Id: " 
-                + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
-        }
+        this(id, id);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

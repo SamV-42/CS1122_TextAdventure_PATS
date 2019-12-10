@@ -1,6 +1,9 @@
 package parser;
 
+import world.Player;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*
  *  Represents the result of performing a particular command: the message to the player *and* the list of actions that result (call run() to run them)
@@ -27,14 +30,11 @@ public class Response {
 
     private String playerMessage; // The message returned to the player
 
-    private ArrayList<Action> actions;  //The actions, in order, performed during this response
+    private ArrayList<Action> actions = new ArrayList<>();  //The actions, in order, performed during this response
+        //Always call getActions() within this class rather than using raw actions, in case it gets overloaded
     
 
     public Response(String playerMessage, int severity, Action... actions) {
-        this(playerMessage, severity, new ArrayList<Action>(Arrays.asList(actions)));
-    }
-
-    public Response(String playerMessage, int severity, Action[] actions) {
         this(playerMessage, severity, new ArrayList<Action>(Arrays.asList(actions)));
     }
 
@@ -54,7 +54,7 @@ public class Response {
 
 
     public void run(Player player) {
-        for(Action action : actions) {
+        for(Action action : getActions(player) ) {
             action.run(player);
         }
     }
