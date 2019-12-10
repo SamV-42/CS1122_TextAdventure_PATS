@@ -1,0 +1,14 @@
+{
+  "item2:": {
+    "itemid": "item_test_2",
+    "name": "Test Item 2",
+    "attribute": "none",
+    "altnames": [
+      {
+        "name_1": "Name 2",
+        "name_2": "Name 3",
+        "name_3": "Name 4"
+      }
+    ]
+  }
+}
