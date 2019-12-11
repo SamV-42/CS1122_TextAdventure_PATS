@@ -5,6 +5,7 @@ import game.DataLoader;
 import world.Player;
 import world.Direction;
 import util.ObjectionComponent;
+import util.RegistrationComponent;
 import parser.command.DirectionCommand;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class Parser {
     }
 
     public String runPlayerInput(Player player, String playerInput) {
-        Command command = Command.searchCommandByName(playerInput);
+        Command command = RegistrationComponent.searchByStr("command_name", playerInput);
         if(command == null) {
             command = UnrecognizedCommand;
         }
