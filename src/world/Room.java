@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.lang.StringBuilder;
 
 import parser.Objection;
+import util.ObjectionComponent;
+
 
 public class Room {
+
+    private static HashMap<String, Room> registeredRoomsById = new HashMap<>();   //maps id -> object
 
     private String id;
     private String description;
@@ -58,6 +62,10 @@ public class Room {
 
     public Room(String id) {
         this.id = id;
+    }
+
+    public static Room getRoomById(String id) {
+        return registeredRoomsById.get(id);
     }
 
     public ObjectionComponent getObjectionComponent() {
