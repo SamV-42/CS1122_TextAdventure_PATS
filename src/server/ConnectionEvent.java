@@ -1,4 +1,4 @@
-package util;
+package server;
 
 public class ConnectionEvent {
 	private ConnectionEventCode code = null;

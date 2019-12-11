@@ -4,7 +4,7 @@ import game.DataLoader;
 
 import world.Player;
 import world.Direction;
-import world.ObjectionComponent;
+import util.ObjectionComponent;
 import parser.command.DirectionCommand;
 
 import java.util.ArrayList;

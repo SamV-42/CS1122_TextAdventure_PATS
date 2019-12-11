@@ -1,6 +1,7 @@
 package world;
 
 import parser.Objection;
+import util.ObjectionComponent;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,5 +22,5 @@ public class Player {
     public ObjectionComponent getObjectionComponent() {
         return objections;
     }
-    
+
 }
