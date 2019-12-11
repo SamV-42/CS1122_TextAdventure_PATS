@@ -20,22 +20,22 @@ public class TechAdventure {
 
         room1.setTitle("Waterfall");
         room1.setDescription("A winding trail leads up and past this point. A pretty waterfall descends around you.");
-        room1.addConnection(Direction.IN, room2);
-        room1.addConnection(Direction.SOUTHWEST, room3);
-        room1.addConnection(Direction.NORTH, room4);
+        room1.addConnection(Direction.IN, RegistrationComponent.<Room>getByStr("room_id", "room2") );
+        room1.addConnection(Direction.SOUTHWEST, RegistrationComponent.<Room>getByStr("room_id", "room3"));
+        room1.addConnection(Direction.NORTH, RegistrationComponent.<Room>getByStr("room_id", "room4"));
 
         room2.setTitle("Cave");
         room2.setDescription("A small, hidden grotto exists behind the waterfall's curtain. A hidden stair can take you up to the mountain's peak, although you're not sure you'll be able to return the way you came.");
-        room2.addConnection(Direction.OUT, room1);
-        room2.addConnection(Direction.UP, room4);
+        room2.addConnection(Direction.OUT, RegistrationComponent.<Room>getByStr("room_id", "room1"));
+        room2.addConnection(Direction.UP, RegistrationComponent.<Room>getByStr("room_id", "room4"));
 
         room3.setTitle("Trail");
         room3.setDescription("You stand at the bottom of a winding trail. You can hear the rumble of water in the distance.");
-        room3.addConnection(Direction.NORTHEAST, room1);
+        room3.addConnection(Direction.NORTHEAST, RegistrationComponent.<Room>getByStr("room_id", "room1"));
 
         room4.setTitle("Mountaintop");
         room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
-        room4.addConnection(Direction.SOUTH, room1);
+        room4.addConnection(Direction.SOUTH, RegistrationComponent.<Room>getByStr("room_id", "room1"));
 
         Objection upBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
