@@ -1,5 +1,7 @@
 package parser;
 
+import util.RegistrationComponent;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class Command {
 
         String name = splitCommand[0];
         for(int i = 0; i < splitCommand.length; name += " " + splitCommand[i++]) {
-            Command reg = registeredCommandsByName.get(name);
+            Command reg = RegistrationComponent.getByStr("command_name", name);
             if(reg != null) {
                 return reg;
             }
@@ -38,46 +40,29 @@ public class Command {
         return null;
     }
 
-    /*
-     * Returns a registered Command object if its internal id matches
-     * @param id The command id.
-     * @return null if no such Command is found, or the chosen command if found.
-     */
-    public static Command getCommandById(String id) {
-        return registeredCommandsById.get(id);
-    }
-
-
-    private static HashMap<String, Command> registeredCommandsByName = new HashMap<>();   //maps names -> object (multiple keys -> one value)
-    private static HashMap<String, Command> registeredCommandsById = new HashMap<>();   //maps id -> object
-
-
     /* Instance variables and methods */
 
     private String id;
     private Response response;
     private ArrayList<String> names;
 
+    private RegistrationComponent<Command> compRegistrationId = null;
+    private RegistrationComponent<Command> compRegistrationNames = null;
+
     public Command(String id, Response response, List<String> names, boolean register) {
         this.id = id;
         this.response = response;
 
+        this.names = new ArrayList<String>(names);
+
         if(register) {
-            Command oldval = registeredCommandsById.put(this.getId(), this);
-            if(oldval != null) {
-                System.err.println("ERROR: Two commands with same id exist; registering the more recent one.\tId: "
-                    + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
-            }
-        }
-        if(register) {
-            //this.names = new ArrayList<String>();
-            this.names = new ArrayList<String>(names);
+            compRegistrationId = new RegistrationComponent<>(this, "command_id", id);
+            compRegistrationNames = new RegistrationComponent<>(this, "command_name");
             for(String name : names) {
-                registeredCommandsByName.put(name, this);
+                compRegistrationNames.addIdentifier(name);
             }
-        } else {
-            this.names = new ArrayList<String>(names);
         }
+
     }
 
     public Command(String id, Response response, List<String> names) {
@@ -99,12 +84,22 @@ public class Command {
         return response;
     }
 
+    public void setResponse(Response response) {
+        this.response = response;
+    }
+
     public String[] getNames() {
         return names.toArray(new String[]{});
     }
 
-    public void setResponse(Response response) {
-        this.response = response;
+    public void addName(String name) {
+        names.add(name);
+        compRegistrationNames.addIdentifier(name);
+    }
+
+    public void removeName(String name) {
+        names.remove(name);
+        compRegistrationNames.removeIdentifier(name);
     }
 
     public String getId() {

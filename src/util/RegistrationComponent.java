@@ -1,4 +1,4 @@
-package world;
+package util;
 
 import parser.Objection;
 
@@ -9,12 +9,22 @@ import java.util.NoSuchElementException;
 
 public class RegistrationComponent<T> {
 
-    //maps table name to (maps name/id to obj)
+    //maps table name to (maps name/id/etc to the obj)
     private static HashMap<String, HashMap<String, ?> > registered = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public static <T> T getByStr(String identifierName, String identifier) {
         return (T)(getMapOrThrow(identifierName).get(identifier));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> HashMap<String, T> getMapOrThrow(String identifierName) {
+        HashMap<String, T> map = (HashMap<String, T>)registered.get(identifierName);
+        if(map == null) {
+            System.err.println("ERROR: Identifier was not registered (\"" + identifierName + "\")");
+            throw new NoSuchElementException("Bad identifier");
+        }
+        return map;
     }
 
     private String identifierName;
@@ -37,16 +47,6 @@ public class RegistrationComponent<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> HashMap<String, T> getMapOrThrow(String identifierName) {
-        HashMap<String, T> map = (HashMap<String, T>)registered.get(identifierName);
-        if(map == null) {
-            System.err.println("ERROR: Identifier was not registered (\"" + identifierName + "\")");
-            throw new NoSuchElementException("Bad identifier");
-        }
-        return map;
-    }
-
-    @SuppressWarnings("unchecked")
     public boolean addIdentifier(String identifier) {
         T oldval = RegistrationComponent.<T>getMapOrThrow(identifierName).put(identifier, owner);
         if(oldval != null) {
@@ -62,7 +62,4 @@ public class RegistrationComponent<T> {
         return (RegistrationComponent.<T>getMapOrThrow(identifierName).remove(identifier) != null);
     }
 
-    /*public static String[] getIdentifiers() {
-
-    }*/
 }
