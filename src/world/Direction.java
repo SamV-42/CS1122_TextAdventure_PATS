@@ -1,10 +1,12 @@
 package world;
 
+import util.RegistrationComponent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /*
- *  Represents a direction relating rooms in the world. 
+ *  Represents a direction relating rooms in the world.
  *  Note that this is distinct from the actual typed command needed to move
  *   -- that class is DirectionCommand, and the specific accepted words are defined in DataLoader
  *
@@ -31,16 +33,7 @@ public class Direction {
     public static final Direction IN = new Direction("in");
     public static final Direction OUT = new Direction("out");
 
-    private static HashMap<String, Direction> registeredDirectionsById;// = new HashMap<>();
-
-    /*
-     * Returns a Direction object if its id matches 
-     * @param name The direction id
-     * @return null if no such Direction is found, or the chosen direction if found.
-     */
-    public static Direction getDirectionById(String id) { 
-        return registeredDirectionsById.get(id); 
-    }
+    private RegistrationComponent<Direction> compRegistration = null;
 
     private String id;
     private String name;
@@ -48,15 +41,7 @@ public class Direction {
     public Direction(String id, String name) {
         this.id = id;
         this.name = name;
-
-        if(registeredDirectionsById == null) {
-            registeredDirectionsById = new HashMap<>();
-        }
-        Direction oldval = registeredDirectionsById.put(this.getId(), this);
-        if(oldval != null) {
-            System.err.println("ERROR: Two directions with same id exist; registering the more recent one.\tId: " 
-                + this.getId() + "\tOld Value: " + oldval.toString() + "\tNew Value: " + this.toString());
-        }
+        compRegistration = new RegistrationComponent<>(this, "direction_id", id);
     }
 
     public Direction(String id) {

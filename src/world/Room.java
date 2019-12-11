@@ -1,14 +1,14 @@
 package world;
 
+import parser.Objection;
+import util.ObjectionComponent;
+import util.RegistrationComponent;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
-
-import parser.Objection;
-import util.ObjectionComponent;
-
 
 public class Room {
 
@@ -18,7 +18,10 @@ public class Room {
     private String description;
     private String title;
     private HashMap<Direction, Room> connections = new HashMap<>();
-    private ObjectionComponent objections = new ObjectionComponent();
+
+    private ObjectionComponent compObjection = new ObjectionComponent();
+    private RegistrationComponent<Room> compRegistration = null;
+
 
     public String look() {
         StringBuilder fullDescription = new StringBuilder();
@@ -62,14 +65,11 @@ public class Room {
 
     public Room(String id) {
         this.id = id;
-    }
-
-    public static Room getRoomById(String id) {
-        return registeredRoomsById.get(id);
+        compRegistration = new RegistrationComponent<>(this, "room_id", id);
     }
 
     public ObjectionComponent getObjectionComponent() {
-        return objections;
+        return compObjection;
     }
 
     public String getDescription() {
