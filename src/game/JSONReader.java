@@ -11,9 +11,6 @@ import java.util.stream.Collectors;
 public class JSONReader {
 
 
-    private static List<Path> fileList = null;
-
-
     public static void main(String[] args) {
 
 //        JSONReader reader = new JSONReader();
@@ -28,8 +25,8 @@ public class JSONReader {
 //    }
 
 
-    private static void streamDirectory() {
-
+    private static List<Path> streamDirectory() {
+        List<Path> fileList = null;
         try {
             Path currentRelativePath = Paths.get("");
             String data = currentRelativePath.toAbsolutePath().toString() + "/data";
@@ -44,6 +41,8 @@ public class JSONReader {
         } catch (IOException e) {
 
         }
+
+        return fileList;
     }
 
 
