@@ -1,0 +1,12 @@
+{
+  "room": {
+    "id": "axe_room",
+    "title": "Chamber of the Golden Axe",
+    "description": "A glowing, golden axe sits on a pedestal before you. You somehow know it is the key to your escape.",
+    "connection": [
+      {
+        "south": "cutscene"
+      }
+    ]
+  }
+}
