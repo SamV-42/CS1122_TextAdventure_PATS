@@ -1,6 +1,4 @@
-import util.ConnectionEvent;
-import util.ConnectionListener;
-import util.UnknownConnectionException;
+package server;
 
 /*
  * This is an example of how to run the adventure server.
