@@ -1,11 +1,10 @@
 {
   "room": {
     "id": "lab_r3",
-    "title": "Labyrinth Hallway",
-    "description": "A basic hallway in the labyrinth, although the hallway before you seems...eerie.",
+    "title": "Dead End",
+    "description": "A dead end.",
     "connection": [
       {
-        "north": "circle1",
         "south": "lab_r2"
       }
     ]
