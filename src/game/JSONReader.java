@@ -32,7 +32,7 @@ public class JSONReader {
 
         try {
             Path currentRelativePath = Paths.get("");
-            String data = currentRelativePath.toAbsolutePath().toString() + "\\data";
+            String data = currentRelativePath.toAbsolutePath().toString() + "/data";
 //            Path dataPath = Paths.get("E:\\JavaStuff\\1122\\CS1122_TextAdventure_PATS\\data");
 
             fileList = Files.walk(currentRelativePath).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
