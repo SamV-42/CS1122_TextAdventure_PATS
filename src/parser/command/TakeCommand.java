@@ -73,7 +73,7 @@ public class TakeCommand extends Command {
                     return ItemPresence.ALL;
                 }
                 return ItemPresence.FAILURE;
-            } else if (! player.getRoom().<InventoryMixin>getTypeMixin("inventory").itemPresent(thing)) {
+            } else if (! player.getRoom().getInventoryList().contains(thing)) {
                 return ItemPresence.NOTPRESENT;
             } else if(thing.getStatic()) {
                 return ItemPresence.STATIC;
@@ -85,7 +85,7 @@ public class TakeCommand extends Command {
         public String getPlayerMessage(Player player) {
             switch(getResult(player)) {
                 case ALL:
-                    Item[] inv = player.getRoom().<InventoryMixin>getTypeMixin("inventory").get();
+                    Item[] inv = player.getRoom().getInventory();
                     if(inv.length == 0) {
                         return "You don't see much else to take.";
                     } else {
@@ -102,11 +102,11 @@ public class TakeCommand extends Command {
                         return itemsDescription.toString();
                     }
                 case SUCCESS:
-                    return "You pick up the " + thing.<PrimaryNameMixin>getTypeMixin("primaryname").get() + ".";
+                    return "You pick up the " + thing.getPrimaryName() + ".";
                 case STATIC:
                     return "It doesn't seem like that can be picked up.";
                 case NOTPRESENT:
-                    if(player.<InventoryMixin>getTypeMixin("inventory").itemPresent(thing)) {
+                    if(player.getInventoryList().contains(thing)) {
                         return "You already have that.";
                     }
                 case FAILURE:
@@ -123,13 +123,13 @@ public class TakeCommand extends Command {
             ArrayList<Action> actions = new ArrayList<>();
             if(getResult(player) == ItemPresence.SUCCESS) {
                 actions.add( (Player p) -> {
-                    p.getRoom().<InventoryMixin>getTypeMixin("inventory").remove(thing);
-                    p.<InventoryMixin>getTypeMixin("inventory").add(thing);
+                    p.getRoom().getInventoryMixin().remove(thing);
+                    p.getInventoryMixin().add(thing);
                 });
             } else if(getResult(player) == ItemPresence.ALL) {
                 actions.add( (Player p) -> {
-                    InventoryMixin<Room> roomInvMix = p.getRoom().<InventoryMixin<Room> >getTypeMixin("inventory");
-                    InventoryMixin<Player> playInvMix = p.<InventoryMixin<Player> >getTypeMixin("inventory");
+                    InventoryMixin<?> roomInvMix = p.getRoom().getInventoryMixin();
+                    InventoryMixin<?> playInvMix = p.getInventoryMixin();
                     Item[] inv = roomInvMix.get();
                     for(Item item : inv) {
                         roomInvMix.remove(item);

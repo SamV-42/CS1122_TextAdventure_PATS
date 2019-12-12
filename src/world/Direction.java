@@ -3,7 +3,7 @@ package world;
 import util.Registration;
 import util.Composite;
 import util.mixin.IdMixin;
-import util.mixin.NameMixin;
+import util.mixin.NamesMixin;
 import util.mixin.PrimaryNameMixin;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Direction extends Composite {
+public class Direction extends Composite implements IdMixin.Id, PrimaryNameMixin.PrimaryName {
 
     // All of the below are put here for convenience' sake (over needing to type, eg, getDirectionByName("north") each time)
     // Their names are self-explanatory.

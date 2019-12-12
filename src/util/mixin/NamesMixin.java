@@ -8,15 +8,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-public class NameMixin<O extends Composite> extends StandardMixin<O, String> {
+public class NamesMixin<O extends Composite> extends StandardMixin<O, String> {
 
-    private Registration<NameMixin> compRegistrationNames = null;
+    public interface Names {
+
+        @SuppressWarnings("unchecked")
+        public default NamesMixin getNamesMixin() {
+            return ((Composite)this).<NamesMixin>getTypeMixin("name");
+        }
+
+        public default String[] getNames() {
+            return getNamesMixin().get();
+        }
+
+        public default List<String> getNamesList() {
+            return new ArrayList<>(Arrays.asList(getNames()));
+        }
+    }
+
+    private Registration<NamesMixin> compRegistrationNames = null;
     private ArrayList<String> names;
 
     @Override
     public String getMixinId() { return "name"; }
 
-    public NameMixin(boolean register, O owner, String className, List<String> names) {
+    public NamesMixin(boolean register, O owner, String className, List<String> names) {
         super(owner, className);
 
         this.names = new ArrayList<>(names);
@@ -30,11 +46,11 @@ public class NameMixin<O extends Composite> extends StandardMixin<O, String> {
         }
     }
 
-    public NameMixin(O owner, String className, List<String> names) {
+    public NamesMixin(O owner, String className, List<String> names) {
         this(true, owner, className, names);
     }
 
-    public NameMixin(O owner, String className, String... names) {
+    public NamesMixin(O owner, String className, String... names) {
         this(owner, className, Arrays.asList(names));
     }
 

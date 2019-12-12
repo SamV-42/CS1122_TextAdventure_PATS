@@ -8,7 +8,8 @@ import util.mixin.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Player extends Composite {
+public class Player extends Composite
+                    implements IdMixin.Id, ObjectionMixin.Objections, PrimaryNameMixin.PrimaryName, InventoryMixin.Inventory {
 
     private Room room;
 

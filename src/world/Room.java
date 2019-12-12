@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
 
-public class Room extends Composite {
+public class Room extends Composite
+                    implements IdMixin.Id, ObjectionMixin.Objections, InventoryMixin.Inventory, PrimaryNameMixin.PrimaryName {
 
     private String id;
     private String description;
@@ -40,7 +41,7 @@ public class Room extends Composite {
 
         fullDescription.append(getDescription());
 
-        Item[] inv = this.<InventoryMixin>getTypeMixin("inventory").get();
+        Item[] inv = getInventory();
         if(inv.length == 0) {
 
         } else {
@@ -100,10 +101,10 @@ public class Room extends Composite {
 
     //Convenience methods
     public String getTitle() {
-        return this.<PrimaryNameMixin>getTypeMixin("primaryname").get();
+        return this.getPrimaryName();
     }
 
     public void setTitle(String title) {
-        this.<PrimaryNameMixin>getTypeMixin("primaryname").set(title);
+        this.getPrimaryNameMixin().set(title);
     }
 }

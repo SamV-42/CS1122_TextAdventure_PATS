@@ -4,7 +4,7 @@ import util.*;
 import world.*;
 
 import util.mixin.IdMixin;
-import util.mixin.NameMixin;
+import util.mixin.NamesMixin;
 import util.mixin.InventoryMixin;
 import util.mixin.ObjectionMixin;
 import parser.command.DirectionCommand;
@@ -45,17 +45,17 @@ public class TechAdventure {
         room4.addConnection(Direction.UP, Registration.getOwnerByStr("room_id", "room4"));
 
         Item item1 = new Item("item1", "rusty sword", "sword");
-        room1.<InventoryMixin>getTypeMixin("inventory").add(item1);
+        room1.getInventoryMixin().add(item1);
         Item item2 = new Item("item2", "albatross", "bird");
-        room1.<InventoryMixin>getTypeMixin("inventory").add(item2);
+        room1.getInventoryMixin().add(item2);
         Item item3 = new Item("item3", "water bottle", "bottle", "water");
-        room1.<InventoryMixin>getTypeMixin("inventory").add(item3);
+        room1.getInventoryMixin().add(item3);
 
         Item item4 = new Item("item4", "rocks", "rock", "stone", "stones") {
             @Override
             public String getArticle() { return "some"; }
         };
-        room2.<InventoryMixin>getTypeMixin("inventory").add(item4);
+        room2.getInventoryMixin().add(item4);
 
         Objection upBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
@@ -64,12 +64,12 @@ public class TechAdventure {
 
             if( dc.getMixin("id").get() != "up_command") { return null;}
 
-            if( !(new ArrayList<Item>(Arrays.asList(   p.getRoom().<InventoryMixin>getTypeMixin("inventory").get()))).contains(item4)) { return null; }
+            if( ! p.getRoom().getInventoryList().contains(item4) ) { return null; }
 
             //So, we're trying to go up from the cave
             return new Response("It looks like some rocks are blocking your way.", 200){};
         };
-        room2.<ObjectionMixin>getTypeMixin("objection").add(upBlocker);
+        room2.getObjectionMixin().add(upBlocker);
 
 
         Player player = new Player("1");
@@ -77,7 +77,7 @@ public class TechAdventure {
 
         /* I think the below would be handled by all that ServerClient jazz,
             But again, just for testing... */
-        System.out.println( parser.runPlayerInput(player, Registration.getOwnerByStr("command_id", "look_command").<NameMixin>getTypeMixin("name").get()[0] ) );
+        System.out.println( parser.runPlayerInput(player, ((Command)(Registration.getOwnerByStr("command_id", "look_command"))).getNames()[0] ) );
 
         Scanner inputScanner = new Scanner(System.in);
         while(true) {

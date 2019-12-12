@@ -22,7 +22,7 @@ import java.util.Arrays;
  *	Lab Section 2
  */
 
-public class Parser extends Composite {
+public class Parser extends Composite implements ObjectionMixin.Objections {
 
     public static final Command UnrecognizedCommand;    // A fake command for when the player types nonsense
     static {    // I put this here because it's not really used outside of the Parser and might be changed with it
@@ -81,9 +81,9 @@ public class Parser extends Composite {
         Response mostUrgentResponse = currentResponse;
 
         ArrayList<Objection> objectionsList = new ArrayList<>();
-        objectionsList.addAll(new ArrayList<>(Arrays.asList(     this.<ObjectionMixin>getTypeMixin("objection").get()   )));
-        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.<ObjectionMixin>getTypeMixin("objection").get()   )));
-        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.getRoom().<ObjectionMixin>getTypeMixin("objection").get()   )));
+        objectionsList.addAll(this.getObjectionsList());
+        objectionsList.addAll(player.getObjectionsList());
+        objectionsList.addAll(player.getRoom().getObjectionsList());
 
         for(Objection obj : objectionsList) {
             Response tempResponse = obj.check(player, command);

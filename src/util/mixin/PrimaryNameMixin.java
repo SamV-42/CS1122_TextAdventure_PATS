@@ -6,6 +6,18 @@ import util.Registration;
 
 public class PrimaryNameMixin<O extends Composite> extends Mixin<O, String> {
 
+    public interface PrimaryName {
+
+        @SuppressWarnings("unchecked")
+        public default PrimaryNameMixin getPrimaryNameMixin() {
+            return ((Composite)this).<PrimaryNameMixin>getTypeMixin("primaryname");
+        }
+
+        public default String getPrimaryName() {
+            return getPrimaryNameMixin().get();
+        }
+    }
+
     private String name;
 
     @Override
