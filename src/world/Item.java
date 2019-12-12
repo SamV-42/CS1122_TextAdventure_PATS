@@ -1,9 +1,13 @@
-import util.NamedObject;
+package world;
+
+import util.Composite;
+import util.mixin.IdMixin;
+import util.mixin.NameMixin;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Item extends NamedObject {
+public class Item extends Composite {
 
     private String description;
 
@@ -15,12 +19,21 @@ public class Item extends NamedObject {
         this.description = description;
     }
 
-    /* Constructors specified in NamedObject */
-    public Item(String id, List<String> names, boolean register) {
-        super("item", id, names, register);
+    public Item(boolean register, String id, List<String> names) {
+        addMixin(new IdMixin<>(this, "item", id));
+        addMixin(new NameMixin<>(this, "item", names));
     }
-    public Item(String id, List<String> names) { this(id, names, true); }
-    public Item(String id, String... names) { this(id, Arrays.asList(names)); }
-    public Item(String id) {this(id, new String[]{}); }
+
+    public Item(String id, List<String> names) {
+        this(true, id, names);
+    }
+
+    public Item(String id, String... names) {
+        this(id, Arrays.asList(names));
+    }
+
+    public Item(String id) {
+        this(id, new String[]{});
+    }
 
 }

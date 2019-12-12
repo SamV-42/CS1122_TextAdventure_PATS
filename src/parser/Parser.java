@@ -5,7 +5,7 @@ import game.DataLoader;
 import world.Player;
 import world.Direction;
 import util.ObjectionComponent;
-import util.RegistrationComponent;
+import util.Registration;
 import parser.command.DirectionCommand;
 
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public class Parser {
     public static final Command UnrecognizedCommand;    // A fake command for when the player types nonsense
     static {    // I put this here because it's not really used outside of the Parser and might be changed with it
         UnrecognizedCommand = new Command(
+            false,
             "unrecognized",
             new Response("Sorry, I don't recognize that command.|What's that?|Huh?|I'm not sure what you're trying to tell me.", 1, new Action[]{}){
 
@@ -33,8 +34,7 @@ public class Parser {
                     return answers[(int)(answers.length*Math.random())];
                 }
             },
-            new ArrayList<String>(),
-            false
+            new ArrayList<String>()
         );
     }
 
@@ -46,7 +46,7 @@ public class Parser {
     }
 
     public String runPlayerInput(Player player, String playerInput) {
-        Command command = RegistrationComponent.searchByStr("command_name", playerInput);
+        Command command = Registration.searchOwnerByStr("command_name", playerInput);
         if(command == null) {
             command = UnrecognizedCommand;
         }

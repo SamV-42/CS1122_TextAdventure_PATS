@@ -3,6 +3,8 @@ import parser.*;
 import util.*;
 import world.*;
 
+import util.mixin.IdMixin;
+import util.mixin.NameMixin;
 import parser.command.DirectionCommand;
 
 import java.util.Scanner;
@@ -20,29 +22,29 @@ public class TechAdventure {
 
         room1.setTitle("Waterfall");
         room1.setDescription("A winding trail leads up and past this point. A pretty waterfall descends around you.");
-        room1.addConnection(Direction.IN, RegistrationComponent.getByStr("room_id", "room2") );
-        room1.addConnection(Direction.SOUTHWEST, RegistrationComponent.getByStr("room_id", "room3"));
-        room1.addConnection(Direction.NORTH, RegistrationComponent.getByStr("room_id", "room4"));
+        room1.addConnection(Direction.IN, Registration.getOwnerByStr("room_id", "room2") );
+        room1.addConnection(Direction.SOUTHWEST, Registration.getOwnerByStr("room_id", "room3"));
+        room1.addConnection(Direction.NORTH, Registration.getOwnerByStr("room_id", "room4"));
 
         room2.setTitle("Cave");
         room2.setDescription("A small, hidden grotto exists behind the waterfall's curtain. A hidden stair can take you up to the mountain's peak, although you're not sure you'll be able to return the way you came.");
-        room2.addConnection(Direction.OUT, RegistrationComponent.getByStr("room_id", "room1"));
-        room2.addConnection(Direction.UP, RegistrationComponent.getByStr("room_id", "room4"));
+        room2.addConnection(Direction.OUT, Registration.getOwnerByStr("room_id", "room1"));
+        room2.addConnection(Direction.UP, Registration.getOwnerByStr("room_id", "room4"));
 
         room3.setTitle("Trail");
         room3.setDescription("You stand at the bottom of a winding trail. You can hear the rumble of water in the distance.");
-        room3.addConnection(Direction.NORTHEAST, RegistrationComponent.getByStr("room_id", "room1"));
+        room3.addConnection(Direction.NORTHEAST, Registration.getOwnerByStr("room_id", "room1"));
 
         room4.setTitle("Mountaintop");
         room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
-        room4.addConnection(Direction.SOUTH, RegistrationComponent.getByStr("room_id", "room1"));
+        room4.addConnection(Direction.SOUTH, Registration.getOwnerByStr("room_id", "room1"));
 
         Objection upBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
             DirectionCommand dc = (DirectionCommand)c;
 
-            if( dc.getId() != "up_command") { return null;}
+            if( dc.getMixin("id").get() != "up_command") { return null;}
 
             //So, we're trying to go up from the cave
             return new Response("It looks like some rocks are blocking your way.", 200){};
@@ -55,7 +57,7 @@ public class TechAdventure {
 
         /* I think the below would be handled by all that ServerClient jazz,
             But again, just for testing... */
-        System.out.println( parser.runPlayerInput(player, RegistrationComponent.<Command>getByStr("command_id", "look_command").getNames()[0]) );
+        System.out.println( parser.runPlayerInput(player, ((String[])(Registration.getOwnerByStr("command_id", "look_command").getMixin("name").get()))[0] ) );
 
         Scanner inputScanner = new Scanner(System.in);
         while(true) {

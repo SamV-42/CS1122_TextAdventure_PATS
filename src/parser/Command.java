@@ -1,7 +1,8 @@
 package parser;
 
-import util.RegistrationComponent;
-import util.NamedObject;
+import util.Composite;
+import util.mixin.IdMixin;
+import util.mixin.NameMixin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Command extends NamedObject {
+public class Command extends Composite {
 
     /* Instance variables and methods */
 
@@ -26,15 +27,16 @@ public class Command extends NamedObject {
     private Response response;
     private ArrayList<String> names;
 
-    public Command(String id, Response response, List<String> names, boolean register) {
-        super("command", id, names, register);
+    public Command(boolean register, String id, Response response, List<String> names) {
+        addMixin(new IdMixin<>(this, "command", id));
+        addMixin(new NameMixin<>(this, "command", names));
 
         this.response = response;
     }
 
     /* Slightly-modified constructors from NamedObject, with response param added */
     public Command(String id, Response response, List<String> names) {
-        this(id, response, names, true);
+        this(true, id, response, names);
     }
     public Command(String id, Response response, String... names) {
         this(id, response, Arrays.asList(names));

@@ -2,7 +2,9 @@ package world;
 
 import parser.Objection;
 import util.ObjectionComponent;
-import util.RegistrationComponent;
+import util.Registration;
+import util.Composite;
+import util.mixin.IdMixin;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,9 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
 
-public class Room {
-
-    private static HashMap<String, Room> registeredRoomsById = new HashMap<>();   //maps id -> object
+public class Room extends Composite {
 
     private String id;
     private String description;
@@ -20,8 +20,6 @@ public class Room {
     private HashMap<Direction, Room> connections = new HashMap<>();
 
     private ObjectionComponent compObjection = new ObjectionComponent();
-    private RegistrationComponent<Room> compRegistration = null;
-
 
     public String look() {
         StringBuilder fullDescription = new StringBuilder();
@@ -64,8 +62,7 @@ public class Room {
     }
 
     public Room(String id) {
-        this.id = id;
-        compRegistration = new RegistrationComponent<>(this, "room_id", id);
+        addMixin(new IdMixin<>(this, "room", id));
     }
 
     public ObjectionComponent getObjectionComponent() {
@@ -102,9 +99,5 @@ public class Room {
 
     public boolean removeConnection(Direction dir) {
         return connections.remove(dir) != null;
-    }
-
-    public String getId() {
-        return id;
     }
 }
