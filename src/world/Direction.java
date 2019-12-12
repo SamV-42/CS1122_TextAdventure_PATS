@@ -4,6 +4,7 @@ import util.Registration;
 import util.Composite;
 import util.mixin.IdMixin;
 import util.mixin.NameMixin;
+import util.mixin.PrimaryNameMixin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,22 +40,13 @@ public class Direction extends Composite {
     private Registration<Direction> compRegistration = null;
 
     private String id;
-    private String name;
 
     public Direction(String id, String name) {
         addMixin(new IdMixin<>(this, "direction", id));
-        this.name = name;
+        addMixin(new PrimaryNameMixin<>(this, "direction", name));
     }
 
     public Direction(String id) {
         this(id, id);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

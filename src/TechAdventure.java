@@ -5,10 +5,13 @@ import world.*;
 
 import util.mixin.IdMixin;
 import util.mixin.NameMixin;
+import util.mixin.InventoryMixin;
 import util.mixin.ObjectionMixin;
 import parser.command.DirectionCommand;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TechAdventure {
     public static void main(String[] args) {
@@ -39,6 +42,20 @@ public class TechAdventure {
         room4.setTitle("Mountaintop");
         room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
         room4.addConnection(Direction.SOUTH, Registration.getOwnerByStr("room_id", "room1"));
+        room4.addConnection(Direction.UP, Registration.getOwnerByStr("room_id", "room4"));
+
+        Item item1 = new Item("item1", "rusty sword", "sword");
+        room1.<InventoryMixin>getTypeMixin("inventory").add(item1);
+        Item item2 = new Item("item2", "cannon", "gun");
+        room1.<InventoryMixin>getTypeMixin("inventory").add(item2);
+        Item item3 = new Item("item3", "water bottle");
+        room1.<InventoryMixin>getTypeMixin("inventory").add(item3);
+
+        Item item4 = new Item("item4", "rocks", "rock", "stone", "stones") {
+            @Override
+            public String getArticle() { return "some"; }
+        };
+        room2.<InventoryMixin>getTypeMixin("inventory").add(item4);
 
         Objection upBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
@@ -46,6 +63,8 @@ public class TechAdventure {
             DirectionCommand dc = (DirectionCommand)c;
 
             if( dc.getMixin("id").get() != "up_command") { return null;}
+
+            if( !(new ArrayList<Item>(Arrays.asList(   p.getRoom().<InventoryMixin>getTypeMixin("inventory").get()))).contains(item4)) { return null; }
 
             //So, we're trying to go up from the cave
             return new Response("It looks like some rocks are blocking your way.", 200){};
