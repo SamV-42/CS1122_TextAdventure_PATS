@@ -13,10 +13,11 @@ public class NameMixin<O extends Composite> extends StandardMixin<O, String> {
     private Registration<NameMixin> compRegistrationNames = null;
     private ArrayList<String> names;
 
+    @Override
     public String getMixinId() { return "name"; }
 
     public NameMixin(boolean register, O owner, String className, List<String> names) {
-        super(owner);
+        super(owner, className);
 
         this.names = new ArrayList<>(names);
 

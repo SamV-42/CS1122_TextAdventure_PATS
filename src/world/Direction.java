@@ -42,7 +42,7 @@ public class Direction extends Composite {
     private String name;
 
     public Direction(String id, String name) {
-        addMixin(new IdMixin(this, "direction", id));
+        addMixin(new IdMixin<>(this, "direction", id));
         this.name = name;
     }
 

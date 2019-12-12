@@ -4,11 +4,14 @@ import game.DataLoader;
 
 import world.Player;
 import world.Direction;
-import util.ObjectionComponent;
+import util.mixin.ObjectionMixin;
+import util.Composite;
 import util.Registration;
 import parser.command.DirectionCommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /*
  *  Takes player input. Runs it. Returns the player output.
@@ -19,7 +22,7 @@ import java.util.ArrayList;
  *	Lab Section 2
  */
 
-public class Parser {
+public class Parser extends Composite {
 
     public static final Command UnrecognizedCommand;    // A fake command for when the player types nonsense
     static {    // I put this here because it's not really used outside of the Parser and might be changed with it
@@ -38,9 +41,9 @@ public class Parser {
         );
     }
 
-    private ObjectionComponent objections = new ObjectionComponent();
-
     public Parser() {
+        addMixin(new ObjectionMixin<>(this, "parser"));
+
         DataLoader dataLoader = new DataLoader();
         dataLoader.generateCommands();
     }
@@ -70,9 +73,9 @@ public class Parser {
         Response mostUrgentResponse = currentResponse;
 
         ArrayList<Objection> objectionsList = new ArrayList<>();
-        objectionsList.addAll(objections.getObjections());
-        objectionsList.addAll(player.getObjectionComponent().getObjections());
-        objectionsList.addAll(player.getRoom().getObjectionComponent().getObjections());
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     this.<ObjectionMixin>getTypeMixin("objection").get()   )));
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.<ObjectionMixin>getTypeMixin("objection").get()   )));
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.getRoom().<ObjectionMixin>getTypeMixin("objection").get()   )));
 
         for(Objection obj : objectionsList) {
             Response tempResponse = obj.check(player, command);
@@ -82,10 +85,6 @@ public class Parser {
         }
 
         return mostUrgentResponse;
-    }
-
-    public ObjectionComponent getObjectionComponent() {
-        return objections;
     }
 
 }

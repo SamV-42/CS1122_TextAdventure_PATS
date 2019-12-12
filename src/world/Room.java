@@ -1,7 +1,7 @@
 package world;
 
 import parser.Objection;
-import util.ObjectionComponent;
+import util.mixin.ObjectionMixin;
 import util.Registration;
 import util.Composite;
 import util.mixin.IdMixin;
@@ -18,8 +18,6 @@ public class Room extends Composite {
     private String description;
     private String title;
     private HashMap<Direction, Room> connections = new HashMap<>();
-
-    private ObjectionComponent compObjection = new ObjectionComponent();
 
     public String look() {
         StringBuilder fullDescription = new StringBuilder();
@@ -63,10 +61,7 @@ public class Room extends Composite {
 
     public Room(String id) {
         addMixin(new IdMixin<>(this, "room", id));
-    }
-
-    public ObjectionComponent getObjectionComponent() {
-        return compObjection;
+        addMixin(new ObjectionMixin<>(this, "room"));
     }
 
     public String getDescription() {

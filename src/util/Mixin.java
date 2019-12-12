@@ -5,7 +5,7 @@ public abstract class Mixin<O extends Composite,T> {
 
     private O owner;
 
-    public Mixin(O owner) {
+    public Mixin(O owner, String className) {
         this.owner = owner;
     }
 

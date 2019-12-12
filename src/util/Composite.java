@@ -10,6 +10,11 @@ public class Composite {
         return components.get(id);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Mixin> T getTypeMixin(String id) {
+        return (T)(components.get(id));
+    }
+
     public boolean addMixin(Mixin mix) {
         return components.put(mix.getMixinId(), mix) != null;
     }

@@ -9,10 +9,11 @@ public class IdMixin<O extends Composite> extends Mixin<O, String> {
     private String id;
     private Registration<IdMixin> compRegistrationId = null;
 
+    @Override
     public String getMixinId() { return "id"; }
 
     public IdMixin(boolean register, O owner, String className, String id) {
-        super(owner);
+        super(owner, className);
         this.id = id;
 
         if(register) {

@@ -5,6 +5,7 @@ import world.*;
 
 import util.mixin.IdMixin;
 import util.mixin.NameMixin;
+import util.mixin.ObjectionMixin;
 import parser.command.DirectionCommand;
 
 import java.util.Scanner;
@@ -49,15 +50,15 @@ public class TechAdventure {
             //So, we're trying to go up from the cave
             return new Response("It looks like some rocks are blocking your way.", 200){};
         };
-        room2.getObjectionComponent().addObjection(upBlocker);
+        room2.<ObjectionMixin>getTypeMixin("objection").add(upBlocker);
 
 
-        Player player = new Player();
+        Player player = new Player("1");
         player.setRoom(room3);
 
         /* I think the below would be handled by all that ServerClient jazz,
             But again, just for testing... */
-        System.out.println( parser.runPlayerInput(player, ((String[])(Registration.getOwnerByStr("command_id", "look_command").getMixin("name").get()))[0] ) );
+        System.out.println( parser.runPlayerInput(player, Registration.getOwnerByStr("command_id", "look_command").<NameMixin>getTypeMixin("name").get()[0] ) );
 
         Scanner inputScanner = new Scanner(System.in);
         while(true) {
