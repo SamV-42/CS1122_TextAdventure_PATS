@@ -1,4 +1,4 @@
-package util;
+package server;
 
 public enum ConnectionEventCode {
 	CONNECTION_ESTABLISHED,

@@ -12,7 +12,7 @@ import parser.Command;
 import parser.Response;
 import parser.Action;
 
-//Currently relying on the following to be implemented: 
+//Currently relying on the following to be implemented:
 // Room, with "public Room getConnection(Direction dir)" (null if none)
 
 /*
@@ -29,8 +29,8 @@ public class DirectionCommand extends Command {
 
     private final Direction direction;    //Please don't, eg, made a DirectionCommand named NorthCommand and then pass in Direction.SOUTH
 
-    public DirectionCommand(String id, Direction direction, List<String> names, boolean register) {
-        super(id, new Response("", 100, new Action[]{}) {
+    public DirectionCommand(boolean register, String id, Direction direction, List<String> names) {
+        super(register, id, new Response("", 100, new Action[]{}) {
 
             @Override
             public String getPlayerMessage(Player player) {
@@ -38,7 +38,7 @@ public class DirectionCommand extends Command {
 
                 Room target = targetRoom(player);
                 if(target != null) {
-                    message.append("You go " + direction.getName() + ".\n\n");
+                    message.append("You go " + direction.getMixin("primaryname").get() + ".\n\n");
                     message.append(target.look());     //Print room description on entering room
                 } else {
                     message.append("There doesn't appear to be an exit in that direction.");
@@ -63,13 +63,13 @@ public class DirectionCommand extends Command {
                 // We might want to move this functionality to another class
                 return player.getRoom().getConnection(direction); //anon. inner class should have access to direction
             }
-        }, names, register);
+        }, names);
 
         this.direction = direction;
     }
 
     public DirectionCommand(String id, Direction direction, List<String> names) {
-        this(id, direction, names, true);
+        this(true, id, direction, names);
     }
 
     public DirectionCommand(String id, Direction direction, String... names) {

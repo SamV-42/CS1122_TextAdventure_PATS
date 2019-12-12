@@ -4,10 +4,14 @@ import game.DataLoader;
 
 import world.Player;
 import world.Direction;
-import world.ObjectionComponent;
+import util.mixin.ObjectionMixin;
+import util.Composite;
+import util.Registration;
 import parser.command.DirectionCommand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 /*
  *  Takes player input. Runs it. Returns the player output.
@@ -18,11 +22,12 @@ import java.util.ArrayList;
  *	Lab Section 2
  */
 
-public class Parser {
+public class Parser extends Composite {
 
     public static final Command UnrecognizedCommand;    // A fake command for when the player types nonsense
     static {    // I put this here because it's not really used outside of the Parser and might be changed with it
         UnrecognizedCommand = new Command(
+            false,
             "unrecognized",
             new Response("Sorry, I don't recognize that command.|What's that?|Huh?|I'm not sure what you're trying to tell me.", 1, new Action[]{}){
 
@@ -32,20 +37,19 @@ public class Parser {
                     return answers[(int)(answers.length*Math.random())];
                 }
             },
-            new ArrayList<String>(),
-            false
+            new ArrayList<String>()
         );
     }
 
-    private ObjectionComponent objections = new ObjectionComponent();
-
     public Parser() {
+        addMixin(new ObjectionMixin<>(this, "parser"));
+
         DataLoader dataLoader = new DataLoader();
         dataLoader.generateCommands();
     }
 
     public String runPlayerInput(Player player, String playerInput) {
-        Command command = Command.searchCommandByName(playerInput);
+        Command command = Registration.searchOwnerByStr("command_name", playerInput);
         if(command == null) {
             command = UnrecognizedCommand;
         }
@@ -69,9 +73,9 @@ public class Parser {
         Response mostUrgentResponse = currentResponse;
 
         ArrayList<Objection> objectionsList = new ArrayList<>();
-        objectionsList.addAll(objections.getObjections());
-        objectionsList.addAll(player.getObjectionComponent().getObjections());
-        objectionsList.addAll(player.getRoom().getObjectionComponent().getObjections());
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     this.<ObjectionMixin>getTypeMixin("objection").get()   )));
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.<ObjectionMixin>getTypeMixin("objection").get()   )));
+        objectionsList.addAll(new ArrayList<>(Arrays.asList(     player.getRoom().<ObjectionMixin>getTypeMixin("objection").get()   )));
 
         for(Objection obj : objectionsList) {
             Response tempResponse = obj.check(player, command);
@@ -81,10 +85,6 @@ public class Parser {
         }
 
         return mostUrgentResponse;
-    }
-
-    public ObjectionComponent getObjectionComponent() {
-        return objections;
     }
 
 }

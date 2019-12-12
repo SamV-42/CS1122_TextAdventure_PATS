@@ -23,17 +23,17 @@ import parser.Action;
 
 public class LookCommand extends Command {
 
-    public LookCommand(String id, List<String> names, boolean register) {
-        super(id, new Response("", 50, new Action[]{}) {
+    public LookCommand( boolean register, String id, List<String> names) {
+        super(register, id, new Response("", 50, new Action[]{}) {
             @Override
             public String getPlayerMessage(Player player) {
                 return player.getRoom().look();
             }
-        }, names, register);
+        }, names);
     }
 
     public LookCommand(String id, List<String> names) {
-        this(id, names, true);
+        this(true, id, names);
     }
 
     public LookCommand(String id, String... names) {
