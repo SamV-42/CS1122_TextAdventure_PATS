@@ -1,0 +1,13 @@
+{
+  "room": {
+    "id": "lab_c1",
+    "title": "Labyrinth Hallway",
+    "description": "A basic hallway in the labyrinth. The room to the north contains a mysterious glow.",
+    "connection": [
+      {
+        "north": "axe_room",
+        "east": "lab_r2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "room": {
+    "id": "min_den",
+    "title": "Minotaur Den",
+    "description": "Bones litter the floor of this disgusting chamber. It seems as if something has been living here for a while.",
+    "connection": [
+      {
+        "east": "lab_r3"
+      }
+    ]
+  }
+}
