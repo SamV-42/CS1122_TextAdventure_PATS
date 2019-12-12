@@ -15,6 +15,9 @@ public abstract class Mixin<O extends Composite,T> {
 
     public abstract T get();
 
-    public abstract String getMixinId();
+    protected String mixinId = null;
+    public String getMixinId() {
+        return mixinId;
+    }
 
 }

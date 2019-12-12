@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ObjectionMixin<O extends Composite> extends StandardMixin<O, Objection>{
 
-    public interface Objections {
+    public interface Objections extends StandardMixin.StandardInterface {
 
         @SuppressWarnings("unchecked")
         public default ObjectionMixin getObjectionMixin() {

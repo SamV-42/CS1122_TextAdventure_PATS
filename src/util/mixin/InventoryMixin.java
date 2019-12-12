@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> {
 
-    public interface Inventory {
+    public interface Inventory extends StandardMixin.StandardInterface {
 
         @SuppressWarnings("unchecked")
         public default InventoryMixin getInventoryMixin() {
@@ -29,11 +29,12 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
 
     private ArrayList<Item> items;
 
-    @Override
-    public String getMixinId() { return "inventory"; }
+    //@Override
+    //public String getMixinId() { return "inventory"; }
 
     public InventoryMixin(O owner, String className, List<Item> items) {
         super(owner, className);
+        this.mixinId = "inventory";
         this.items = new ArrayList<>(items);
     }
 

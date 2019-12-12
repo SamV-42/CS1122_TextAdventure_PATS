@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class NamesMixin<O extends Composite> extends StandardMixin<O, String> {
 
-    public interface Names {
+    public interface Names extends StandardMixin.StandardInterface {
 
         @SuppressWarnings("unchecked")
         public default NamesMixin getNamesMixin() {
