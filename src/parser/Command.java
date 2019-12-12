@@ -3,6 +3,7 @@ package parser;
 import util.Composite;
 import util.mixin.IdMixin;
 import util.mixin.NameMixin;
+import util.Registration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +59,16 @@ public class Command extends Composite {
 
     public void setResponse(Response response) {
         this.response = response;
+    }
+
+    public String replacementText(String playerInput) {
+        String nameUsed = (Registration.searchIdentifierByStr("command_name", playerInput));
+        return playerInput.equals(nameUsed) ? "" : playerInput.substring( nameUsed.length() + 1 );
+    }
+
+    //Does nothing much unless overridden by a replacing command
+    public boolean isReplace(String playerInput) {
+        return false;
     }
 
 }

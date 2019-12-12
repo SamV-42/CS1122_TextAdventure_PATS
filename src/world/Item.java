@@ -34,8 +34,8 @@ public class Item extends Composite {
     }
 
     public String getArticle() {
-        List<String> vowels = new ArrayList<>(Arrays.asList(new String[] {"a", "e", "i", "o", "u"}));
-        if(vowels.contains(this.<NameMixin>getTypeMixin("name").get()[0].charAt(0))) {
+        List<Character> vowels = new ArrayList<>(Arrays.asList(new Character[] {'a', 'e', 'i', 'o', 'u'}));
+        if(vowels.contains(this.<PrimaryNameMixin>getTypeMixin("primaryname").get().charAt(0))) {
             return "an";
         } else {
             return "a";

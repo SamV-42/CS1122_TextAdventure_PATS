@@ -49,10 +49,18 @@ public class Parser extends Composite {
     }
 
     public String runPlayerInput(Player player, String playerInput) {
-        Command command = Registration.searchOwnerByStr("command_name", playerInput);
-        if(command == null) {
-            command = UnrecognizedCommand;
+        Command command = null;
+        String modifiedInput = playerInput;
+        while(command == null || command.isReplace(playerInput)) {
+            playerInput = modifiedInput;
+            command = Registration.searchOwnerByStr("command_name", playerInput);
+            if(command == null) {
+                command = UnrecognizedCommand;
+            } else {
+                modifiedInput = command.replacementText(playerInput);
+            }
         }
+        playerInput = modifiedInput;
 
         Response response = command.getResponse(playerInput);
         response = anyObjections(player, command, response);

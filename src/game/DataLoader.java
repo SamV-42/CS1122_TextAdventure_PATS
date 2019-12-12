@@ -1,9 +1,10 @@
 package game;
 
+import util.Registration;
 import world.Direction;
-import parser.command.DirectionCommand;
+import parser.*;
+import parser.command.*;
 
-import parser.command.LookCommand;
 
 public class DataLoader {
     public void generateCommands() {
@@ -24,5 +25,15 @@ public class DataLoader {
         DirectionCommand outCommand = new DirectionCommand("out_command", Direction.OUT, "out", "o");
 
         LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
+
+        Command goCommand = new Command("go_command", new Response("I don't recognize that direction.", 500), "go") {
+            @Override
+            public boolean isReplace(String playerInput) {
+                String replacement = this.replacementText(playerInput);
+                Command command = Registration.searchOwnerByStr("command_name", replacement);
+                return (command instanceof DirectionCommand);
+            }
+        };
+
     }
 }
