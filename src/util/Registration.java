@@ -33,7 +33,7 @@ public class Registration<T> {
         String[] splitCommand = input.trim().split("\\s+");
 
         String name = splitCommand[0];
-        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[i++]) {
+        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[++i]) {
             T reg = getByStr(identifierName, name);
             if(reg != null) {
                 return reg;
