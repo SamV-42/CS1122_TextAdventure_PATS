@@ -2,9 +2,7 @@ package world;
 
 import util.Registration;
 import util.Composite;
-import util.mixin.IdMixin;
-import util.mixin.ObjectionMixin;
-import util.mixin.PrimaryNameMixin;
+import util.mixin.*;
 
 
 import java.util.List;
@@ -18,6 +16,7 @@ public class Player extends Composite {
         addMixin(new IdMixin<>(this, "player", id));
         addMixin(new ObjectionMixin<>(this, "player"));
         addMixin(new PrimaryNameMixin<>(this, "player", id.toUpperCase()));
+        addMixin(new InventoryMixin<>(this, "player"));
     }
 
     public Room getRoom() {

@@ -39,4 +39,8 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
     public void remove(Item t) {
         items.remove(t);
     }
+
+    public boolean itemPresent(Item item) {
+        return items.contains(item);
+    }
 }
