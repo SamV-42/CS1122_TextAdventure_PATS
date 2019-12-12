@@ -25,4 +25,8 @@ public class DataLoader {
 
         LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
     }
+
+    public void generateRooms(){
+
+    }
 }

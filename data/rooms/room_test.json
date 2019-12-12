@@ -6,13 +6,14 @@
     "connection": [
       {
         "north": "room_test_north",
-        "east": "room_test_east"
+        "east": "room_test_east",
+        "south": "room_test_south"
       }
     ],
     "items": [
       {
         "item1:": {
-          "itemid": "item_test_1"
+          "id": "item_test_1"
         },
         "item2:": {
           "id": "item_test_2"

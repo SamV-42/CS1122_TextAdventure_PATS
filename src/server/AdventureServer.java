@@ -1,3 +1,9 @@
+package server;
+
+import server.AdventureServerAPI;
+import server.ConnectionEventCode;
+import server.ConnectionListener;
+import server.UnknownConnectionException;
 import util.*;
 
 import java.io.BufferedReader;
@@ -155,7 +161,7 @@ public final class AdventureServer implements AdventureServerAPI {
 
 	// Close the connection
 	public void disconnect( long connectionId ) throws IOException,
-	                                                   UnknownConnectionException {
+			UnknownConnectionException {
 		Connection connection = connectionMap.get ( connectionId );
 		if ( connection != null ) {
 			connection.socket.close ();
