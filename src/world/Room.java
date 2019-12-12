@@ -9,6 +9,8 @@ import util.mixin.InventoryMixin;
 import util.mixin.PrimaryNameMixin;
 import world.Item;
 
+import util.ListMakerHelper;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -70,36 +72,6 @@ public class Room extends Composite {
         }
 
         return fullDescription.toString();
-    }
-
-    private class ListMakerHelper {
-        private String finalSep;
-        private int length;
-        private int index = 0;
-
-        ListMakerHelper(int length, String finalSep) {
-            this.length = length;
-            this.finalSep = finalSep;
-        }
-        ListMakerHelper(int length) {
-            this(length, ".");
-        }
-        public String getNextSeparator() {
-            ++index;
-            if(index < length - 1) {
-                return ", ";
-            } else if(index == length - 1) {
-                if(length == 2) {
-                    return " and ";
-                } else {
-                    return ", and ";
-                }
-            } else if(index == length) {
-                return ".";
-            } else {
-                throw new java.lang.RuntimeException("Room Look Too Much");
-            }
-        }
     }
 
     public String getDescription() {

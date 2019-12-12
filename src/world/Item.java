@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Item extends Composite {
 
     private String description;
+    private boolean staticPickup = false;
 
     public String getDescription() {
         return description;
@@ -40,5 +41,13 @@ public class Item extends Composite {
         } else {
             return "a";
         }
+    }
+
+    public boolean getStatic() {
+        return staticPickup;
+    }
+
+    public void setStatic(boolean staticPickup) {
+        this.staticPickup = staticPickup;
     }
 }

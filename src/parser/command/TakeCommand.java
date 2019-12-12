@@ -3,11 +3,19 @@ package parser.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.lang.StringBuilder;
 
 import parser.*;
 import util.*;
 import util.mixin.*;
 import world.*;
+
+
+// TODO: "take _ from _" functionality
+// TODO: "take" -> "Take what?"
+// DONE: "take all"
+
+
 
 public class TakeCommand extends Command {
 
@@ -34,36 +42,99 @@ public class TakeCommand extends Command {
     }
 
 
-    private class TakeResponse extends Response {
+    private static class TakeResponse extends Response {
         public TakeResponse(int severity) {
             super("", severity);
         }
 
+        private String object = null;
         private Item thing = null;
 
         protected void initialize(String object) {
-            thing = Registration.searchOwnerByStr("item_name", object);
+            this.object = object;
+            if(object.equals("all")) {
+                thing = null;
+            } else {
+                thing = Registration.searchOwnerByStr("item_name", object);
+            }
         }
 
-        private boolean getSuccess(Player player) {
-            return ( thing != null && player.getRoom().<InventoryMixin>getTypeMixin("inventory").itemPresent(thing) );
+        private static enum ItemPresence {
+            SUCCESS,
+            STATIC,
+            NOTPRESENT,     //can include present in container nearby
+            FAILURE,
+            ALL
+        }
+
+        private ItemPresence getResult(Player player) {
+            if (thing == null) {
+                if(object.equals("all")) {
+                    return ItemPresence.ALL;
+                }
+                return ItemPresence.FAILURE;
+            } else if (! player.getRoom().<InventoryMixin>getTypeMixin("inventory").itemPresent(thing)) {
+                return ItemPresence.NOTPRESENT;
+            } else if(thing.getStatic()) {
+                return ItemPresence.STATIC;
+            }
+            return ItemPresence.SUCCESS;
         }
 
         @Override
         public String getPlayerMessage(Player player) {
-            return getSuccess(player)
-                ? "You pick up the " + thing.<PrimaryNameMixin>getTypeMixin("primaryname").get() + "."
-                : "You don't see anything like that nearby.";
-                //todo: add "you already have that", "that doesn't look like you can pick it up", and "that's not something you can pick up"
+            switch(getResult(player)) {
+                case ALL:
+                    Item[] inv = player.getRoom().<InventoryMixin>getTypeMixin("inventory").get();
+                    if(inv.length == 0) {
+                        return "You don't see much else to take.";
+                    } else {
+                        StringBuilder itemsDescription = new StringBuilder();
+                        itemsDescription.append("\n\nYou pick up ");
+
+                        ListMakerHelper help = new ListMakerHelper(inv.length, ".\n");
+                        for(int i = 0; i < inv.length; ++i ) {
+                            itemsDescription.append(inv[i].getArticle());
+                            itemsDescription.append(" ");
+                            itemsDescription.append(inv[i].getMixin("primaryname").get());
+                            itemsDescription.append(help.getNextSeparator());
+                        }
+                        return itemsDescription.toString();
+                    }
+                case SUCCESS:
+                    return "You pick up the " + thing.<PrimaryNameMixin>getTypeMixin("primaryname").get() + ".";
+                case STATIC:
+                    return "It doesn't seem like that can be picked up.";
+                case NOTPRESENT:
+                    if(player.<InventoryMixin>getTypeMixin("inventory").itemPresent(thing)) {
+                        return "You already have that.";
+                    }
+                case FAILURE:
+                default:
+                    if(this.object.equals("all")) {
+
+                    }
+                    return "You don't see anything like that nearby.";
+            }
         }
 
         @Override
         public ArrayList<Action> getActions(Player player) {
             ArrayList<Action> actions = new ArrayList<>();
-            if(getSuccess(player)) {
+            if(getResult(player) == ItemPresence.SUCCESS) {
                 actions.add( (Player p) -> {
                     p.getRoom().<InventoryMixin>getTypeMixin("inventory").remove(thing);
                     p.<InventoryMixin>getTypeMixin("inventory").add(thing);
+                });
+            } else if(getResult(player) == ItemPresence.ALL) {
+                actions.add( (Player p) -> {
+                    InventoryMixin<Room> roomInvMix = p.getRoom().<InventoryMixin<Room> >getTypeMixin("inventory");
+                    InventoryMixin<Player> playInvMix = p.<InventoryMixin<Player> >getTypeMixin("inventory");
+                    Item[] inv = roomInvMix.get();
+                    for(Item item : inv) {
+                        roomInvMix.remove(item);
+                        playInvMix.add(item);
+                    }
                 });
             }
             return actions;

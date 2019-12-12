@@ -35,7 +35,7 @@ public class DataLoader {
 
         LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
 
-        TakeCommand takeCommand = new TakeCommand("take_command", "take", "pick up", "seize", "snatch", "grab", "yoink", "nab");
+        TakeCommand takeCommand = new TakeCommand("take_command", "take", "get", "pick up", "seize", "snatch", "grab", "yoink", "nab");
 
     }
 }
