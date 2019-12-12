@@ -1,6 +1,8 @@
 package parser;
 
-import util.RegistrationComponent;
+import util.Composite;
+import util.mixin.IdMixin;
+import util.mixin.NameMixin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,28 +19,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Command {
-
-    /* Static variables and methods */
-
-    /*
-     * Returns a registered Command object if one of its names (case insensitive) (either primary or alt) matches
-     * @param name The command name. If multiple words (eg WAKE UP, LOOK UNDER), it'll first try 1 word, then 2-word, etc. for the input
-     * @return null if no such Command is found, or the chosen command if found.
-     */
-    public static Command searchCommandByName(String input) {
-        input = input.toLowerCase();
-        String[] splitCommand = input.trim().split("\\s+");
-
-        String name = splitCommand[0];
-        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[i++]) {
-            Command reg = RegistrationComponent.getByStr("command_name", name);
-            if(reg != null) {
-                return reg;
-            }
-        }
-        return null;
-    }
+public class Command extends Composite {
 
     /* Instance variables and methods */
 
@@ -46,31 +27,22 @@ public class Command {
     private Response response;
     private ArrayList<String> names;
 
-    private RegistrationComponent<Command> compRegistrationId = null;
-    private RegistrationComponent<Command> compRegistrationNames = null;
+    public Command(boolean register, String id, Response response, List<String> names) {
+        addMixin(new IdMixin<>(this, "command", id));
+        addMixin(new NameMixin<>(this, "command", names));
 
-    public Command(String id, Response response, List<String> names, boolean register) {
-        this.id = id;
         this.response = response;
-
-        this.names = new ArrayList<String>(names);
-
-        if(register) {
-            compRegistrationId = new RegistrationComponent<>(this, "command_id", id);
-            compRegistrationNames = new RegistrationComponent<>(this, "command_name");
-            for(String name : names) {
-                compRegistrationNames.addIdentifier(name);
-            }
-        }
-
     }
 
+    /* Slightly-modified constructors from NamedObject, with response param added */
     public Command(String id, Response response, List<String> names) {
-        this(id, response, names, true);
+        this(true, id, response, names);
     }
-
     public Command(String id, Response response, String... names) {
         this(id, response, Arrays.asList(names));
+    }
+    public Command(String id, Response response) {
+        this(id, response, new String[]{});
     }
 
     /*
@@ -87,25 +59,5 @@ public class Command {
     public void setResponse(Response response) {
         this.response = response;
     }
-
-    public String[] getNames() {
-        return names.toArray(new String[]{});
-    }
-
-    public void addName(String name) {
-        names.add(name);
-        compRegistrationNames.addIdentifier(name);
-    }
-
-    public void removeName(String name) {
-        names.remove(name);
-        compRegistrationNames.removeIdentifier(name);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    // No setId, deliberately -- id shouldn't be changed postcreation
 
 }

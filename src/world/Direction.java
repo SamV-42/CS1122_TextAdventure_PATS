@@ -1,6 +1,10 @@
 package world;
 
-import util.RegistrationComponent;
+import util.Registration;
+import util.Composite;
+import util.mixin.IdMixin;
+import util.mixin.NameMixin;
+import util.mixin.PrimaryNameMixin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +20,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Direction {
+public class Direction extends Composite {
 
     // All of the below are put here for convenience' sake (over needing to type, eg, getDirectionByName("north") each time)
     // Their names are self-explanatory.
@@ -33,30 +37,16 @@ public class Direction {
     public static final Direction IN = new Direction("in");
     public static final Direction OUT = new Direction("out");
 
-    private RegistrationComponent<Direction> compRegistration = null;
+    private Registration<Direction> compRegistration = null;
 
     private String id;
-    private String name;
 
     public Direction(String id, String name) {
-        this.id = id;
-        this.name = name;
-        compRegistration = new RegistrationComponent<>(this, "direction_id", id);
+        addMixin(new IdMixin<>(this, "direction", id));
+        addMixin(new PrimaryNameMixin<>(this, "direction", name));
     }
 
     public Direction(String id) {
         this(id, id);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

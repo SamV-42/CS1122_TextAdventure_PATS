@@ -1,8 +1,13 @@
 package world;
 
 import parser.Objection;
-import util.ObjectionComponent;
-import util.RegistrationComponent;
+import util.mixin.ObjectionMixin;
+import util.Registration;
+import util.Composite;
+import util.mixin.IdMixin;
+import util.mixin.InventoryMixin;
+import util.mixin.PrimaryNameMixin;
+import world.Item;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,18 +15,19 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.StringBuilder;
 
-public class Room {
-
-    private static HashMap<String, Room> registeredRoomsById = new HashMap<>();   //maps id -> object
+public class Room extends Composite {
 
     private String id;
     private String description;
     private String title;
     private HashMap<Direction, Room> connections = new HashMap<>();
 
-    private ObjectionComponent compObjection = new ObjectionComponent();
-    private RegistrationComponent<Room> compRegistration = null;
-
+    public Room(String id) {
+        addMixin(new IdMixin<>(this, "room", id));
+        addMixin(new ObjectionMixin<>(this, "room"));
+        addMixin(new InventoryMixin<>(this, "room"));
+        addMixin(new PrimaryNameMixin<>(this, "room", ""));
+    }
 
     public String look() {
         StringBuilder fullDescription = new StringBuilder();
@@ -32,44 +38,68 @@ public class Room {
 
         fullDescription.append(getDescription());
 
+        Item[] inv = this.<InventoryMixin>getTypeMixin("inventory").get();
+        if(inv.length == 0) {
+
+        } else {
+            fullDescription.append("\n\nYou can see ");
+
+            ListMakerHelper help = new ListMakerHelper(inv.length, " here.\n");
+            for(int i = 0; i < inv.length; ++i ) {
+                fullDescription.append(inv[i].getArticle());
+                fullDescription.append(" ");
+                fullDescription.append(inv[i].getMixin("primaryname").get());
+                fullDescription.append(help.getNextSeparator());
+            }
+        }
+
         if( connections.size() == 0) {
 
         } else if( connections.size() == 1 ) {
             fullDescription.append("\n\nThere is an exit ");
-            fullDescription.append(connections.keySet().toArray(new Direction[]{})[0].getName());
-            fullDescription.append(".");
+            fullDescription.append(connections.keySet().toArray(new Direction[]{})[0].getMixin("primaryname").get());
+            fullDescription.append(".\n");
         } else {
             fullDescription.append("\n\nThere are exits ");
 
-            Iterator<Direction> iterator = connections.keySet().iterator();
-            fullDescription.append(iterator.next().getName());
-
-            for(int i = 1; i < connections.size() - 1; ++i ) {
-                fullDescription.append(", ");
-                fullDescription.append(iterator.next().getName());
+            ListMakerHelper help = new ListMakerHelper(connections.size(), ".\n");
+            for(Iterator<Direction> iterator = connections.keySet().iterator(); iterator.hasNext(); ) {
+                fullDescription.append(iterator.next().getMixin("primaryname").get());
+                fullDescription.append(help.getNextSeparator());
             }
-            if( connections.size() == 2 ) {
-                fullDescription.append(" and ");
-            } else {
-                fullDescription.append(", and ");
-            }
-            fullDescription.append(iterator.next().getName());
-            fullDescription.append(".");
         }
 
-        /* Here, add a description of the items present in the room */
-
-        fullDescription.append("\n");
         return fullDescription.toString();
     }
 
-    public Room(String id) {
-        this.id = id;
-        compRegistration = new RegistrationComponent<>(this, "room_id", id);
-    }
+    private class ListMakerHelper {
+        private String finalSep;
+        private int length;
+        private int index = 0;
 
-    public ObjectionComponent getObjectionComponent() {
-        return compObjection;
+        ListMakerHelper(int length, String finalSep) {
+            this.length = length;
+            this.finalSep = finalSep;
+        }
+        ListMakerHelper(int length) {
+            this(length, ".");
+        }
+        public String getNextSeparator() {
+            ++index;
+            if(index < length - 1) {
+                return ", ";
+            } else if(index == length - 1) {
+                if(length == 2) {
+                    return " and ";
+                } else {
+                    return ", and ";
+                }
+            } else if(index == length) {
+                return ".";
+            } else {
+                throw new java.lang.RuntimeException("Room Look Too Much");
+            }
+        }
     }
 
     public String getDescription() {
@@ -78,14 +108,6 @@ public class Room {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public Room getConnection(Direction dir) {
@@ -104,7 +126,12 @@ public class Room {
         return connections.remove(dir) != null;
     }
 
-    public String getId() {
-        return id;
+    //Convenience methods
+    public String getTitle() {
+        return this.<PrimaryNameMixin>getTypeMixin("primaryname").get();
+    }
+
+    public void setTitle(String title) {
+        this.<PrimaryNameMixin>getTypeMixin("primaryname").set(title);
     }
 }
