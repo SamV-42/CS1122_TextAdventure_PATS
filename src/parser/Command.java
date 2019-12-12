@@ -1,6 +1,7 @@
 package parser;
 
 import util.RegistrationComponent;
+import util.NamedObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Command {
+public class Command extends NamedObject {
 
     /* Instance variables and methods */
 
@@ -25,31 +26,21 @@ public class Command {
     private Response response;
     private ArrayList<String> names;
 
-    private RegistrationComponent<Command> compRegistrationId = null;
-    private RegistrationComponent<Command> compRegistrationNames = null;
-
     public Command(String id, Response response, List<String> names, boolean register) {
-        this.id = id;
+        super("command", id, names, register);
+
         this.response = response;
-
-        this.names = new ArrayList<String>(names);
-
-        if(register) {
-            compRegistrationId = new RegistrationComponent<>(this, "command_id", id);
-            compRegistrationNames = new RegistrationComponent<>(this, "command_name");
-            for(String name : names) {
-                compRegistrationNames.addIdentifier(name);
-            }
-        }
-
     }
 
+    /* Slightly-modified constructors from NamedObject, with response param added */
     public Command(String id, Response response, List<String> names) {
         this(id, response, names, true);
     }
-
     public Command(String id, Response response, String... names) {
         this(id, response, Arrays.asList(names));
+    }
+    public Command(String id, Response response) {
+        this(id, response, new String[]{});
     }
 
     /*
@@ -66,25 +57,5 @@ public class Command {
     public void setResponse(Response response) {
         this.response = response;
     }
-
-    public String[] getNames() {
-        return names.toArray(new String[]{});
-    }
-
-    public void addName(String name) {
-        names.add(name);
-        compRegistrationNames.addIdentifier(name);
-    }
-
-    public void removeName(String name) {
-        names.remove(name);
-        compRegistrationNames.removeIdentifier(name);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    // No setId, deliberately -- id shouldn't be changed postcreation
 
 }
