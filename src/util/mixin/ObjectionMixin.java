@@ -11,6 +11,23 @@ import java.util.ArrayList;
 
 public class ObjectionMixin<O extends Composite> extends StandardMixin<O, Objection>{
 
+    public interface Objections {
+
+        @SuppressWarnings("unchecked")
+        public default ObjectionMixin getObjectionMixin() {
+            return ((Composite)this).<ObjectionMixin>getTypeMixin("objection");
+        }
+
+        public default Objection[] getObjections() {
+            return getObjectionMixin().get();
+        }
+
+        public default List<Objection> getObjectionsList() {
+            return new ArrayList<>(Arrays.asList(getObjections()));
+        }
+    }
+
+
     private ArrayList<Objection> objections = new ArrayList<>();
 
     @Override

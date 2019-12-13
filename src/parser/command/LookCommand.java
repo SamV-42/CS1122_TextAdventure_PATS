@@ -21,6 +21,8 @@ import parser.Action;
  *	Lab Section 2
  */
 
+// TODO: "look at <thing>" = "examine <thing>", "examine" = "look"
+
 public class LookCommand extends Command {
 
     public LookCommand( boolean register, String id, List<String> names) {

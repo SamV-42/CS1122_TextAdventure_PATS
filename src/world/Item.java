@@ -2,7 +2,7 @@ package world;
 
 import util.Composite;
 import util.mixin.IdMixin;
-import util.mixin.NameMixin;
+import util.mixin.NamesMixin;
 import util.mixin.PrimaryNameMixin;
 
 
@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-public class Item extends Composite {
+public class Item extends Composite
+                    implements IdMixin.Id, NamesMixin.Names, PrimaryNameMixin.PrimaryName {
 
     private String description;
+    private boolean staticPickup = false;
 
     public String getDescription() {
         return description;
@@ -25,7 +27,7 @@ public class Item extends Composite {
 
     public Item(String id, List<String> names) {
         addMixin(new IdMixin<>(this, "item", id));
-        addMixin(new NameMixin<>(this, "item", names));
+        addMixin(new NamesMixin<>(this, "item", names));
         addMixin(new PrimaryNameMixin<>(this, "item", names.get(0) ));
     }
 
@@ -34,11 +36,19 @@ public class Item extends Composite {
     }
 
     public String getArticle() {
-        List<String> vowels = new ArrayList<>(Arrays.asList(new String[] {"a", "e", "i", "o", "u"}));
-        if(vowels.contains(this.<NameMixin>getTypeMixin("name").get()[0].charAt(0))) {
+        List<Character> vowels = new ArrayList<>(Arrays.asList(new Character[] {'a', 'e', 'i', 'o', 'u'}));
+        if(vowels.contains(this.getPrimaryName().charAt(0))) {
             return "an";
         } else {
             return "a";
         }
+    }
+
+    public boolean getStatic() {
+        return staticPickup;
+    }
+
+    public void setStatic(boolean staticPickup) {
+        this.staticPickup = staticPickup;
     }
 }
