@@ -1,0 +1,13 @@
+{
+  "item10:": {
+    "id": "inscription",
+    "name": "Inscription",
+    "desc": "The intricately carved inscription reads: \"The Minotaur is on the Hunt\"",
+    "attribute": "static",
+    "altnames": [
+      {
+        "name_1": "wall"
+      }
+    ]
+  }
+}
