@@ -1,0 +1,12 @@
+{
+  "item11:": {
+    "id": "journal",
+    "name": "Journal",
+    "desc": "Most pages are unreadable, but you can make out the words \"Prisoner\", \"Monster\", and \"Maze\" written multiple times."
+    "altnames": [
+      {
+        "name_1": "book"
+      }
+    ]
+  }
+}
