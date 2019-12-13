@@ -17,23 +17,23 @@ import world.*;
 
 
 
-public class TakeCommand extends Command {
+public class DropCommand extends Command {
 
-    public TakeCommand( boolean register, String id, List<String> names) {
+    public DropCommand( boolean register, String id, List<String> names) {
         super(register, id, null, names);
     }
 
-    public TakeCommand(String id, List<String> names) {
+    public DropCommand(String id, List<String> names) {
         this(true, id, names);
     }
 
-    public TakeCommand(String id, String... names) {
+    public DropCommand(String id, String... names) {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
     @Override
     public Response getResponse(String playerInput) {
-        TakeResponse returnResponse = new TakeResponse(100);
+        DropResponse returnResponse = new DropResponse(100);
 
         String object = playerInput;
         returnResponse.initialize(object);
@@ -42,8 +42,8 @@ public class TakeCommand extends Command {
     }
 
 
-    private static class TakeResponse extends Response {
-        public TakeResponse(int severity) {
+    private static class DropResponse extends Response {
+        public DropResponse(int severity) {
             super("", severity);
         }
 
@@ -61,7 +61,6 @@ public class TakeCommand extends Command {
 
         private static enum ItemPresence {
             SUCCESS,
-            STATIC,
             NOTPRESENT,     //can include present in container nearby
             FAILURE,
             ALL
@@ -73,10 +72,8 @@ public class TakeCommand extends Command {
                     return ItemPresence.ALL;
                 }
                 return ItemPresence.FAILURE;
-            } else if (! player.getRoom().getInventoryList().contains(thing)) {
+            } else if (! player.getInventoryList().contains(thing)) {
                 return ItemPresence.NOTPRESENT;
-            } else if(thing.getStatic()) {
-                return ItemPresence.STATIC;
             }
             return ItemPresence.SUCCESS;
         }
@@ -85,12 +82,12 @@ public class TakeCommand extends Command {
         public String getPlayerMessage(Player player) {
             switch(getResult(player)) {
                 case ALL:
-                    Item[] inv = player.getRoom().getInventory();
+                    Item[] inv = player.getInventory();
                     if(inv.length == 0) {
-                        return "You don't see much else to take.";
+                        return "You don't have anything to drop.";
                     } else {
                         StringBuilder itemsDescription = new StringBuilder();
-                        itemsDescription.append("You pick up ");
+                        itemsDescription.append("You drop ");
 
                         ListMakerHelper help = new ListMakerHelper(inv.length, ".\n");
                         for(int i = 0; i < inv.length; ++i ) {
@@ -102,19 +99,11 @@ public class TakeCommand extends Command {
                         return itemsDescription.toString();
                     }
                 case SUCCESS:
-                    return "You pick up the " + thing.getPrimaryName() + ".";
-                case STATIC:
-                    return "It doesn't seem like that can be picked up.";
+                    return "You drop the " + thing.getPrimaryName() + ".";
                 case NOTPRESENT:
-                    if(player.getInventoryList().contains(thing)) {
-                        return "You already have that.";
-                    }
                 case FAILURE:
                 default:
-                    if(this.object.equals("all")) {
-
-                    }
-                    return "You don't see anything like that nearby.";
+                    return "You don't think you have anything like that.";
             }
         }
 
@@ -123,17 +112,17 @@ public class TakeCommand extends Command {
             ArrayList<Action> actions = new ArrayList<>();
             if(getResult(player) == ItemPresence.SUCCESS) {
                 actions.add( (Player p) -> {
-                    p.getRoom().getInventoryMixin().remove(thing);
-                    p.getInventoryMixin().add(thing);
+                    p.getInventoryMixin().remove(thing);
+                    p.getRoom().getInventoryMixin().add(thing);
                 });
             } else if(getResult(player) == ItemPresence.ALL) {
                 actions.add( (Player p) -> {
-                    InventoryMixin<?> roomInvMix = p.getRoom().getInventoryMixin();
                     InventoryMixin<?> playInvMix = p.getInventoryMixin();
-                    Item[] inv = roomInvMix.get();
+                    InventoryMixin<?> roomInvMix = p.getRoom().getInventoryMixin();
+                    Item[] inv = playInvMix.get();
                     for(Item item : inv) {
-                        roomInvMix.remove(item);
-                        playInvMix.add(item);
+                        playInvMix.remove(item);
+                        roomInvMix.add(item);
                     }
                 });
             }

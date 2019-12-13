@@ -37,5 +37,6 @@ public class DataLoader {
 
         TakeCommand takeCommand = new TakeCommand("take_command", "take", "get", "pick up", "seize", "snatch", "grab", "yoink", "nab");
 
+        DropCommand dropCommand = new DropCommand("drop_command", "drop", "throw", "yeet");
     }
 }
