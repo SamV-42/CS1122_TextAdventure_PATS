@@ -8,11 +8,12 @@ import util.ConnectionListener;
 import util.UnknownConnectionException;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class TechAdventure implements ConnectionListener {
 
     AdventureServer adventureServer = null;
-    Player player = null;
+    ArrayList<Player> playerList = null;
     Parser parser = null;
     Room room1 = null;
     Room room2 = null;
@@ -20,8 +21,10 @@ public class TechAdventure implements ConnectionListener {
     Room room4 = null;
 
     public TechAdventure(){
+        playerList = new ArrayList<>();
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
+        initilize( e );
     }
 
     public static void main(String[] args) {
@@ -31,38 +34,27 @@ public class TechAdventure implements ConnectionListener {
         }
         TechAdventure techAdventure = new TechAdventure();
         techAdventure.start(port);
-
-
-
-
-
-        /* I think the below would be handled by all that ServerClient jazz,
-            But again, just for testing... */
-        /*
-        System.out.println( parser.runPlayerInput(player, Command.getCommandById("look_command").getNames()[0]) );
-
-        Scanner inputScanner = new Scanner(System.in);
-        while(true) {
-            System.out.print("> ");
-            String input = inputScanner.nextLine();
-            System.out.println( parser.runPlayerInput(player, input) );
-        }
-
-         */
     }
+
     @Override
     public void handle ( ConnectionEvent e ) {
-        System.out.println( "EVENT RECEIVED - YOU MUST PARSE THE DATA AND RESPOND APPROPRIATELY");
         System.out.println( String.format ( "connectionId=%d, data=%s", e.getConnectionID (), e.getData() ));
         try {
             switch ( e.getCode ( ) ) {
                 case CONNECTION_ESTABLISHED:
-                    initilize( e );
+                    playerList.add(new Player(""+e.getConnectionID(),e.getConnectionID()));
                     break;
                 case TRANSMISSION_RECEIVED:
+                    Player player = null;
+                    for ( Player existPlayer : playerList) {
+                        if(existPlayer.getConnection.equals(e.getConnectionID)){
+                            player = existPlayer;
+                            break;
+                        }
+                    }
                     adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, e.getData()) );
-                    // BEWARE - if you keep this, any user can shutdown the server
-                    if ( e.getData ( ).equals ( "SHUTDOWN" ) ) {
+
+                    if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
                         adventureServer.stopServer ( );
                     }
                     break;
@@ -111,6 +103,5 @@ public class TechAdventure implements ConnectionListener {
         player = new Player();
         player.setRoom(room3);
         parser = new Parser();
-        adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, Command.getCommandById("look_command").getNames()[0]) );
     }
 }
