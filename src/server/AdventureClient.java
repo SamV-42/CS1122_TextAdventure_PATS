@@ -39,7 +39,7 @@ public class AdventureClient {
 				toServer.close ();
 				keyboardInput.close ();
 			} catch ( UnknownHostException e ) {
-				e.printStackTrace ( );
+				System.out.println("Uknown Disconnect: Possible reason \n HOST QUIT");
 			} catch ( IOException e ) {
 				e.printStackTrace ( );
 			}

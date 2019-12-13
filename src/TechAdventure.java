@@ -11,6 +11,8 @@ import server.AdventureServer;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+import java.io.IOException;
+
 public class TechAdventure implements ConnectionListener {
 
     AdventureServer adventureServer = null;
@@ -48,6 +50,9 @@ public class TechAdventure implements ConnectionListener {
             switch ( e.getCode ( ) ) {
                 case CONNECTION_ESTABLISHED:
                     Player newPlayer = new Player(""+e.getConnectionID (),e.getConnectionID ());
+                    if(playerList.size() == 0){
+                        newPlayer.setHost(true);
+                    }
                     playerList.add(newPlayer);
                     newPlayer.setRoom(room3);
                     break;
@@ -59,14 +64,39 @@ public class TechAdventure implements ConnectionListener {
                             break;
                         }
                     }
-                    adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, e.getData()) );
-
                     if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
+                        for (Player existPlayer: playerList) {
+                            adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
+                            try{
+                                adventureServer.disconnect(existPlayer.getConnectionID());
+                            }catch(IOException error){
+                                error.printStackTrace();
+                            }
+                        }
                         adventureServer.stopServer ( );
                     }
+                    if( e.getData().equals("QUIT")){
+                        try {
+                            adventureServer.disconnect(e.getConnectionID());
+                        }catch(IOException error){
+                            error.printStackTrace();
+                        }
+                    }
+                    adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, e.getData()) );
                     break;
                 case CONNECTION_TERMINATED:
-                    // Cleanup when the connection is terminated.
+                    for (int i = 0; i < playerList.size(); i++){
+                        if(playerList.get(i).getConnectionID() == e.getConnectionID()){
+                            if(playerList.get(i)!=null) {
+                                parser.runPlayerInput(playerList.get(i), "drop all");
+                            }
+                            if (playerList.get(i) !=null && playerList.get(i).isHost()) {
+                                adventureServer.stopServer ( );
+                                break;
+                            }
+                            playerList.remove(i);
+                        }
+                    }
                     break;
                 default:
                     // What is a reasonable default?
