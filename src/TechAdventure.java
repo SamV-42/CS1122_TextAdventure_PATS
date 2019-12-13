@@ -3,9 +3,10 @@ import parser.*;
 import util.*;
 import world.*;
 
-import util.ConnectionEvent;
-import util.ConnectionListener;
-import util.UnknownConnectionException;
+import server.ConnectionEvent;
+import server.ConnectionListener;
+import server.UnknownConnectionException;
+import server.AdventureServer;
 
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -24,7 +25,11 @@ public class TechAdventure implements ConnectionListener {
         playerList = new ArrayList<>();
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
-        initilize( e );
+        try {
+            initilize();
+        }catch(UnknownConnectionException e){
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -42,12 +47,14 @@ public class TechAdventure implements ConnectionListener {
         try {
             switch ( e.getCode ( ) ) {
                 case CONNECTION_ESTABLISHED:
-                    playerList.add(new Player(""+e.getConnectionID(),e.getConnectionID()));
+                    Player newPlayer = new Player(""+e.getConnectionID (),e.getConnectionID ());
+                    playerList.add(newPlayer);
+                    newPlayer.setRoom(room3);
                     break;
                 case TRANSMISSION_RECEIVED:
                     Player player = null;
                     for ( Player existPlayer : playerList) {
-                        if(existPlayer.getConnection.equals(e.getConnectionID)){
+                        if(existPlayer.getConnectionID () == e.getConnectionID ()){
                             player = existPlayer;
                             break;
                         }
@@ -73,13 +80,13 @@ public class TechAdventure implements ConnectionListener {
         adventureServer.startServer ( port );
     }
 
-    public void initilize(ConnectionEvent e)throws UnknownConnectionException{
+    public void initilize() throws UnknownConnectionException {
         /* The below couple lines should be read from JSON files in DataReader
             But for now, let's hardcode a testing world */
-        room1 = new Room();
-        room2 = new Room();
-        room3 = new Room();
-        room4 = new Room();
+        room1 = new Room("1");
+        room2 = new Room("2");
+        room3 = new Room("3");
+        room4 = new Room("4");
 
         room1.setTitle("Waterfall");
         room1.setDescription("A winding trail leads up and past this point. A pretty waterfall descends around you.");
@@ -100,8 +107,6 @@ public class TechAdventure implements ConnectionListener {
         room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
         room4.addConnection(Direction.SOUTH, room1);
 
-        player = new Player();
-        player.setRoom(room3);
         parser = new Parser();
     }
 }

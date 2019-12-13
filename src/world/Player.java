@@ -39,7 +39,7 @@ public class Player extends Composite {
         return host;
     }
 
-    public long getConnectionId() {
+    public long getConnectionID () {
         return connectionId;
     }
 }
