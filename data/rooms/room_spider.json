@@ -3,6 +3,7 @@
     "id": "spider_room",
     "title": "Cobwebbed Tunnel",
     "description": "Thick cobwebs block the path to the north. Light spills from the room to the west.",
+    "stuff": "cobwebs",
     "connection": [
       {
         "north": "dungeon",

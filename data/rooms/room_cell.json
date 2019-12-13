@@ -3,6 +3,10 @@
     "id": "cell",
     "title": "Open Cell",
     "description": "The cramped prison cell is sparse aside from a crude groundcloth and a skeleton of an unlucky prisoner in the corner.",
+    "stuff": [
+      "skeleton",
+      "key"
+    ],
     "connection": [
       {
         "east": "dungeon_hall_2"
