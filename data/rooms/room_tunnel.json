@@ -3,6 +3,7 @@
     "id": "tunnel",
     "title": "Small Tunnel",
     "description": "The bottom side of the tunnel is covered in scratches, as if whatever was digging was dragged out. A tattered journal lies at the back.",
+    "stuff": "journal",
     "connection": [
       {
         "west": "lab_r1"
