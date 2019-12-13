@@ -40,5 +40,7 @@ public class DataLoader {
         DropCommand dropCommand = new DropCommand("drop_command", "drop", "throw", "yeet");
 
         ExamineCommand examineCommand = new ExamineCommand("examine_command", "examine", "x");
+
+        UseCommand useCommand = new UseCommand("use_command", "use");
     }
 }
