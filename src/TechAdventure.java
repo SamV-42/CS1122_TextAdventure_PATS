@@ -49,6 +49,7 @@ public class TechAdventure {
         Item item2 = new Item("item2", "albatross", "bird");
         room1.getInventoryMixin().add(item2);
         Item item3 = new Item("item3", "water bottle", "bottle", "water");
+        item3.setDescription("A bottle of water. Delicious!");
         room1.getInventoryMixin().add(item3);
 
         Item item4 = new Item("item4", "rocks", "rock", "stone", "stones") {
