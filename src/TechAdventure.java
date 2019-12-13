@@ -74,15 +74,21 @@ public class TechAdventure implements ConnectionListener {
                     }
                     if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
                         stop();
-                    }
-                    if( e.getData().equals("QUIT")){
+                        stopping = true;
+                    } else if( e.getData().equals("QUIT")){
                         try {
-                            adventureServer.disconnect(e.getConnectionID());
+                            if(player.isHost()){
+                                stop();
+                                stopping = true;
+                            }else {
+                                adventureServer.disconnect(e.getConnectionID());
+                            }
                         }catch(IOException error){
                             error.printStackTrace();
                         }
+                    } else {
+                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, e.getData()));
                     }
-                    adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, e.getData()) );
                     break;
                 case CONNECTION_TERMINATED:
                     if(!stopping) {
@@ -113,7 +119,11 @@ public class TechAdventure implements ConnectionListener {
             if(existPlayer !=null) {
                 parser.runPlayerInput(existPlayer, "drop all");
             }
-            adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
+            if(!existPlayer.isHost()){
+                adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
+            }else{
+                adventureServer.sendMessage ( existPlayer.getConnectionID(), "DISCONNECTED");
+            }
             try{
                 adventureServer.disconnect(existPlayer.getConnectionID());
             }catch(IOException error){
@@ -121,7 +131,7 @@ public class TechAdventure implements ConnectionListener {
             }
         }
         adventureServer.stopServer ( );
-        //playerList = null;
+        playerList = null;
         System.out.println("Server Stopped");
     }
 
