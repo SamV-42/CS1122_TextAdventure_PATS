@@ -1,0 +1,13 @@
+{
+  "room": {
+    "id": "lab_l1",
+    "title": "Labyrinth Hallway",
+    "description": "A basic hallway in the labyrinth.",
+    "connection": [
+      {
+        "north": "lab_l2",
+        "east": "labyrinth_enter"
+      }
+    ]
+  }
+}

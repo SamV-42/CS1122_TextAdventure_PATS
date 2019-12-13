@@ -13,15 +13,24 @@ public class AdventureClient {
 		} else {
 			try ( Socket server = new Socket ( args[0], Integer.valueOf ( args[1] ) ) ) {
 				System.out.println( "Connected to AdventureServer host " + server.getInetAddress () );
+				//DO stuff when connected to a running or new server
 				BufferedReader fromServer = new BufferedReader ( new InputStreamReader ( server.getInputStream () ) );
 				PrintWriter toServer = new PrintWriter ( server.getOutputStream (), true );
 				BufferedReader keyboardInput = new BufferedReader ( new InputStreamReader ( System.in ) );
 				String s = "";
 				while (true) {
-					System.out.print("> ");
-					System.out.flush ();
+					while(fromServer.ready()){
+                        s = fromServer.readLine ();
+                        System.out.println ( s );
+                    }
+                    System.out.print("> ");
+                    System.out.flush ();
 					if ((s=keyboardInput.readLine ()) == null) { break; }
 					toServer.println ( s );
+					while(fromServer.ready()){
+						s = fromServer.readLine ();
+						System.out.println ( s );
+					}
 					s = fromServer.readLine ();
 					if (s==null) {break;}
 					System.out.println ( s );
@@ -30,7 +39,7 @@ public class AdventureClient {
 				toServer.close ();
 				keyboardInput.close ();
 			} catch ( UnknownHostException e ) {
-				e.printStackTrace ( );
+				System.out.println("Uknown Disconnect: Possible reason \n HOST QUIT");
 			} catch ( IOException e ) {
 				e.printStackTrace ( );
 			}

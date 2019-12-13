@@ -1,0 +1,12 @@
+{
+  "room": {
+    "id": "lab_r3",
+    "title": "Dead End",
+    "description": "A dead end.",
+    "connection": [
+      {
+        "south": "lab_r2"
+      }
+    ]
+  }
+}
