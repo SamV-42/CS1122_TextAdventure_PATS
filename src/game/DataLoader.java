@@ -26,7 +26,31 @@ public class DataLoader {
         LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
     }
 
-    public void generateRooms(){
+    public void putRoomBlockers(){
+        //Blocker for the cobweb room
+        Objection webBlocker = (p, c) -> {
+            if(!(c instanceof DirectionCommand)) { return null; }
 
+            DirectionCommand dc = (DirectionCommand)c;
+
+            if( dc.getMixin("id").get() != "north_command") { return null;}
+
+            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+
+            return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
+        }
+        Registration.getOwnerByStr("room_id", "spider_room").getObjectionMixin()
+
+        Objection gateBlocker = (p,c) -> {
+            if(!(c instanceof DirectionCommand)) { return null; }
+
+            DirectionCommand dc = (DirectionCommand)c;
+
+            if( dc.getMixin("id").get() != "north_command") { return null;}
+
+            if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
+
+            return new Response("The gate is locked", 200){};
+        }
     }
 }
