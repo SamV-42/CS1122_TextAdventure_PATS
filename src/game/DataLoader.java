@@ -56,8 +56,8 @@ public class DataLoader {
             if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
             return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
-        }
-        Registration.getOwnerByStr("room_id", "spider_room").getObjectionMixin()
+        };
+        Registration.getOwnerByStr("room_id", "spider_room").addMixin(webBlocker);
 
         Objection gateBlocker = (p,c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
@@ -69,6 +69,6 @@ public class DataLoader {
             if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
 
             return new Response("The gate is locked", 200){};
-        }
+        };
     }
 }
