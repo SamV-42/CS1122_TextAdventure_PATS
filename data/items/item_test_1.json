@@ -1,13 +1,14 @@
 {
-  "item1:": {
+  "item": {
     "id": "item_test_1",
     "name": "Test Item 1",
+    "description": "This is a description, do something with it",
     "attribute": "static",
     "altnames": [
       {
-        "name_1": "Name 2",
-        "name_2": "Name 3",
-        "name_3": "Name 4"
+        "1": "Name 2",
+        "2": "Name 3",
+        "3": "Name 4"
       }
     ]
   }

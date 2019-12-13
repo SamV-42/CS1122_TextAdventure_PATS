@@ -11,26 +11,15 @@ import java.util.stream.Collectors;
 public class JSONReader {
 
 
-    public static void main(String[] args) {
+    public JSONReader() {
 
-//        JSONReader reader = new JSONReader();
-//        Path currentRelativePath = Paths.get("");
-//        String s = currentRelativePath.toAbsolutePath().toString();
-//        System.out.println("Current relative path is: " + s);
-        streamDirectory();
     }
 
-//    public JSONReader(){
-//
-//    }
-
-
-    private static List<Path> streamDirectory() {
+    public List<Path> streamDirectory() {
         List<Path> fileList = null;
         try {
             Path currentRelativePath = Paths.get("");
             String data = currentRelativePath.toAbsolutePath().toString() + "/data";
-//            Path dataPath = Paths.get("E:\\JavaStuff\\1122\\CS1122_TextAdventure_PATS\\data");
 
             fileList = Files.walk(currentRelativePath).filter(s -> s.toString().endsWith(".json")).map(Path::getFileName).sorted().collect(Collectors.toList());
             for (Path name : fileList
@@ -46,7 +35,7 @@ public class JSONReader {
     }
 
 
-    private static String parseFile(String fileName) throws IOException {
+    public String parseFile(String fileName) throws IOException {
 
         String json2 = "";
         try {

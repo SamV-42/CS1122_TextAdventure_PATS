@@ -23,14 +23,14 @@ public class Item extends Composite {
         this.description = description;
     }
 
-    public Item(String id, List<String> names) {
+    public Item(String id, String name, List<String> names) {
         addMixin(new IdMixin<>(this, "item", id));
         addMixin(new NameMixin<>(this, "item", names));
         addMixin(new PrimaryNameMixin<>(this, "item", names.get(0) ));
     }
 
-    public Item(String id, String... names) {
-        this(id, Arrays.asList(names));
+    public Item(String id, String name,  String... names) {
+        this(id, name, Arrays.asList(names));
     }
 
     public String getArticle() {
