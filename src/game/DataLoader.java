@@ -60,7 +60,9 @@ public class DataLoader {
 
             return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
         };
+        
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
+
 
         Objection gateBlocker = (p,c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }

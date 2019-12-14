@@ -24,6 +24,7 @@ public class TechAdventure implements ConnectionListener {
     AdventureServer adventureServer = null;
     ArrayList<Player> playerList = null;
     Parser parser = null;
+    boolean stopping;
     Room room1 = null;
     Room room2 = null;
     Room room3 = null;
@@ -31,6 +32,7 @@ public class TechAdventure implements ConnectionListener {
 
     public TechAdventure(){
         playerList = new ArrayList<>();
+        stopping = false;
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
         try {
@@ -71,36 +73,32 @@ public class TechAdventure implements ConnectionListener {
                         }
                     }
                     if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
-                        for (Player existPlayer: playerList) {
-                            adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
-                            try{
-                                adventureServer.disconnect(existPlayer.getConnectionID());
-                            }catch(IOException error){
-                                error.printStackTrace();
-                            }
-                        }
-                        adventureServer.stopServer ( );
-                    }
-                    if( e.getData().equals("QUIT")){
+                        stop();
+                        stopping = true;
+                    } else if( e.getData().equals("QUIT")){
                         try {
-                            adventureServer.disconnect(e.getConnectionID());
+                            if(player.isHost()){
+                                stop();
+                                stopping = true;
+                            }else {
+                                adventureServer.disconnect(e.getConnectionID());
+                            }
                         }catch(IOException error){
                             error.printStackTrace();
                         }
+                    } else {
+                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, e.getData()));
                     }
-                    adventureServer.sendMessage ( e.getConnectionID ( ), parser.runPlayerInput(player, e.getData()) );
                     break;
                 case CONNECTION_TERMINATED:
-                    for (int i = 0; i < playerList.size(); i++){
-                        if(playerList.get(i).getConnectionID() == e.getConnectionID()){
-                            if(playerList.get(i)!=null) {
-                                parser.runPlayerInput(playerList.get(i), "drop all");
+                    if(!stopping) {
+                        for (int i = 0; i < playerList.size(); i++) {
+                            if (playerList.get(i).getConnectionID() == e.getConnectionID()) {
+                                if (playerList.get(i) != null) {
+                                    parser.runPlayerInput(playerList.get(i), "drop all");
+                                }
+                                playerList.remove(i);
                             }
-                            if (playerList.get(i) !=null && playerList.get(i).isHost()) {
-                                adventureServer.stopServer ( );
-                                break;
-                            }
-                            playerList.remove(i);
                         }
                     }
                     break;
@@ -114,6 +112,27 @@ public class TechAdventure implements ConnectionListener {
 
     public void start( int port ) {
         adventureServer.startServer ( port );
+    }
+
+    public void stop() throws UnknownConnectionException {
+        for (Player existPlayer: playerList) {
+            if(existPlayer !=null) {
+                parser.runPlayerInput(existPlayer, "drop all");
+            }
+            if(!existPlayer.isHost()){
+                adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
+            }else{
+                adventureServer.sendMessage ( existPlayer.getConnectionID(), "DISCONNECTED");
+            }
+            try{
+                adventureServer.disconnect(existPlayer.getConnectionID());
+            }catch(IOException error){
+                error.printStackTrace();
+            }
+        }
+        adventureServer.stopServer ( );
+        playerList = null;
+        System.out.println("Server Stopped");
     }
 
     public void initilize() throws UnknownConnectionException {

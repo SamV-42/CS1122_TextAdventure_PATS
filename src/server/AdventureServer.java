@@ -190,6 +190,7 @@ public final class AdventureServer implements AdventureServerAPI {
 			connection.output.println ( message );
 			connection.output.flush ();
 		} else {
+			if(isRunning == true)
 			throw new UnknownConnectionException ( connectionId, "Unknown Connection: " + connectionId );
 		}
 	}
