@@ -1,17 +1,27 @@
+import game.*;
 import parser.*;
+import util.*;
 import world.*;
+
+import util.mixin.IdMixin;
+import util.mixin.NamesMixin;
+import util.mixin.InventoryMixin;
+import util.mixin.ObjectionMixin;
+import parser.command.DirectionCommand;
 
 import server.ConnectionEvent;
 import server.ConnectionListener;
 import server.UnknownConnectionException;
 import server.AdventureServer;
 
+import java.util.Scanner;
 import java.util.ArrayList;
 
 import java.io.IOException;
 
 public class TechAdventure implements ConnectionListener {
 
+    DataLoader loader = null;
     AdventureServer adventureServer = null;
     ArrayList<Player> playerList = null;
     Parser parser = null;
@@ -24,6 +34,7 @@ public class TechAdventure implements ConnectionListener {
     public TechAdventure(){
         playerList = new ArrayList<>();
         stopping = false;
+        loader = new DataLoader();
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
         try {
@@ -45,15 +56,12 @@ public class TechAdventure implements ConnectionListener {
     @Override
     public void handle ( ConnectionEvent e ) {
         System.out.println( String.format ( "connectionId=%d, data=%s", e.getConnectionID (), e.getData() ));
+        String input = e.getData().toLowerCase();
         try {
             switch ( e.getCode ( ) ) {
                 case CONNECTION_ESTABLISHED:
-                    Player newPlayer = new Player(""+e.getConnectionID (),e.getConnectionID ());
-                    if(playerList.size() == 0){
-                        newPlayer.setHost(true);
-                    }
-                    playerList.add(newPlayer);
-                    newPlayer.setRoom(room3);
+                    //adventureServer.sendMessage(e.getConnectionID(), "Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
+                    //" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
                     break;
                 case TRANSMISSION_RECEIVED:
                     Player player = null;
@@ -63,10 +71,29 @@ public class TechAdventure implements ConnectionListener {
                             break;
                         }
                     }
-                    if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
+                    if(input.length() > 9 && input.substring(0,8).equals("existing") && player == null) {
+                        boolean found = false;
+                        for (Player existPlayer : playerList) {
+                            if (existPlayer.getId().equals(input.substring(9))) {
+                                existPlayer.setConnectionID(e.getConnectionID());
+                                found = true;
+                                System.out.println(existPlayer.getId() + " has been assigned to Connection: " + e.getConnectionID());
+                                adventureServer.sendMessage(e.getConnectionID(), existPlayer.getId() + "has been assigned to you");
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            adventureServer.sendMessage(e.getConnectionID(), "Unable to find a charactor with name: " + input.substring(9));
+                        }
+                    }else if(input.length() > 4 && input.substring(0,3).equals("new") && player == null){
+                        Player newPlayer = new Player(input.substring(4), e.getConnectionID());
+                        newPlayer.setRoom(room3);
+                        playerList.add(newPlayer);
+                        adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
+                    } else if ( input.equals ( "shutdown" ) && player.isHost()) {
                         stop();
                         stopping = true;
-                    } else if( e.getData().equals("QUIT")){
+                    } else if( input.equals("quit")){
                         try {
                             if(player.isHost()){
                                 stop();
@@ -78,20 +105,11 @@ public class TechAdventure implements ConnectionListener {
                             error.printStackTrace();
                         }
                     } else {
-                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, e.getData()));
+                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
                     }
                     break;
                 case CONNECTION_TERMINATED:
-                    if(!stopping) {
-                        for (int i = 0; i < playerList.size(); i++) {
-                            if (playerList.get(i).getConnectionID() == e.getConnectionID()) {
-                                if (playerList.get(i) != null) {
-                                    parser.runPlayerInput(playerList.get(i), "drop all");
-                                }
-                                playerList.remove(i);
-                            }
-                        }
-                    }
+                    System.out.println("Player Discconected: " +e.getConnectionID() );
                     break;
                 default:
                     break;
@@ -127,8 +145,9 @@ public class TechAdventure implements ConnectionListener {
     }
 
     public void initilize() throws UnknownConnectionException {
-        /* The below couple lines should be read from JSON files in DataReader
-            But for now, let's hardcode a testing world */
+
+        loader.generateCommands();
+
         room1 = new Room("1");
         room2 = new Room("2");
         room3 = new Room("3");
