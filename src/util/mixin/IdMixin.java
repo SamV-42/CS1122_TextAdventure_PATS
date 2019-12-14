@@ -5,6 +5,13 @@ import util.Composite;
 import util.Registration;
 
 public class IdMixin<O extends Composite> extends Mixin<O, String> {
+    //ONLY A COMPOSITE (using the appropriate mixin) SHOULD IMPLEMENT THIS (unless you want to override this)
+    public interface Id {
+        @SuppressWarnings("unchecked")
+        public default String getId() {
+            return ((Composite)this).<IdMixin>getTypeMixin("id").get();
+        }
+    }
 
     private String id;
     private Registration<IdMixin> compRegistrationId = null;

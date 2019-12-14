@@ -23,21 +23,29 @@ public class Registration<T> {
         return (mix == null) ? null : (T)(mix.getOwner());
     }
 
+
+    public static <T> T searchByStr(String identifierName, String input) {
+        String identifier = searchIdentifierByStr(identifierName, input);
+        return getByStr(identifierName, identifier);
+    }
+
     /*
      * Returns a registered object if one of its names (case insensitive) (either primary or alt) matches
      * @param input The selected bit of input. If multiple words (eg WAKE UP, LOOK UNDER), it'll first try 1 word, then 2-word, etc. for the input
      * @return null if no such Command is found, or the chosen command if found.
      */
-    public static <T> T searchByStr(String identifierName, String input) {
+    public static String searchIdentifierByStr(String identifierName, String input) {
         input = input.toLowerCase();
         String[] splitCommand = input.trim().split("\\s+");
 
-        String name = splitCommand[0];
-        for(int i = 0; i < splitCommand.length; name += " " + splitCommand[i++]) {
-            T reg = getByStr(identifierName, name);
+        String name = "";
+        for(int i = 0; i < splitCommand.length; ) {
+            name += splitCommand[i++];
+            Object reg = getByStr(identifierName, name);
             if(reg != null) {
-                return reg;
+                return name;
             }
+            name += " ";
         }
         return null;
     }

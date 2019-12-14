@@ -1,0 +1,16 @@
+{
+  "item6:": {
+    "id": "golden_axe",
+    "name": "Golden Axe",
+    "desc": "The blade is made of solid gold, and the handle a hearty mahogany. It shines with unknown power.",
+    "altnames": [
+      {
+        "name_1": "axe",
+        "name_2": "goldaxe",
+        "name_3": "gold axe",
+        "name_4": "gold_axe",
+        "name_5": "golden_axe"
+      }
+    ]
+  }
+}

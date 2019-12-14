@@ -2,7 +2,8 @@ package parser;
 
 import util.Composite;
 import util.mixin.IdMixin;
-import util.mixin.NameMixin;
+import util.mixin.NamesMixin;
+import util.Registration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.HashMap;
  *	Lab Section 2
  */
 
-public class Command extends Composite {
+public class Command extends Composite implements IdMixin.Id, NamesMixin.Names {
 
     /* Instance variables and methods */
 
@@ -29,7 +30,7 @@ public class Command extends Composite {
 
     public Command(boolean register, String id, Response response, List<String> names) {
         addMixin(new IdMixin<>(this, "command", id));
-        addMixin(new NameMixin<>(this, "command", names));
+        addMixin(new NamesMixin<>(this, "command", names));
 
         this.response = response;
     }
@@ -58,6 +59,16 @@ public class Command extends Composite {
 
     public void setResponse(Response response) {
         this.response = response;
+    }
+
+    public String replacementText(String playerInput) {
+        String nameUsed = (Registration.searchIdentifierByStr("command_name", playerInput));
+        return playerInput.equals(nameUsed) ? "" : playerInput.substring( nameUsed.length() + 1 );
+    }
+
+    //Does nothing much unless overridden by a replacing command
+    public boolean isReplace(String playerInput) {
+        return false;
     }
 
 }

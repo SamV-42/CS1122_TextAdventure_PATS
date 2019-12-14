@@ -1,9 +1,10 @@
 package game;
 
+import util.Registration;
 import world.Direction;
-import parser.command.DirectionCommand;
+import parser.*;
+import parser.command.*;
 
-import parser.command.LookCommand;
 
 public class DataLoader {
     public void generateCommands() {
@@ -23,10 +24,51 @@ public class DataLoader {
         DirectionCommand inCommand = new DirectionCommand("in_command", Direction.IN, "in", "i");
         DirectionCommand outCommand = new DirectionCommand("out_command", Direction.OUT, "out", "o");
 
+        Command goCommand = new Command("go_command", new Response("I don't recognize that direction.", 500), "go") {
+            @Override
+            public boolean isReplace(String playerInput) {
+                String replacement = this.replacementText(playerInput);
+                Command command = Registration.searchOwnerByStr("command_name", replacement);
+                return (command instanceof DirectionCommand);
+            }
+        };
+
         LookCommand lookCommand = new LookCommand("look_command", "look", "l", "search", "view");
+
+        TakeCommand takeCommand = new TakeCommand("take_command", "take", "get", "pick up", "seize", "snatch", "grab", "yoink", "nab");
+
+        DropCommand dropCommand = new DropCommand("drop_command", "drop", "throw", "yeet");
+
+        ExamineCommand examineCommand = new ExamineCommand("examine_command", "examine", "x");
+
+        UseCommand useCommand = new UseCommand("use_command", "use");
     }
 
-    public void generateRooms(){
+    public void putRoomBlockers(){
+        //Blocker for the cobweb room
+        Objection webBlocker = (p, c) -> {
+            if(!(c instanceof DirectionCommand)) { return null; }
 
+            DirectionCommand dc = (DirectionCommand)c;
+
+            if( dc.getMixin("id").get() != "north_command") { return null;}
+
+            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+
+            return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
+        };
+        Registration.getOwnerByStr("room_id", "spider_room").addMixin(webBlocker);
+
+        Objection gateBlocker = (p,c) -> {
+            if(!(c instanceof DirectionCommand)) { return null; }
+
+            DirectionCommand dc = (DirectionCommand)c;
+
+            if( dc.getMixin("id").get() != "north_command") { return null;}
+
+            if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
+
+            return new Response("The gate is locked", 200){};
+        };
     }
 }

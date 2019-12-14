@@ -11,6 +11,22 @@ import java.util.ArrayList;
 
 public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> {
 
+    public interface Inventory {
+
+        @SuppressWarnings("unchecked")
+        public default InventoryMixin getInventoryMixin() {
+            return ((Composite)this).<InventoryMixin>getTypeMixin("inventory");
+        }
+
+        public default Item[] getInventory() {
+            return getInventoryMixin().get();
+        }
+
+        public default List<Item> getInventoryList() {
+            return new ArrayList<>(Arrays.asList(getInventory()));
+        }
+    }
+
     private ArrayList<Item> items;
 
     @Override
@@ -38,5 +54,9 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
     @Override
     public void remove(Item t) {
         items.remove(t);
+    }
+
+    public boolean itemPresent(Item item) {
+        return items.contains(item);
     }
 }

@@ -1,0 +1,8 @@
+{
+  "item5:": {
+    "id": "brazier",
+    "name": "Brazier",
+    "desc": "The stone brazier burns bright enough to light a torch, but you can't seem to see a source for the flame...",
+    "attribute": "static"
+  }
+}
