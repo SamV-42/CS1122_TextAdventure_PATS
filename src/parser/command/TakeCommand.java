@@ -111,9 +111,6 @@ public class TakeCommand extends Command {
                     }
                 case FAILURE:
                 default:
-                    if(this.object.equals("all")) {
-
-                    }
                     return "You don't see anything like that nearby.";
             }
         }

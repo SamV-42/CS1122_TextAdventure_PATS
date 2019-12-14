@@ -60,7 +60,7 @@ public class DataLoader {
 
             return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
         };
-        
+
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
 
 
@@ -75,5 +75,6 @@ public class DataLoader {
 
             return new Response("The gate is locked", 200){};
         };
+        Registration.<Room>getOwnerByStr("room_id", "dungeon_hall_2").getObjectionMixin().add(gateBlocker);
     }
 }

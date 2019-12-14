@@ -13,98 +13,107 @@ import game.*;
 public class AnotherLoader {
 
     @SuppressWarnings("unchecked")
-    public static void main(String[] args) {
+    public void loadStuff() {
+        DataLoader dl = new DataLoader();
+        dl.generateCommands();
 
-        String[] inputFiles = {"../data/sample_rooms.txt"};
+        String[] inputFiles = {"../data/data"};
         for(String target : inputFiles) {
-            DataLoader dl = new DataLoader();
-            dl.generateCommands();
+            this.subLoadStuff(target);
+        }
 
-            try(Scanner input = new Scanner(new File(target))) {
-                Object currentObject = new Object();
-                String currentId = "";
-                String currentTypeName = "";
-                Room dummyRoom = new Room("dummy_room");
-                Item dummyItem = new Item("dummy_item", "dummydumbdumbs");
+        dl.putRoomBlockers();
+    }
 
-                int i = 0;
-                while(input.hasNext()) {
-                    ++i;
-                    String line = input.nextLine();
-                    if(line.trim().equals("")) { continue; }
+    private void subLoadStuff(String target) {
+        try(Scanner input = new Scanner(new File(target))) {
+            Object currentObject = new Object();
+            String currentId = "";
+            String currentTypeName = "";
+            Room dummyRoom = new Room("dummy_room");
+            Item dummyItem = new Item("dummy_item", "dummydumbdumbs");
 
-                    String tag = line.split(">")[0];
-                    line = line.substring(tag.length() + 1);
-                    //System.out.println(" ");
+            int i = 0;
+            while(input.hasNext()) {
+                ++i;
+                String line = input.nextLine();
+                if(line.trim().equals("")) { continue; }
 
-                    try {
-                        switch(tag) {
-                            case "type":
-                                currentTypeName = line.trim();
-                                break;
-                            case "id":
-                                switch(currentTypeName) {
-                                    case "room":
-                                        currentObject = Registration.getOwnerByStr("room_id", line);
-                                        if(currentObject == null) { currentObject = new Room(line); }
+                String tag = line.split(">")[0];
+                line = line.substring(tag.length() + 1);
+                //System.out.println(" ");
+
+                System.out.println("#:" + i + "\tTag: " + tag + "\tLine: " + line);
+
+                try {
+                    switch(tag) {
+                        case "type":
+                            currentTypeName = line.trim();
+                            break;
+                        case "id":
+                            line = line.trim();
+                            switch(currentTypeName) {
+                                case "room":
+                                    currentObject = Registration.getOwnerByStr("room_id", line);
+                                    if(currentObject == null) { currentObject = new Room(line); }
+                                    break;
+                                case "item":
+                                    currentObject = Registration.getOwnerByStr("item_id", line);
+                                    if(currentObject == null) { currentObject = new Item(line, ""); }
+                                    break;
+                                default:
+                                    System.err.println("Fatal Error: Wrong type tag used.l" + i);
+                                    return;
+                            }
+                            break;
+                        case "description":
+                            if(currentObject instanceof Room) { ((Room)(currentObject)).setDescription(line); }
+                            if(currentObject instanceof Item) { ((Item)(currentObject)).setDescription(line); }
+                            break;
+                        case "title":
+                            ((Room)currentObject).setTitle(line);
+                            break;
+                        case "stuff":
+                            Item item = Registration.getOwnerByStr("item_id", line);
+                            if(item == null) { item = new Item(line, ""); }
+                            ((Room)currentObject).getInventoryMixin().add(item);
+                            break;
+                        case "connection":
+                            Room otherRoom = Registration.getOwnerByStr("room_id", line.split(" ")[1]);
+                            if(otherRoom == null) { otherRoom = new Room(line.split(" ")[1]); }
+                            ((Room)currentObject).addConnection(Registration.getOwnerByStr("direction_id", line.split(" ")[0]), otherRoom);
+                            break;
+                        case "name":
+                            ((Item)currentObject).setPrimaryName(line.toLowerCase().trim());
+                            ((Item)currentObject).getNamesMixin().remove("");
+                        case "altname":
+                            ((Item)currentObject).getNamesMixin().add(line.toLowerCase().trim());
+                            break;
+                        case "attribute":
+                            String[] attribs = line.split(",");
+                            for(String attrib : attribs) {
+                                attrib = attrib.trim();
+                                switch(attrib) {
+                                    case "static":
+                                        ((Item)currentObject).setStatic(true);
                                         break;
-                                    case "item":
-                                        currentObject = Registration.getOwnerByStr("item_id", line);
-                                        if(currentObject == null) { currentObject = new Item(line, ""); }
+                                    case "container":
+                                        //does nothing now
                                         break;
                                     default:
-                                        System.err.println("Fatal Error: Wrong type tag used.l" + i);
-                                        return;
+                                        System.err.println("Bad attrib" + i);
                                 }
-                                break;
-                            case "description":
-                                if(currentObject instanceof Room) { ((Room)(currentObject)).setDescription(line); }
-                                if(currentObject instanceof Item) { ((Item)(currentObject)).setDescription(line); }
-                                break;
-                            case "title":
-                                ((Room)currentObject).setTitle(line);
-                                break;
-                            case "stuff":
-                                Item item = Registration.getOwnerByStr("item_id", line);
-                                if(item == null) { item = new Item(line, ""); }
-                                ((Room)currentObject).getInventoryMixin().add(item);
-                                break;
-                            case "connection":
-                                Room otherRoom = Registration.getOwnerByStr("room_id", line);
-                                if(otherRoom == null) { otherRoom = new Room(line.split(" ")[1]); }
-                                ((Room)currentObject).addConnection(Registration.getOwnerByStr("direction_id", line.split(" ")[0]), otherRoom);
-                                break;
-                            case "name":
-                                ((Item)currentObject).setPrimaryName(line);
-                            case "altname":
-                                ((Item)currentObject).getNamesMixin().add(line);
-                                break;
-                            case "attribs":
-                                String[] attribs = line.split(",");
-                                for(String attrib : attribs) {
-                                    attrib = attrib.trim();
-                                    switch(attrib) {
-                                        case "static":
-                                            ((Item)currentObject).setStatic(true);
-                                            break;
-                                        case "container":
-                                            //does nothing now
-                                            break;
-                                        default:
-                                            System.err.println("Bad attrib" + i);
-                                    }
-                                }
-                                break;
-                            default:
-                                System.err.println("Error: bad tag." + i);
-                        }
-                    } catch(java.lang.ClassCastException e) {
-                        System.out.println("Error: tag applied to wrong kind of object."+i);
+                            }
+                            break;
+                        default:
+                            System.err.println("Error: bad tag." + i);
                     }
+                } catch(java.lang.ClassCastException e) {
+                    System.out.println("Error: tag applied to wrong kind of object."+i);
                 }
-            } catch(IOException e) {
-                System.err.println("Error: file cannot be found");
             }
+        } catch(IOException e) {
+            System.err.println("Error: file cannot be found");
         }
     }
 

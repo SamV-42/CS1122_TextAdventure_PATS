@@ -44,11 +44,22 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
     public Parser() {
         addMixin(new ObjectionMixin<>(this, "parser"));
 
-        DataLoader dataLoader = new DataLoader();
-        dataLoader.generateCommands();
+        /*DataLoader dataLoader = new DataLoader();
+        dataLoader.generateCommands();*/
     }
 
     public String runPlayerInput(Player player, String playerInput) {
+        playerInput = playerInput.toLowerCase().trim();
+        String[] inputStuff = playerInput.split("\\s+");
+        playerInput = "";
+        for(String bit : inputStuff) {
+            playerInput += bit;
+            playerInput += " ";
+        }
+        if(playerInput.length() > 0) {
+            playerInput = playerInput.substring(0, playerInput.length() - 1);
+        }
+
         Command command = null;
         String modifiedInput = playerInput;
         while(command == null || command.isReplace(playerInput)) {
