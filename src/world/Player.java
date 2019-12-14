@@ -1,15 +1,10 @@
 package world;
 
-import util.Registration;
 import util.Composite;
 import util.mixin.*;
 
-
-import java.util.List;
-import java.util.ArrayList;
-
 public class Player extends Composite
-                    implements IdMixin.Id, ObjectionMixin.Objections, PrimaryNameMixin.PrimaryName, InventoryMixin.Inventory {
+        implements IdMixin.Id, ObjectionMixin.Objections, PrimaryNameMixin.PrimaryName, InventoryMixin.Inventory {
 
     private Room room;
     private boolean host;
@@ -42,4 +37,6 @@ public class Player extends Composite
     public long getConnectionID () {
         return connectionId;
     }
+
+    public void setConnectionID(long id){ connectionId = id; }
 }

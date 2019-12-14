@@ -1,20 +1,15 @@
 package world;
 
-import parser.Objection;
 import util.mixin.ObjectionMixin;
-import util.Registration;
 import util.Composite;
 import util.mixin.IdMixin;
 import util.mixin.InventoryMixin;
 import util.mixin.PrimaryNameMixin;
-import world.Item;
 
 import util.ListMakerHelper;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 import java.lang.StringBuilder;
 
 public class Room extends Composite
@@ -87,8 +82,8 @@ public class Room extends Composite
         return connections.get(dir);
     }
 
-    public Room[] getConnectionDirs() {
-        return connections.keySet().toArray(new Room[]{});
+    public Direction[] getConnectionDirs() {
+        return connections.keySet().toArray(new Direction[]{});
     }
 
     public boolean addConnection(Direction dir, Room room) {

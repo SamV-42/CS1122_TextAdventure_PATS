@@ -3,7 +3,6 @@ package util.mixin;
 import parser.Objection;
 import util.Composite;
 import util.StandardMixin;
-import util.Registration;
 
 import java.util.Arrays;
 import java.util.List;

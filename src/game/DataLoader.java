@@ -1,7 +1,7 @@
 package game;
 
 import util.Registration;
-import world.Direction;
+import world.*;
 import parser.*;
 import parser.command.*;
 
@@ -57,7 +57,8 @@ public class DataLoader {
 
             return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
         };
-        Registration.getOwnerByStr("room_id", "spider_room").addMixin(webBlocker);
+
+        Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
 
         Objection gateBlocker = (p,c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }

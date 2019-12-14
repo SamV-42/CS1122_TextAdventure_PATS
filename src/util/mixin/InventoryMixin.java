@@ -2,7 +2,6 @@ package util.mixin;
 
 import util.Composite;
 import util.StandardMixin;
-import util.Registration;
 import world.Item;
 
 import java.util.Arrays;
