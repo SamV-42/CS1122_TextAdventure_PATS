@@ -16,6 +16,10 @@ public class PrimaryNameMixin<O extends Composite> extends Mixin<O, String> {
         public default String getPrimaryName() {
             return getPrimaryNameMixin().get();
         }
+
+        public default void setPrimaryName(String name) {
+            getPrimaryNameMixin().set(name);
+        }
     }
 
     private String name;

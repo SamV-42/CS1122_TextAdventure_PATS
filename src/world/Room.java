@@ -75,6 +75,16 @@ public class Room extends Composite
         return fullDescription.toString();
     }
 
+    public Player[] getPlayers() {
+        java.util.Set<Player> stuff = Registration.<Player>getAllOfType();
+        for(java.util.Iterator<Player> iter = stuff.iterator() ; iter.hasNext(); ) {
+            if(! iter.next().getRoom().equals(this)) {
+                iter.remove();
+            }
+        }
+        return stuff.toArray(new Player[]{});
+    }
+
     public String getDescription() {
         return description;
     }
@@ -87,8 +97,8 @@ public class Room extends Composite
         return connections.get(dir);
     }
 
-    public Room[] getConnectionDirs() {
-        return connections.keySet().toArray(new Room[]{});
+    public Direction[] getConnectionDirs() {
+        return connections.keySet().toArray(new Direction[]{});
     }
 
     public boolean addConnection(Direction dir, Room room) {

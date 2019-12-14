@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class Registration<T> {
 
@@ -65,6 +66,21 @@ public class Registration<T> {
             throw new NoSuchElementException("Bad identifier");
         }
         return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Set<T> getAllOfType() {
+        Set<T> output = new java.util.TreeSet<>();
+        for(HashMap<String, ?> map : registered.values() ) {
+            for(Object t : map.values() ) {
+                try {
+                    output.add((T)t);
+                } catch(java.lang.ClassCastException e) {
+
+                }
+            }
+        }
+        return output;
     }
 
     private String identifierName;

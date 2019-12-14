@@ -1,7 +1,8 @@
 package game;
 
-import util.Registration;
-import world.Direction;
+import util.*;
+import util.mixin.*;
+import world.*;
 import parser.*;
 import parser.command.*;
 
@@ -42,6 +43,8 @@ public class DataLoader {
         ExamineCommand examineCommand = new ExamineCommand("examine_command", "examine", "x");
 
         UseCommand useCommand = new UseCommand("use_command", "use");
+
+        InventoryCommand invCommand = new InventoryCommand("inventory_command", "inventory", "inv");
     }
 
     public void putRoomBlockers(){
@@ -56,8 +59,8 @@ public class DataLoader {
             if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
             return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
-        }
-        Registration.getOwnerByStr("room_id", "spider_room").getObjectionMixin()
+        };
+        Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
 
         Objection gateBlocker = (p,c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
@@ -69,6 +72,6 @@ public class DataLoader {
             if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
 
             return new Response("The gate is locked", 200){};
-        }
+        };
     }
 }
