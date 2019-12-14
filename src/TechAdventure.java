@@ -25,6 +25,7 @@ public class TechAdventure implements ConnectionListener {
     AdventureServer adventureServer = null;
     ArrayList<Player> playerList = null;
     Parser parser = null;
+    AnotherLoader anotherLoader = null;
     boolean stopping;
     Room room1 = null;
     Room room2 = null;
@@ -32,6 +33,7 @@ public class TechAdventure implements ConnectionListener {
     Room room4 = null;
 
     public TechAdventure(){
+        anotherLoader = new AnotherLoader();
         playerList = new ArrayList<>();
         stopping = false;
         loader = new DataLoader();
@@ -87,7 +89,7 @@ public class TechAdventure implements ConnectionListener {
                         }
                     }else if(input.length() > 4 && input.substring(0,3).equals("new") && player == null){
                         Player newPlayer = new Player(input.substring(4), e.getConnectionID());
-                        newPlayer.setRoom(room3);
+                        newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
                         playerList.add(newPlayer);
                         adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
                     } else if ( input.equals ( "shutdown" ) && player.isHost()) {
@@ -147,30 +149,11 @@ public class TechAdventure implements ConnectionListener {
     public void initilize() throws UnknownConnectionException {
 
         loader.generateCommands();
+        anotherLoader.loadStuff();
 
-        room1 = new Room("1");
-        room2 = new Room("2");
-        room3 = new Room("3");
-        room4 = new Room("4");
-
-        room1.setTitle("Waterfall");
-        room1.setDescription("A winding trail leads up and past this point. A pretty waterfall descends around you.");
-        room1.addConnection(Direction.IN, room2);
-        room1.addConnection(Direction.SOUTHWEST, room3);
-        room1.addConnection(Direction.NORTH, room4);
-
-        room2.setTitle("Cave");
-        room2.setDescription("A small, hidden grotto exists behind the waterfall's curtain. A hidden stair can take you up to the mountain's peak, although you're not sure you'll be able to return the way you came.");
-        room2.addConnection(Direction.OUT, room1);
-        room2.addConnection(Direction.UP, room4);
-
-        room3.setTitle("Trail");
-        room3.setDescription("You stand at the bottom of a winding trail. You can hear the rumble of water in the distance.");
-        room3.addConnection(Direction.NORTHEAST, room1);
-
-        room4.setTitle("Mountaintop");
-        room4.setDescription("You've reached the peak, or a peak. The view stretches into the distance.");
-        room4.addConnection(Direction.SOUTH, room1);
+        for(String name : Registration.<Item>getOwnerByStr("item_id", "torch").getNames() ) {
+            System.out.println("Name: " + name);
+        }
 
         parser = new Parser();
     }
