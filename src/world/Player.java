@@ -42,4 +42,6 @@ public class Player extends Composite
     public long getConnectionID () {
         return connectionId;
     }
+
+    public void setConnectionID(long id){ connectionId = id; }
 }

@@ -21,6 +21,7 @@ import java.io.IOException;
 
 public class TechAdventure implements ConnectionListener {
 
+    DataLoader loader = null;
     AdventureServer adventureServer = null;
     ArrayList<Player> playerList = null;
     Parser parser = null;
@@ -33,6 +34,7 @@ public class TechAdventure implements ConnectionListener {
     public TechAdventure(){
         playerList = new ArrayList<>();
         stopping = false;
+        loader = new DataLoader();
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
         try {
@@ -57,12 +59,8 @@ public class TechAdventure implements ConnectionListener {
         try {
             switch ( e.getCode ( ) ) {
                 case CONNECTION_ESTABLISHED:
-                    Player newPlayer = new Player(""+e.getConnectionID (),e.getConnectionID ());
-                    if(playerList.size() == 0){
-                        newPlayer.setHost(true);
-                    }
-                    playerList.add(newPlayer);
-                    newPlayer.setRoom(room3);
+                    //adventureServer.sendMessage(e.getConnectionID(), "Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
+                            //" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
                     break;
                 case TRANSMISSION_RECEIVED:
                     Player player = null;
@@ -72,7 +70,26 @@ public class TechAdventure implements ConnectionListener {
                             break;
                         }
                     }
-                    if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
+                    if(e.getData().length() > 9 && e.getData().substring(0,8).equals("EXISTING") && player == null) {
+                        boolean found = false;
+                        for (Player existPlayer : playerList) {
+                            if (existPlayer.getId().equals(e.getData().substring(9))) {
+                                existPlayer.setConnectionID(e.getConnectionID());
+                                found = true;
+                                System.out.println(existPlayer.getId() + " has been assigned to Connection: " + e.getConnectionID());
+                                adventureServer.sendMessage(e.getConnectionID(), existPlayer.getId() + "has been assigned to you");
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            adventureServer.sendMessage(e.getConnectionID(), "Unable to find a charactor with name: " + e.getData().substring(9));
+                        }
+                    }else if(e.getData().length() > 4 &&e.getData().substring(0,3).equals("NEW") && player == null){
+                        Player newPlayer = new Player(e.getData().substring(4), e.getConnectionID());
+                        newPlayer.setRoom(room3);
+                        playerList.add(newPlayer);
+                        adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
+                    } else if ( e.getData ( ).equals ( "SHUTDOWN" ) && player.isHost()) {
                         stop();
                         stopping = true;
                     } else if( e.getData().equals("QUIT")){
@@ -91,16 +108,7 @@ public class TechAdventure implements ConnectionListener {
                     }
                     break;
                 case CONNECTION_TERMINATED:
-                    if(!stopping) {
-                        for (int i = 0; i < playerList.size(); i++) {
-                            if (playerList.get(i).getConnectionID() == e.getConnectionID()) {
-                                if (playerList.get(i) != null) {
-                                    parser.runPlayerInput(playerList.get(i), "drop all");
-                                }
-                                playerList.remove(i);
-                            }
-                        }
-                    }
+                    System.out.println("Player Discconected: " +e.getConnectionID() );
                     break;
                 default:
                     break;
@@ -136,8 +144,9 @@ public class TechAdventure implements ConnectionListener {
     }
 
     public void initilize() throws UnknownConnectionException {
-        /* The below couple lines should be read from JSON files in DataReader
-            But for now, let's hardcode a testing world */
+
+        loader.generateCommands();
+
         room1 = new Room("1");
         room2 = new Room("2");
         room3 = new Room("3");

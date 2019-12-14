@@ -18,6 +18,8 @@ public class AdventureClient {
 				BufferedReader fromServer = new BufferedReader(new InputStreamReader(server.getInputStream()));
 				PrintWriter toServer = new PrintWriter(server.getOutputStream(), true);
 				BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(System.in));
+				System.out.println("Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
+						" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
 				String s = "";
 				while (true) {
 					while (fromServer.ready()) {
@@ -34,11 +36,9 @@ public class AdventureClient {
 						s = fromServer.readLine();
 						System.out.println(s);
 					}
-					s = fromServer.readLine();
 					if (s == null) {
 						break;
 					}
-					System.out.println(s);
 				}
 				fromServer.close();
 				toServer.close();
