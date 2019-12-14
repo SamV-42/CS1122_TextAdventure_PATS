@@ -71,7 +71,8 @@ public final class AdventureServer implements AdventureServerAPI {
 				connection.output.close ( );
 				connection.socket.close ( );
 			} catch ( SocketException e ) {
-				// Hmmmm...
+				System.out.println("SOCKET EXCEPTION");
+				e.printStackTrace();
 			} catch ( IOException e ) {
 				e.printStackTrace ( );
 			} finally {
@@ -108,8 +109,9 @@ public final class AdventureServer implements AdventureServerAPI {
 					new ClientThread ( connection );
 				}
 			} catch ( SocketException se ) {
-				// Hmmm....
+				System.out.println("SOCKET EXCEPTION: Possible reason discconnect");
 			} catch ( IOException e ) {
+				System.out.println("IO Exception");
 				e.printStackTrace ( );
 			}
 		}

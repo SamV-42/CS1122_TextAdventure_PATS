@@ -103,7 +103,7 @@ public class TechAdventure implements ConnectionListener {
                     }
                     break;
                 default:
-                    // What is a reasonable default?
+                    break;
             }
         } catch ( UnknownConnectionException unknownConnectionException ) {
             unknownConnectionException.printStackTrace ( );
