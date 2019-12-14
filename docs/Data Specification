@@ -2,7 +2,7 @@
 To create a new room:
 
 id>awesome_room_4           <-- put the internal name here, in one word
-title> Awesome Room         <-- the title that the player sees
+title>Awesome Room         <-- the title that the player sees
 description>A crazy room is here. It's really neat! <-- this description can be long, but still only one line (use multiple tags for that).
 connection>north less_awesome_room      <-- one-way connection to other rooms. You can have multiple connections
 

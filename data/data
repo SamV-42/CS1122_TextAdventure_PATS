@@ -1,0 +1,205 @@
+type>room
+id>entrance
+title>Cave Entrance
+description>The exit of the cave is blocked by huge boulders from the cave-in. A flickering light from ahead creates dancing shadows on the rocky walls.
+connection>north spider_room
+
+type>room
+id>spider_room
+title>Cobwebbed Tunnel
+description>Thick cobwebs block the path to the north. Light spills from the room to the west.
+stuff>cobwebs
+connection>north dungeon_hall_1
+connection>south entrance
+connection>west chapel
+connection>east supply_room
+
+type>room
+id>supply_room
+title>Supply Room
+description>Crates of long-abandoned supplies litter the cavern. Most of the supplies are unusable, but some unlit torches seems surprisingly intact.
+stuff>torch
+connection>west spider_room
+
+type>room
+id>chapel
+title>Abandoned Chapel
+description>Sacred texts and worship materials for a long dead religion lay scattered about the room. At the altar, a brazier burns strangely bright given the state of the place.
+stuff>brazier
+connection>east spider_room
+
+type>room
+id>dungeon_hall_1
+title>Dungeon Hallway 1
+description>A small hallway with rusty-barred cells lining the walls. The hall continues to the north.
+connection>north dungeon_hall_2
+
+type>room
+id>dungeon_hall_2
+title>Dungeon Hallway 2
+description>The hall continues to a rusty iron gate. A cell to the west hangs open, unlike the others.
+stuff>irongate
+connection>north labyrinth_enter
+connection>south dungeon_hall_1
+connection>west cell
+
+type>room
+id>cell
+title>Open Cell
+description>The cramped prison cell is sparse aside from a crude groundcloth and a skeleton of an unlucky prisoner in the corner.
+stuff>skeleton
+stuff>key
+connection>east dungeon_hall_2
+
+type>room
+id>labyrinth_enter
+title>Labyrinth Entrance
+description>Equally-spaced torches line the walls in both directions. In front of you, an inscription is carved into the wall.
+stuff>inscription
+connection>east lab_r1
+connection>west lab_l1
+
+type>room
+id>lab_r1
+title>Labyrinth Hallway
+description>The hallway continues to the north, while a tunnel just big enough for a person to squeeze through is set in the wall to the east. A chisel lies on the ground.
+stuff>chisel
+connection>north lab_r2
+connection>east tunnel
+connection>west labyrinth_enter
+
+type>room
+id>tunnel
+title>Tunnel
+description>The bottom side of the tunnel is covered in scratches, as if whatever was digging was dragged out. A tattered journal lies at the back.
+stuff>journal
+connection>west lab_r1
+
+type>room
+id>lab_r2
+title>Labyrinth Hallway
+description>A basic hallway in the labyrinth.
+connection>north lab_r3
+connection>south lab_r1
+connection>west lab_c1
+
+type>room
+id>lab_r3
+title>Dead End
+description>A dead end.
+connection>south lab_r2
+
+type>room
+id>lab_c1
+title>Labyrinth Hallway
+description>A basic hallway in the labyrinth. The room to the north contains a mysterious glow.
+connection>north axe_room
+connection>east lab_r2
+connection>west lab_l2
+
+type>room
+id>lab_l1
+title>Labyrinth Hallway
+description>A basic hallway in the labyrinth.
+connection>north lab_l2
+connection>east labyrinth_enter
+
+type>room
+id>lab_l2
+title>Labyrinth Hallway
+description>A basic hallway in the labyrinth.
+connection>north lab_l3
+connection>east lab_c1
+
+type>room
+id>lab_l3
+title>Labyrinth Hallway
+description>A basic hallway in the labyrinth. A putrid smell floats down the hall from the west.
+connection>south lab_l2
+connection>west min_den
+
+type>room
+id>min_den
+title>Minotaur Den
+description>Bones litter the floor of this disgusting chamber. It seems as if something has been living here for a while.
+connection>east lab_l3
+
+type>room
+id>axe_room
+title>Chamber of the Golden Axe
+description>A glowing, golden axe sits on a pedestal before you. You somehow know it is the key to your escape.
+stuff>golden_axe
+connection>south cutscene
+
+type>room
+id>cutscene
+title>Labyrinth Hallway
+description>As you exit the room, a horrible bull-man monstrosity rounds the corner to attack! The golden axe glows brightly in it's presence.
+
+type>item
+id>cobwebs
+name>Cobwebs
+altname>webs
+altname>web
+altname>cobweb
+description>Thick cobwebs. They're too sticky to move through, but they could probably be burned.
+attribute>static
+
+type>item
+id>torch
+name>Torch
+description>A torch. Pretty useless unless you can find a way to light it...
+
+type>item
+id>brazier
+name>Brazier
+description>The stone brazier burns bright, but you can't seem to see a source for the flame...
+attribute>static
+
+type>item
+id>littorch
+name>Lit Torch
+altname>Torch
+description>A lit torch. Could probably be used to burn something.
+
+type>item
+id>irongate
+name>Iron Gate
+altname>gate
+description>The gate is solid iron, with a rusty keyhole on the rightmost side.
+attribute>static
+
+type>item
+id>skeleton
+name>Skeleton
+description>The skeleton loosely clutches a rusty key, likely stolen from a guard before this place was abandoned.
+attribute>static
+
+type>item
+id>key
+name>Key
+altname>rusty key
+description>A rusty key that looks just the right size for the lock on the gate.
+
+type>item
+id>inscription
+name>Inscription
+description>The intricately carved inscription reads: "The Minotaur is on the Hunt"
+attribute>static
+
+type>item
+id>chisel
+name>Chisel
+description>You could probably use it to continue the tunnel.
+
+type>item
+id>journal
+name>Journal
+altname>tattered journal
+description>Most pages are unreadable, but you can make out the words "Prisoner", "Monster", and "Maze" written multiple times.
+
+type>item
+id>golden_axe
+name>Golden Axe
+altname>axe
+description>The blade is made of solid gold, and the handle a hearty mahogany. It shines with unknown power.

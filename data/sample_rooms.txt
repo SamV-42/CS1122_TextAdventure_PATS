@@ -25,7 +25,7 @@ description>Welcome to Zork!
 
 type>room
 id>machine_room
-title>Hidden Room Full of Machines</title>
+title>Hidden Room Full of Machines
 
 description>This is a large room which seems to be air-conditioned. In one corner there is a machine (?) which is shaped somewhat like a clothes dryer.
 
