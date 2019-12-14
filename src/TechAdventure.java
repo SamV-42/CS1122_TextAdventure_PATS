@@ -1,20 +1,11 @@
-import game.*;
 import parser.*;
-import util.*;
 import world.*;
-
-import util.mixin.IdMixin;
-import util.mixin.NamesMixin;
-import util.mixin.InventoryMixin;
-import util.mixin.ObjectionMixin;
-import parser.command.DirectionCommand;
 
 import server.ConnectionEvent;
 import server.ConnectionListener;
 import server.UnknownConnectionException;
 import server.AdventureServer;
 
-import java.util.Scanner;
 import java.util.ArrayList;
 
 import java.io.IOException;

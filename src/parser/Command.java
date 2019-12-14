@@ -1,14 +1,13 @@
 package parser;
 
 import util.Composite;
+import util.Registration;
 import util.mixin.IdMixin;
 import util.mixin.NamesMixin;
-import util.Registration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  *  Represents a command typed by the player. Bridges the gap between various names that could be typed, and the actual effect.
@@ -62,6 +61,7 @@ public class Command extends Composite implements IdMixin.Id, NamesMixin.Names {
     }
 
     public String replacementText(String playerInput) {
+        String playerInput2 = playerInput.toLowerCase().trim();
         String nameUsed = (Registration.searchIdentifierByStr("command_name", playerInput));
         return playerInput.equals(nameUsed) ? "" : playerInput.substring( nameUsed.length() + 1 );
     }

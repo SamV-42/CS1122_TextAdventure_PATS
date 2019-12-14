@@ -1,10 +1,6 @@
 package util;
 
-import parser.Objection;
-
 import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class Registration<T> {

@@ -17,7 +17,7 @@ public class Minotaur{
         Room nextRoom = prevRoom;
         while(prevRoom == nextRoom) {
             int num = (int) (Math.random() * directions.length);
-            nextRoom = room.getConnection(directions[num])
+            nextRoom = room.getConnection(directions[num]);
         }
         prevRoom = room;
         room = nextRoom;
