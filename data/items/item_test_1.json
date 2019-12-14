@@ -6,9 +6,9 @@
     "attribute": "static",
     "altnames": [
       {
-        "1": "Name 2",
-        "2": "Name 3",
-        "3": "Name 4"
+        "name_1": "Name 2",
+        "name_2": "Name 3",
+        "name_3": "Name 4"
       }
     ]
   }

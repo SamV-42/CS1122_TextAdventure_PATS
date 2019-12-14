@@ -77,7 +77,7 @@ public class JSONReaderTest {
 
             int j = altnames.length();
             for (int i = 0; i < altnames.length(); i++) {
-                System.out.println(altnames.getJSONObject(i).getString("" + j));
+                System.out.println(altnames.getJSONObject(i).getString("name"));
                 j++;
             }
         } catch (JSONException e) {
