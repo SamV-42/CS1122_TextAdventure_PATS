@@ -29,7 +29,7 @@ public class DataLoader {
             @Override
             public boolean isReplace(String playerInput) {
                 String replacement = this.replacementText(playerInput);
-                Command command = Registration.searchOwnerByStr("command_name", replacement);
+                Command command = (Registration.<Command>searchOwnerByStr("command_name", replacement)).get(0);
                 return (command instanceof DirectionCommand);
             }
         };

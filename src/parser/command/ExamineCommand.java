@@ -42,12 +42,19 @@ public class ExamineCommand extends Command {
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {
-                Item thing = Registration.searchOwnerByStr("item_name", object);
-                if(thing == null) {
-                    return "You don't see anything like that.";
-                } else {
-                    return thing.getDescription() == null ? "You don't see anything special about that." : thing.getDescription();
+                List<Item> things = (Registration.<Item>searchOwnerByStr("item_name", object));
+                ArrayList<Item> presentThings = new ArrayList<>();
+                for(Item i : things) {
+                    if(player.getRoom().getInventoryList().contains(i) || player.getInventoryList().contains(i)) {
+                        presentThings.add(i);
+                    }
                 }
+
+                if(presentThings.size() == 0) {
+                    return "You don't see anything like that.";
+                }
+                Item thing = presentThings.get(0);
+                return thing.getDescription() == null ? "You don't see anything special about that." : thing.getDescription();
             }
         };
     }

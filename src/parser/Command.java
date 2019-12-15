@@ -62,7 +62,7 @@ public class Command extends Composite implements IdMixin.Id, NamesMixin.Names {
     }
 
     public String replacementText(String playerInput) {
-        String nameUsed = (Registration.searchIdentifierByStr("command_name", playerInput));
+        String nameUsed = (Registration.searchIdentifierByStr("command_name", playerInput)).get(0);
         return playerInput.equals(nameUsed) ? "" : playerInput.substring( nameUsed.length() + 1 );
     }
 

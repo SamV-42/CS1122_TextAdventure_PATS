@@ -64,10 +64,11 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         String modifiedInput = playerInput;
         while(command == null || command.isReplace(playerInput)) {
             playerInput = modifiedInput;
-            command = Registration.searchOwnerByStr("command_name", playerInput);
-            if(command == null) {
+            Command[] results = (Registration.<Command>searchOwnerByStr("command_name", playerInput)).toArray(new Command[]{});
+            if(results.length == 0) {
                 command = UnrecognizedCommand;
             } else {
+                command = results[0];
                 modifiedInput = command.replacementText(playerInput);
             }
         }

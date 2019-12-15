@@ -24,10 +24,14 @@ public class Registration<T> {
         return (mix == null) ? null : (T)(mix.getOwner());
     }
 
-
-    public static <T> T searchByStr(String identifierName, String input) {
-        String identifier = searchIdentifierByStr(identifierName, input);
-        return getByStr(identifierName, identifier);
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> searchByStr(String identifierName, String input) {
+        String[] identifiers = searchIdentifierByStr(identifierName, input).toArray(new String[]{});
+        ArrayList<T> listr = new ArrayList<>();
+        for(String identifier : identifiers) {
+            listr.add(getByStr(identifierName, identifier));
+        }
+        return listr;
     }
 
     /*
@@ -35,26 +39,32 @@ public class Registration<T> {
      * @param input The selected bit of input. If multiple words (eg WAKE UP, LOOK UNDER), it'll first try 1 word, then 2-word, etc. for the input
      * @return null if no such Command is found, or the chosen command if found.
      */
-    public static String searchIdentifierByStr(String identifierName, String input) {
+    public static List<String> searchIdentifierByStr(String identifierName, String input) {
         input = input.toLowerCase();
         String[] splitCommand = input.trim().split("\\s+");
+
+        ArrayList<String> names = new ArrayList<>();
 
         String name = "";
         for(int i = 0; i < splitCommand.length; ) {
             name += splitCommand[i++];
             Object reg = getByStr(identifierName, name);
             if(reg != null) {
-                return name;
+                names.add(name);
             }
             name += " ";
         }
-        return null;
+        return names;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Composite> T searchOwnerByStr(String identifierName, String input) {
-        Mixin mix = searchByStr(identifierName, input);
-        return (mix == null) ? null : (T)(mix.getOwner());
+    public static <T extends Composite> List<T> searchOwnerByStr(String identifierName, String input) {
+        List<Mixin> mix = Registration.<Mixin>searchByStr(identifierName, input);
+        ArrayList<T> owners = new ArrayList<>();
+        for (Mixin m : mix) {
+            owners.add((T)(m.getOwner()));
+        }
+        return owners;
     }
 
 

@@ -148,20 +148,21 @@ attribute>static
 
 type>item
 id>torch
-name>Torch
-description>A torch. Pretty useless unless you can find a way to light it...
+name>Wood
+altname>stick
+description>A piece of wood. It looks quite flammable; perhaps it was originally cut for that purpose.
+
+type>item
+id>littorch
+name>Lit Torch
+altname>torch
+description>A lit torch. Could probably be used to burn something.
 
 type>item
 id>brazier
 name>Brazier
 description>The stone brazier burns bright, but you can't seem to see a source for the flame...
 attribute>static
-
-type>item
-id>littorch
-name>Lit Torch
-altname>Torch
-description>A lit torch. Could probably be used to burn something.
 
 type>item
 id>irongate
