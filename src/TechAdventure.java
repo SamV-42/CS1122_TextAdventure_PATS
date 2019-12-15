@@ -8,14 +8,11 @@ import util.mixin.NamesMixin;
 import util.mixin.InventoryMixin;
 import util.mixin.ObjectionMixin;
 import parser.command.DirectionCommand;
-
-import server.ConnectionEvent;
-import server.ConnectionListener;
-import server.UnknownConnectionException;
-import server.AdventureServer;
+import server.*;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.io.IOException;
 
@@ -36,7 +33,7 @@ public class TechAdventure implements ConnectionListener {
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
         try {
-            initilize();
+            initialize();
         }catch(UnknownConnectionException e){
             e.printStackTrace();
         }
@@ -149,14 +146,9 @@ public class TechAdventure implements ConnectionListener {
         System.out.println("Server Stopped");
     }
 
-    public void initilize() throws UnknownConnectionException {
+    public void initialize() throws UnknownConnectionException {
 
-        loader.generateCommands();
         anotherLoader.loadStuff();
-
-        for(String name : Registration.<Item>getOwnerByStr("item_id", "torch").getNames() ) {
-            System.out.println("Name: " + name);
-        }
 
         parser = new Parser();
     }

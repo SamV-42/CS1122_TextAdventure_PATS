@@ -41,19 +41,31 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
     public Parser() {
         addMixin(new ObjectionMixin<>(this, "parser"));
 
-        DataLoader dataLoader = new DataLoader();
-        dataLoader.generateCommands();
+        /*DataLoader dataLoader = new DataLoader();
+        dataLoader.generateCommands();*/
     }
 
     public String runPlayerInput(Player player, String playerInput) {
+        playerInput = playerInput.toLowerCase().trim();
+        String[] inputStuff = playerInput.split("\\s+");
+        playerInput = "";
+        for(String bit : inputStuff) {
+            playerInput += bit;
+            playerInput += " ";
+        }
+        if(playerInput.length() > 0) {
+            playerInput = playerInput.substring(0, playerInput.length() - 1);
+        }
+
         Command command = null;
         String modifiedInput = playerInput;
         while(command == null || command.isReplace(playerInput)) {
             playerInput = modifiedInput;
-            command = Registration.searchOwnerByStr("command_name", playerInput);
-            if(command == null) {
+            Command[] results = (Registration.<Command>searchOwnerByStr("command_name", playerInput)).toArray(new Command[]{});
+            if(results.length == 0) {
                 command = UnrecognizedCommand;
             } else {
+                command = results[0];
                 modifiedInput = command.replacementText(playerInput);
             }
         }
@@ -83,7 +95,7 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         objectionsList.addAll(player.getRoom().getObjectionsList());
 
         for(Objection obj : objectionsList) {
-            Response tempResponse = obj.check(player, command);
+            Response tempResponse = obj.check(player, command, currentResponse);
             if(tempResponse != null && tempResponse.getSeverity() > mostUrgentResponse.getSeverity()) {
                 mostUrgentResponse = tempResponse;
             }

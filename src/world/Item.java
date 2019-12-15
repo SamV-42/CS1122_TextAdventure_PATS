@@ -16,6 +16,7 @@ public class Item extends Composite
 
     private String description;
     private boolean staticPickup = false;
+    private boolean hidden = false;
 
     public String getDescription() {
         return description;
@@ -50,5 +51,13 @@ public class Item extends Composite
 
     public void setStatic(boolean staticPickup) {
         this.staticPickup = staticPickup;
+    }
+
+    public boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 }
