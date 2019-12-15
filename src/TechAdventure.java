@@ -85,13 +85,15 @@ public class TechAdventure implements ConnectionListener {
                         newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
                         playerList.add(newPlayer);
                         adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
-                    } else if(input.length() > 4 && input.substring(0,3).equals("say")){
-                        for( Player existPlayer : playerList){
-                            if(!existPlayer.equals(player)){
+                    } else if(input.length() > 4 && input.substring(0,3).equals("say")) {
+                        for (Player existPlayer : playerList) {
+                            if (!existPlayer.equals(player)) {
                                 adventureServer.sendMessage(existPlayer.getConnectionID(), player.getId() + " says: " +
                                         e.getData().substring(4));
                             }
                         }
+                    } else if(input.equals("wait") && input.equals("getMessages")){
+
                     } else if ( input.equals ( "shutdown" ) && player.isHost()) {
                         stop();
                         stopping = true;
