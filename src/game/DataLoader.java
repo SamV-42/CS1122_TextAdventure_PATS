@@ -117,7 +117,7 @@ public class DataLoader {
 
             if(!ec.getExamined().equals(Registration.getOwnerByStr("item_id", "skeleton"))) { return null; }
 
-            play.getRoom.getInventoryMixin.add(Registration.getOwnerByStr("item_id", "key"));
+            play.getRoom().getInventoryMixin().add(Registration.getOwnerByStr("item_id", "key"));
 
             return new Response("", 200);
         };
