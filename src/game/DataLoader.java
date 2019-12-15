@@ -107,7 +107,7 @@ public class DataLoader {
         //--------------------------------------------------------------------------------------------------------------
 
         //Event to replace the torch with the lit torch
-        Objection replaceTorch = (p,c) -> {
+        Objection replaceTorch = (p,c,cR) -> {
             if(!(c instanceof UseCommand)) { return null; }
 
             UseCommand uc = (UseCommand)c;
@@ -123,7 +123,7 @@ public class DataLoader {
         //--------------------------------------------------------------------------------------------------------------
 
         //Event to burn the cobwebs
-        Objection burnWebs = (p,c) -> {
+        Objection burnWebs = (p,c,cR) -> {
             if(!(c instanceof UseCommand)) { return null; }
 
             UseCommand uc = (UseCommand)c;
@@ -139,7 +139,7 @@ public class DataLoader {
         //--------------------------------------------------------------------------------------------------------------
 
         //Event to "reveal" the key
-        Objection keyReveal = (p,c) -> {
+        Objection keyReveal = (p,c, cR) -> {
             if(!(c instanceof ExamineCommand)) { return null; }
 
             ExamineCommand ec = (ExamineCommand)c;
@@ -153,7 +153,7 @@ public class DataLoader {
         };
 
         //Event to unlock the gate
-        Objection unlockGate = (p,c) -> {
+        Objection unlockGate = (p,c,cR) -> {
             if(!(c instanceof UseCommand)) { return null; }
 
             UseCommand uc = (UseCommand)c;
