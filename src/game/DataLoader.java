@@ -59,7 +59,7 @@ public class DataLoader {
 
             if( dc.getMixin("id").get() != "north_command") { return null; }
 
-            if(p.getRoom().getInventoryMixin().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+            if(p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
             //p.kill();
             return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +

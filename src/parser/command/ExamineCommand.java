@@ -39,7 +39,7 @@ public class ExamineCommand extends Command {
 
     public Response getResponse(String playerInput) {
         String object = playerInput;
-        Item thing = Registration.searchOwnerByStr("item_name", object);
+        Item thing = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
         examined = thing;
         return new Response("", 50) {
             @Override

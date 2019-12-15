@@ -11,6 +11,8 @@ import util.ListMakerHelper;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.lang.StringBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Room extends Composite
                     implements IdMixin.Id, ObjectionMixin.Objections, InventoryMixin.Inventory, PrimaryNameMixin.PrimaryName {
@@ -77,7 +79,7 @@ public class Room extends Composite
     }
 
     public Player[] getPlayers() {
-        java.util.Set<Player> stuff = Registration.<Player>getAllOfType();
+        java.util.Set<Player> stuff = util.Registration.<Player>getAllOfType();
         for(java.util.Iterator<Player> iter = stuff.iterator() ; iter.hasNext(); ) {
             if(! iter.next().getRoom().equals(this)) {
                 iter.remove();
