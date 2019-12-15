@@ -18,12 +18,13 @@ import java.io.IOException;
 
 public class TechAdventure implements ConnectionListener {
 
-    DataLoader loader = null;
-    AdventureServer adventureServer = null;
-    ArrayList<Player> playerList = null;
-    Parser parser = null;
-    AnotherLoader anotherLoader = null;
-    boolean stopping;
+    private DataLoader loader = null;
+    private AdventureServer adventureServer = null;
+    private ArrayList<Player> playerList = null;
+    private Parser parser = null;
+    private AnotherLoader anotherLoader = null;
+    private boolean stopping;
+    private Minotaur mino = null;
 
     public TechAdventure(){
         anotherLoader = new AnotherLoader();
@@ -37,6 +38,7 @@ public class TechAdventure implements ConnectionListener {
         }catch(UnknownConnectionException e){
             e.printStackTrace();
         }
+        mino = new Minotaur(Registration.<Room>getOwnerByStr("room_id", "min_den"));
     }
 
     public static void main(String[] args) {
@@ -73,7 +75,7 @@ public class TechAdventure implements ConnectionListener {
                                 existPlayer.setConnectionID(e.getConnectionID());
                                 found = true;
                                 System.out.println(existPlayer.getId() + " has been assigned to Connection: " + e.getConnectionID());
-                                adventureServer.sendMessage(e.getConnectionID(), existPlayer.getId() + "has been assigned to you");
+                                adventureServer.sendMessage(e.getConnectionID(), existPlayer.getId() + " has been assigned to you");
                                 break;
                             }
                         }
@@ -97,16 +99,27 @@ public class TechAdventure implements ConnectionListener {
                     } else if (player != null && input.equals ( "shutdown" ) && player.isHost()) {
                         stop();
                         stopping = true;
-                    } else if( input.equals("quit") && player != null){
+                    } else if( input.equals("quit") && player != null) {
                         try {
-                            if(player.isHost()){
+                            if (player.isHost()) {
                                 stop();
                                 stopping = true;
-                            }else {
+                            } else {
                                 adventureServer.disconnect(e.getConnectionID());
                             }
-                        }catch(IOException error){
+                        } catch (IOException error) {
                             error.printStackTrace();
+                        }
+                    } else if (player != null && e.getData().length() > 3 && e.getData().substring(0,2).equals("go")){
+                        Room room = player.getRoom();
+                        if(room.getId().substring(0,3).equals("lab") || room.getId().substring(0,3).equals("axe") || room.getId().substring(0,3).equals("min")
+                                || room.getId().equals("tunnel")){
+                            mino.move();
+                        }
+                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
+                        if(mino.getRoom().equals(player.getRoom())){
+                            player.kill();
+                            System.out.println(player + " died to the Minotaur");
                         }
                     } else if(player != null){
                         adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
@@ -156,5 +169,9 @@ public class TechAdventure implements ConnectionListener {
         anotherLoader.loadStuff();
 
         parser = new Parser();
+    }
+
+    public Minotaur getMino() {
+        return mino;
     }
 }
