@@ -4,9 +4,9 @@ import parser.Objection;
 import util.Composite;
 import util.StandardMixin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class ObjectionMixin<O extends Composite> extends StandardMixin<O, Objection>{
 

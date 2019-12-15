@@ -1,7 +1,7 @@
 package util.mixin;
 
-import util.Mixin;
 import util.Composite;
+import util.Mixin;
 
 public class PrimaryNameMixin<O extends Composite> extends Mixin<O, String> {
 

@@ -1,16 +1,15 @@
 package parser.command;
 
-import java.lang.StringBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
+import parser.Action;
+import parser.Command;
+import parser.Response;
 import world.Direction;
 import world.Player;
 import world.Room;
-import parser.Command;
-import parser.Response;
-import parser.Action;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 //Currently relying on the following to be implemented:
 // Room, with "public Room getConnection(Direction dir)" (null if none)

@@ -1,13 +1,12 @@
 package game;
 
-import java.util.Scanner;
+import util.Registration;
+import world.Item;
+import world.Room;
+
 import java.io.File;
 import java.io.IOException;
-
-import world.*;
-import util.*;
-import util.mixin.*;
-import game.*;
+import java.util.Scanner;
 
 
 

@@ -1,11 +1,9 @@
 package parser;
 
-import game.DataLoader;
-
-import world.Player;
-import util.mixin.ObjectionMixin;
 import util.Composite;
 import util.Registration;
+import util.mixin.ObjectionMixin;
+import world.Player;
 
 import java.util.ArrayList;
 

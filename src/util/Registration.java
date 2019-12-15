@@ -1,10 +1,6 @@
 package util;
 
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Registration<T> {

@@ -1,7 +1,7 @@
 package util.mixin;
 
-import util.Mixin;
 import util.Composite;
+import util.Mixin;
 import util.Registration;
 
 public class IdMixin<O extends Composite> extends Mixin<O, String> {

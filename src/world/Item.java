@@ -5,10 +5,9 @@ import util.mixin.IdMixin;
 import util.mixin.NamesMixin;
 import util.mixin.PrimaryNameMixin;
 
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 
 public class Item extends Composite

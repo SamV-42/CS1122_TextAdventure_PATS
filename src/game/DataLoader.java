@@ -1,11 +1,15 @@
 package game;
 
-import util.*;
-import util.mixin.*;
-import util.Registration;
-import world.*;
-import parser.*;
+import parser.Action;
+import parser.Command;
+import parser.Objection;
+import parser.Response;
 import parser.command.*;
+import util.Registration;
+import world.Direction;
+import world.Player;
+import world.Room;
+
 import java.util.ArrayList;
 
 /**

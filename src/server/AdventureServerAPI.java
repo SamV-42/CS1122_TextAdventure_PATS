@@ -1,7 +1,7 @@
 package server;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.UnknownHostException;
 
 public interface AdventureServerAPI {
 	// Starts the server running
