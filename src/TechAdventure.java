@@ -23,10 +23,6 @@ public class TechAdventure implements ConnectionListener {
     Parser parser = null;
     AnotherLoader anotherLoader = null;
     boolean stopping;
-    Room room1 = null;
-    Room room2 = null;
-    Room room3 = null;
-    Room room4 = null;
 
     public TechAdventure(){
         anotherLoader = new AnotherLoader();
@@ -83,11 +79,18 @@ public class TechAdventure implements ConnectionListener {
                         if (!found) {
                             adventureServer.sendMessage(e.getConnectionID(), "Unable to find a charactor with name: " + input.substring(9));
                         }
-                    }else if(input.length() > 4 && input.substring(0,3).equals("new") && player == null){
+                    }else if(input.length() > 4 && input.substring(0,3).equals("new") && player == null) {
                         Player newPlayer = new Player(input.substring(4), e.getConnectionID());
                         newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
                         playerList.add(newPlayer);
                         adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
+                    } else if(input.length() > 4 && input.substring(0,3).equals("say")){
+                        for( Player existPlayer : playerList){
+                            if(!existPlayer.equals(player)){
+                                adventureServer.sendMessage(existPlayer.getConnectionID(), player.getId() + " says: " +
+                                        e.getData().substring(4));
+                            }
+                        }
                     } else if ( input.equals ( "shutdown" ) && player.isHost()) {
                         stop();
                         stopping = true;
