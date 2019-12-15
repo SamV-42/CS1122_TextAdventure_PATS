@@ -117,7 +117,7 @@ public class Registration<T> {
         T oldval = Registration.<T>getMapOrThrow(identifierName).put(identifier, owner);
         if(oldval != null) {
             System.err.println("WARNING: Reassigning registration identifier. {type: " + oldval.getClass().getName()
-                + ", identifier type: " + identifierName + ", idenitifer value: " + identifier
+                + ", identifier type: " + identifierName + ", identifier value: " + identifier
                 + ", old object tostring: " + oldval.toString() + ", new object tostring: " + owner.toString() + " }");
             return false;
         }

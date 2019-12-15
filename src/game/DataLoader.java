@@ -6,6 +6,8 @@ import world.*;
 import parser.*;
 import parser.command.*;
 
+import java.util.ArrayList;
+
 
 public class DataLoader {
     public void generateCommands() {
@@ -47,9 +49,9 @@ public class DataLoader {
         InventoryCommand invCommand = new InventoryCommand("inventory_command", "inventory", "inv");
     }
 
-    public void putRoomBlockers(){
+    public void putRoomBlockers() {
         //Blocker for the cobweb room
-        Objection webBlocker = (p, c) -> {
+        Objection webBlocker = (p, c, cR) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
             DirectionCommand dc = (DirectionCommand)c;
@@ -64,7 +66,7 @@ public class DataLoader {
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
 
 
-        Objection gateBlocker = (p,c) -> {
+        Objection gateBlocker = (p,c,cR) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
             DirectionCommand dc = (DirectionCommand)c;
@@ -73,7 +75,29 @@ public class DataLoader {
 
             if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
 
-            return new Response("The gate is locked", 200){};
+            return new Response("", 101) {
+                @Override
+                public String getPlayerMessage(Player player) {
+
+                    if( checkPlayerHasKey(player) ) {
+                        return "You unlock the gate and pass through it. It closes behind you.\n" + cR[0].getPlayerMessage(p);
+                    }
+                    return "The gate is locked.";
+                }
+
+                @Override
+                public ArrayList<Action> getActions(Player player) {
+                    ArrayList<Action> acts = new ArrayList<>();
+                    if( checkPlayerHasKey(player) ) {
+                        acts.addAll( cR[0].getActions(p) );
+                    }
+                    return acts;
+                }
+
+                private boolean checkPlayerHasKey(Player player) {
+                    return player.getInventoryList().contains( Registration.getOwnerByStr("item_id", "key") );
+                }
+            };
         };
         Registration.<Room>getOwnerByStr("room_id", "dungeon_hall_2").getObjectionMixin().add(gateBlocker);
     }

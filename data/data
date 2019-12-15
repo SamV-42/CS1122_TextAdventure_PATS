@@ -142,7 +142,6 @@ name>Cobwebs
 altname>webs
 altname>web
 altname>cobweb
-altname>cobwebs
 description>Thick cobwebs. They're too sticky to move through, but they could probably be burned.
 attribute>static
 
@@ -182,6 +181,7 @@ id>key
 name>Key
 altname>rusty key
 description>A rusty key that looks just the right size for the lock on the gate.
+attribute>hidden
 
 type>item
 id>inscription

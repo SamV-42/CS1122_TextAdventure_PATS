@@ -21,13 +21,8 @@ public class TechAdventure {
         ankj.loadStuff();
 
         Player player = new Player("1", 893248092);
-        player.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
+        player.setRoom(Registration.getOwnerByStr("room_id", "dungeon_hall_1"));
 
-        for(String name : Registration.<Item>getOwnerByStr("item_id", "torch").getNames() ) {
-            System.out.println("Name: " + name);
-        }
-
-        System.out.println(Registration.<Item>getOwnerByStr("item_name", "torch"));
 
         Scanner inputScanner = new Scanner(System.in);
         while(true) {

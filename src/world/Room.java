@@ -41,7 +41,13 @@ public class Room extends Composite
 
         fullDescription.append(getDescription());
 
-        Item[] inv = getInventory();
+        List<Item> invl = getInventoryList();
+        for(Iterator<Item> iter = invl.iterator(); iter.hasNext(); ) {
+            if(iter.next().getHidden()) {
+                iter.remove();
+            }
+        }
+        Item[] inv = invl.toArray(new Item[]{});
         if(inv.length == 0) {
 
         } else {

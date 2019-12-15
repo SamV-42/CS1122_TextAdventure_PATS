@@ -41,9 +41,6 @@ public class AnotherLoader {
 
                 String tag = line.split(">")[0];
                 line = line.substring(tag.length() + 1);
-                //System.out.println(" ");
-
-                System.out.println("#:" + i + "\tTag: " + tag + "\tLine: " + line);
 
                 try {
                     switch(tag) {
@@ -59,7 +56,7 @@ public class AnotherLoader {
                                     break;
                                 case "item":
                                     currentObject = Registration.getOwnerByStr("item_id", line);
-                                    if(currentObject == null) { currentObject = new Item(line, ""); }
+                                    if(currentObject == null) { currentObject = new Item(line, "__temp"+i); }
                                     break;
                                 default:
                                     System.err.println("Fatal Error: Wrong type tag used.l" + i);
@@ -75,7 +72,7 @@ public class AnotherLoader {
                             break;
                         case "stuff":
                             Item item = Registration.getOwnerByStr("item_id", line);
-                            if(item == null) { item = new Item(line, ""); }
+                            if(item == null) { item = new Item(line, "__temp"+i); }
                             ((Room)currentObject).getInventoryMixin().add(item);
                             break;
                         case "connection":
@@ -98,7 +95,10 @@ public class AnotherLoader {
                                         ((Item)currentObject).setStatic(true);
                                         break;
                                     case "container":
-                                        //does nothing now
+                                        //does nothing for now
+                                        break;
+                                    case "hidden":
+                                        ((Item)currentObject).setHidden(true);
                                         break;
                                     default:
                                         System.err.println("Bad attrib" + i);

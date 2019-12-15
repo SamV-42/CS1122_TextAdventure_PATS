@@ -98,7 +98,7 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         objectionsList.addAll(player.getRoom().getObjectionsList());
 
         for(Objection obj : objectionsList) {
-            Response tempResponse = obj.check(player, command);
+            Response tempResponse = obj.check(player, command, currentResponse);
             if(tempResponse != null && tempResponse.getSeverity() > mostUrgentResponse.getSeverity()) {
                 mostUrgentResponse = tempResponse;
             }
