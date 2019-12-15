@@ -55,7 +55,7 @@ public class DropCommand extends Command {
             if(object.equals("all")) {
                 thing = null;
             } else {
-                thing = Registration.searchOwnerByStr("item_name", object);
+                thing = (Registration.<Item>searchOwnerByStr("item_name", object)).get(0);
             }
         }
 

@@ -5,7 +5,7 @@ import world.Player;
 /*
  *  Represents anything that would prevent a player-character from performing a particular action.
  *  I recommend instantiating via lambda expression.
- * 
+ *
  *  Example: LockedDoorObjection (prevents the action if the player tries to move through a particular exit without a key)
  *  Example: MinotaurObjection (kills the player if they do anything to wake up the minotaur)
  *
@@ -21,5 +21,5 @@ public interface Objection {
      * @param The proposed action
      * @return null if this objection doesn't apply; a Response if it does.
      */
-    public Response check(Player player, Command command);
+    public Response check(Player player, Command command, Response... currentResponses);
 }

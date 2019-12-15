@@ -11,6 +11,8 @@ import util.ListMakerHelper;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.lang.StringBuilder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Room extends Composite
                     implements IdMixin.Id, ObjectionMixin.Objections, InventoryMixin.Inventory, PrimaryNameMixin.PrimaryName {
@@ -36,7 +38,13 @@ public class Room extends Composite
 
         fullDescription.append(getDescription());
 
-        Item[] inv = getInventory();
+        List<Item> invl = getInventoryList();
+        for(Iterator<Item> iter = invl.iterator(); iter.hasNext(); ) {
+            if(iter.next().getHidden()) {
+                iter.remove();
+            }
+        }
+        Item[] inv = invl.toArray(new Item[]{});
         if(inv.length == 0) {
 
         } else {
@@ -68,6 +76,16 @@ public class Room extends Composite
         }
 
         return fullDescription.toString();
+    }
+
+    public Player[] getPlayers() {
+        java.util.Set<Player> stuff = util.Registration.<Player>getAllOfType();
+        for(java.util.Iterator<Player> iter = stuff.iterator() ; iter.hasNext(); ) {
+            if(! iter.next().getRoom().equals(this)) {
+                iter.remove();
+            }
+        }
+        return stuff.toArray(new Player[]{});
     }
 
     public String getDescription() {
