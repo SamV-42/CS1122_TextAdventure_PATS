@@ -45,21 +45,24 @@ public class DataLoader {
     }
 
     public void putRoomBlockers(){
-        //Blocker for the cobweb room
+        //Spider kills you if you try to walk through the webs
         Objection webBlocker = (p, c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
             DirectionCommand dc = (DirectionCommand)c;
 
-            if( dc.getMixin("id").get() != "north_command") { return null;}
+            if( dc.getMixin("id").get() != "north_command") { return null; }
 
-            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+            if(p.getRoom().getInventoryMixin().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
-            return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
+            //p.kill();
+            return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +
+                    "You feel it's venom seep into your veins as you collapse. You are dead.", 200);
         };
-
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
+        //--------------------------------------------------------------------------------------------------------------
 
+        //Blocker for the gate
         Objection gateBlocker = (p,c) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
@@ -67,9 +70,67 @@ public class DataLoader {
 
             if( dc.getMixin("id").get() != "north_command") { return null;}
 
-            if( ! p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "irongate")) ) { return null; }
-
             return new Response("The gate is locked", 200){};
         };
+        Registration.<Room>getOwnerByStr("room_id", "dungeon_hall_2").getObjectionMixin().add(gateBlocker);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Event to replace the torch with the lit torch
+        Objection replaceTorch = (p,c) -> {
+            if(!(c instanceof UseCommand)) { return null; }
+
+            UseCommand uc = (UseCommand)c;
+
+            if(!p.getInventoryMixin().contains())
+            if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "torch"))) { return null; }
+
+            p.getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "torch"));
+            p.getInventoryMixin().add(Registration.getOwnerByStr("item_id", "littorch"));
+            return new Response("The torch is set ablaze by the brazier!", 200);
+        };
+        Registration.<Room>getOwnerByStr("room_id", "dungeon_hall_2").getObjectionMixin().add(replaceTorch);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Event to burn the cobwebs
+        Objection burnWebs = (p,c) -> {
+            if(!(c instanceof UseCommand)) { return null; }
+
+            UseCommand uc = (UseCommand)c;
+
+            if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "littorch"))) { return null; }
+
+            p.getRoom().getInventoryMixin.remove(Registration.getOwnerByStr("item_id", "cobwebs"));
+
+            return new Response("The cobwebs burn away before your torch!", 200)
+        };
+        Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(burnWebs);
+        //--------------------------------------------------------------------------------------------------------------
+
+        //Event to "reveal" the key
+        Objection keyReveal = (p,c) -> {
+            if(!(c instanceof ExamineCommand)) { return null; }
+
+            ExamineCommand ec = (ExamineCommand)c;
+
+            if(!ec.getExamined().equals(Registration.getOwnerByStr("item_id", "skeleton"))) { return null; }
+
+            p.getRoom.getInventoryMixin.add(Registration.getOwnerByStr("item_id", "key"));
+
+            return new Response("", 200);
+        }
+
+        //Event to unlock the gate
+        Objection unlockGate = (p,c) -> {
+            if(!(c instanceof UseCommand)) { return null; }
+
+            UseCommand uc = (UseCommand)c;
+
+            if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "key"))) { return null; }
+
+            p.getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "key"));
+            p.setRoom(Registration.<Room>getOwnerByStr("room_id", "labyrinth_enter"));
+            return new Response("The gate unlocks! But as you step through to the next room, it swings closed and the key falls to the ground!");
+        };
+        Registration.<Room>getOwnerByStr("room_id", "dungeon_hall_2");
     }
 }

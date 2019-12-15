@@ -21,6 +21,8 @@ import world.Item;
 
 public class ExamineCommand extends Command {
 
+    private Item examined;
+
     public ExamineCommand( boolean register, String id, List<String> names) {
         super(register, id, null, names);
     }
@@ -33,12 +35,15 @@ public class ExamineCommand extends Command {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
+    public Item getExamined() { return examined; }
+
     public Response getResponse(String playerInput) {
         String object = playerInput;
+        Item thing = Registration.searchOwnerByStr("item_name", object);
+        examined = thing;
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {
-                Item thing = Registration.searchOwnerByStr("item_name", object);
                 if(thing == null) {
                     return "You don't see anything like that.";
                 } else {
