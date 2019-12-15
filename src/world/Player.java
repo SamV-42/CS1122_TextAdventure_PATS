@@ -1,7 +1,8 @@
 package world;
 
 import util.*;
-import Parser.*;
+import parser.*;
+import util.mixin.*;
 
 /**
  *	Player Object
