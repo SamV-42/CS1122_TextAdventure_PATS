@@ -39,4 +39,10 @@ public class Player extends Composite
     }
 
     public void setConnectionID(long id){ connectionId = id; }
+
+    public void kill(){
+        parser.runPlayerInput(this, "drop all");
+        this.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
+    }
+
 }
