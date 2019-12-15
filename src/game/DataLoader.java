@@ -6,11 +6,21 @@ import util.Registration;
 import world.*;
 import parser.*;
 import parser.command.*;
-
 import java.util.ArrayList;
 
+/**
+ * Class to load all the commands and events required to make the game function
+ *
+ * @author Patrick Philbin, Thomas Grifka, Alex Hromada, Sam VanderArk
+ * Date Last Modified: 12/17/19
+ * CS 1122 L02
+ */
 
 public class DataLoader {
+
+    /**
+     * Generates the commands neccessary to do things in the game.
+     */
     public void generateCommands() {
 
         //Note: once the below instances are made once, we don't need to hold onto references -- Command will statically
@@ -50,8 +60,11 @@ public class DataLoader {
         InventoryCommand invCommand = new InventoryCommand("inventory_command", "inventory", "inv");
     }
 
-    public void putRoomBlockers() {
-        //Blocker for the cobweb room
+    /**
+     * A loader method to initialize events and blockers.
+     */
+    public void putRoomBlockers(){
+        //Spider kills you if you try to walk through the webs
         Objection webBlocker = (p, c, cR) -> {
             if(!(c instanceof DirectionCommand)) { return null; }
 
@@ -62,7 +75,7 @@ public class DataLoader {
 
             if(p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
-            //p.kill();
+            play.kill();
             return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +
                     "You feel it's venom seep into your veins as you collapse. You are dead.", 200);
         };
