@@ -21,6 +21,8 @@ import world.Item;
 
 public class UseCommand extends Command {
 
+    private Item usedItem;
+
     public UseCommand( boolean register, String id, List<String> names) {
         super(register, id, null, names);
     }
@@ -33,12 +35,17 @@ public class UseCommand extends Command {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
+    public Item getUsedItem(){
+        return usedItem;
+    }
+
     public Response getResponse(String playerInput) {
         String object = playerInput;
+        Item thing = Registration.searchOwnerByStr("item_name", object);
+        usedItem = thing;
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {
-                Item thing = Registration.searchOwnerByStr("item_name", object);
                 if(thing == null || ! player.getInventoryList().contains(thing)) {
                     return "You're not holding anything like that.";
                 } else {
