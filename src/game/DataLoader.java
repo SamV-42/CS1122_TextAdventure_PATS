@@ -101,7 +101,7 @@ public class DataLoader {
 
             if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "littorch"))) { return null; }
 
-            play.getRoom().getInventoryMixin.remove(Registration.getOwnerByStr("item_id", "cobwebs"));
+            play.getRoom().getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "cobwebs"));
 
             return new Response("The cobwebs burn away before your torch!", 200);
         };
