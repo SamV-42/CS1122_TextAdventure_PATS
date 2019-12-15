@@ -3,11 +3,7 @@ package world;
 import util.Registration;
 import util.Composite;
 import util.mixin.IdMixin;
-import util.mixin.NamesMixin;
 import util.mixin.PrimaryNameMixin;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
  *  Represents a direction relating rooms in the world.

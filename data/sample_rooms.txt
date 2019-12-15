@@ -49,4 +49,3 @@ connection>west cool_room
 end>
 
 
-

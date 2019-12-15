@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 
 public class Item extends Composite
-                    implements IdMixin.Id, NamesMixin.Names, PrimaryNameMixin.PrimaryName {
+        implements IdMixin.Id, NamesMixin.Names, PrimaryNameMixin.PrimaryName {
 
     private String description;
     private boolean staticPickup = false;

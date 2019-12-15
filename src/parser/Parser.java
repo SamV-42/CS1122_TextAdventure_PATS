@@ -3,14 +3,11 @@ package parser;
 import game.DataLoader;
 
 import world.Player;
-import world.Direction;
 import util.mixin.ObjectionMixin;
 import util.Composite;
 import util.Registration;
-import parser.command.DirectionCommand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /*

@@ -1,16 +1,12 @@
 package parser.command;
 
-import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-import world.Direction;
 import world.Player;
-import world.Room;
 import parser.Command;
 import parser.Response;
-import parser.Action;
 import util.Registration;
 import world.Item;
 
@@ -25,6 +21,8 @@ import world.Item;
 
 public class UseCommand extends Command {
 
+    private Item usedItem;
+
     public UseCommand( boolean register, String id, List<String> names) {
         super(register, id, null, names);
     }
@@ -37,8 +35,14 @@ public class UseCommand extends Command {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
+    public Item getUsedItem(){
+        return usedItem;
+    }
+
     public Response getResponse(String playerInput) {
         String object = playerInput;
+        Item thing = Registration.searchOwnerByStr("item_name", object);
+        usedItem = thing;
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {

@@ -2,6 +2,7 @@ package game;
 
 import util.*;
 import util.mixin.*;
+import util.Registration;
 import world.*;
 import parser.*;
 import parser.command.*;
@@ -56,11 +57,13 @@ public class DataLoader {
 
             DirectionCommand dc = (DirectionCommand)c;
 
-            if( dc.getMixin("id").get() != "north_command") { return null;}
+            if( dc.getMixin("id").get() != "north_command") { return null; }
 
-            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+            if(p.getRoom().getInventoryMixin().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
-            return new Response("The cobwebs seem to be too thick to safely pass through.", 200);
+            //p.kill();
+            return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +
+                    "You feel it's venom seep into your veins as you collapse. You are dead.", 200);
         };
 
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);

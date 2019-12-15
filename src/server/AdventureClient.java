@@ -14,31 +14,34 @@ public class AdventureClient {
 		} else {
 			try ( Socket server = new Socket ( args[0], Integer.valueOf ( args[1] ) ) ) {
 				System.out.println("Connected to AdventureServer host " + server.getInetAddress());
-				//DO stuff when connected to a running or new server
 				BufferedReader fromServer = new BufferedReader(new InputStreamReader(server.getInputStream()));
 				PrintWriter toServer = new PrintWriter(server.getOutputStream(), true);
 				BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(System.in));
+				System.out.println("Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
+						" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
 				String s = "";
 				while (true) {
+					//Gets all ready text from server
 					while (fromServer.ready()) {
 						s = fromServer.readLine();
 						System.out.println(s);
 					}
+					//prints "> " and then waits for input
 					System.out.print("> ");
 					System.out.flush();
 					if ((s = keyboardInput.readLine()) == null) {
 						break;
 					}
 					toServer.println(s);
+
+					//Gets all ready text from server
 					while (fromServer.ready()) {
 						s = fromServer.readLine();
 						System.out.println(s);
 					}
-					s = fromServer.readLine();
 					if (s == null) {
 						break;
 					}
-					System.out.println(s);
 				}
 				fromServer.close();
 				toServer.close();

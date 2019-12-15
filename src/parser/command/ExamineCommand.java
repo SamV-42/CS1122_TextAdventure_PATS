@@ -1,16 +1,12 @@
 package parser.command;
 
-import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
-import world.Direction;
 import world.Player;
-import world.Room;
 import parser.Command;
 import parser.Response;
-import parser.Action;
 import util.Registration;
 import world.Item;
 
@@ -25,6 +21,8 @@ import world.Item;
 
 public class ExamineCommand extends Command {
 
+    private Item examined;
+
     public ExamineCommand( boolean register, String id, List<String> names) {
         super(register, id, null, names);
     }
@@ -37,8 +35,12 @@ public class ExamineCommand extends Command {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
+    public Item getExamined() { return examined; }
+
     public Response getResponse(String playerInput) {
         String object = playerInput;
+        Item thing = Registration.searchOwnerByStr("item_name", object);
+        examined = thing;
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {

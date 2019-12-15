@@ -13,22 +13,144 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class TechAdventure {
-    public static void main(String[] args) {
-        Parser parser = new Parser();
+import java.io.IOException;
 
-        AnotherLoader ankj = new AnotherLoader();
-        ankj.loadStuff();
+public class TechAdventure implements ConnectionListener {
 
-        Player player = new Player("1", 893248092);
-        player.setRoom(Registration.getOwnerByStr("room_id", "dungeon_hall_1"));
+    DataLoader loader = null;
+    AdventureServer adventureServer = null;
+    ArrayList<Player> playerList = null;
+    Parser parser = null;
+    AnotherLoader anotherLoader = null;
+    boolean stopping;
+    Room room1 = null;
+    Room room2 = null;
+    Room room3 = null;
+    Room room4 = null;
 
-
-        Scanner inputScanner = new Scanner(System.in);
-        while(true) {
-            System.out.print("> ");
-            String input = inputScanner.nextLine();
-            System.out.println( parser.runPlayerInput(player, input) );
+    public TechAdventure(){
+        anotherLoader = new AnotherLoader();
+        playerList = new ArrayList<>();
+        stopping = false;
+        loader = new DataLoader();
+        adventureServer = new AdventureServer();
+        adventureServer.setOnTransmission(this);
+        try {
+            initilize();
+        }catch(UnknownConnectionException e){
+            e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        int port = 2112;
+        if(args.length > 0 && args[0] != null){
+            port = Integer.parseInt(args[0]);
+        }
+        TechAdventure techAdventure = new TechAdventure();
+        techAdventure.start(port);
+    }
+
+    @Override
+    public void handle ( ConnectionEvent e ) {
+        System.out.println( String.format ( "connectionId=%d, data=%s", e.getConnectionID (), e.getData() ));
+        String input = e.getData().toLowerCase();
+        try {
+            switch ( e.getCode ( ) ) {
+                case CONNECTION_ESTABLISHED:
+                    //adventureServer.sendMessage(e.getConnectionID(), "Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
+                    //" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
+                    break;
+                case TRANSMISSION_RECEIVED:
+                    Player player = null;
+                    for ( Player existPlayer : playerList) {
+                        if(existPlayer.getConnectionID () == e.getConnectionID ()){
+                            player = existPlayer;
+                            break;
+                        }
+                    }
+                    if(input.length() > 9 && input.substring(0,8).equals("existing") && player == null) {
+                        boolean found = false;
+                        for (Player existPlayer : playerList) {
+                            if (existPlayer.getId().equals(input.substring(9))) {
+                                existPlayer.setConnectionID(e.getConnectionID());
+                                found = true;
+                                System.out.println(existPlayer.getId() + " has been assigned to Connection: " + e.getConnectionID());
+                                adventureServer.sendMessage(e.getConnectionID(), existPlayer.getId() + "has been assigned to you");
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            adventureServer.sendMessage(e.getConnectionID(), "Unable to find a charactor with name: " + input.substring(9));
+                        }
+                    }else if(input.length() > 4 && input.substring(0,3).equals("new") && player == null){
+                        Player newPlayer = new Player(input.substring(4), e.getConnectionID());
+                        newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
+                        playerList.add(newPlayer);
+                        adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
+                    } else if ( input.equals ( "shutdown" ) && player.isHost()) {
+                        stop();
+                        stopping = true;
+                    } else if( input.equals("quit")){
+                        try {
+                            if(player.isHost()){
+                                stop();
+                                stopping = true;
+                            }else {
+                                adventureServer.disconnect(e.getConnectionID());
+                            }
+                        }catch(IOException error){
+                            error.printStackTrace();
+                        }
+                    } else {
+                        adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
+                    }
+                    break;
+                case CONNECTION_TERMINATED:
+                    System.out.println("Player Discconected: " +e.getConnectionID() );
+                    break;
+                default:
+                    break;
+            }
+        } catch ( UnknownConnectionException unknownConnectionException ) {
+            unknownConnectionException.printStackTrace ( );
+        }
+    }
+
+    public void start( int port ) {
+        adventureServer.startServer ( port );
+    }
+
+    public void stop() throws UnknownConnectionException {
+        for (Player existPlayer: playerList) {
+            if(existPlayer !=null) {
+                parser.runPlayerInput(existPlayer, "drop all");
+            }
+            if(!existPlayer.isHost()){
+                adventureServer.sendMessage ( existPlayer.getConnectionID ( ), "CONNECTION TERMINATED: REASON HOST DISCONNECT");
+            }else{
+                adventureServer.sendMessage ( existPlayer.getConnectionID(), "DISCONNECTED");
+            }
+            try{
+                adventureServer.disconnect(existPlayer.getConnectionID());
+            }catch(IOException error){
+                error.printStackTrace();
+            }
+        }
+        adventureServer.stopServer ( );
+        playerList = null;
+        System.out.println("Server Stopped");
+    }
+
+    public void initilize() throws UnknownConnectionException {
+
+        loader.generateCommands();
+        anotherLoader.loadStuff();
+
+        for(String name : Registration.<Item>getOwnerByStr("item_id", "torch").getNames() ) {
+            System.out.println("Name: " + name);
+        }
+
+        parser = new Parser();
     }
 }
