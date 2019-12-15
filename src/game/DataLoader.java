@@ -73,11 +73,11 @@ public class DataLoader {
 
             if(dc.getMixin("id").get() != "north_command") { return null; }
 
-            if(p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
 
             play.kill();
             return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +
-                    "You feel it's venom seep into your veins as you collapse. You are dead.", 200);
+                    " You feel it's venom seep into your veins as you collapse. You are dead.", 200);
         };
 
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);

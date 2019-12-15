@@ -85,19 +85,19 @@ public class TechAdventure implements ConnectionListener {
                         newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
                         playerList.add(newPlayer);
                         adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
-                    } else if(input.length() > 4 && input.substring(0,3).equals("say")) {
+                    } else if(player != null && input.length() > 4 && input.substring(0,3).equals("say")) {
                         for (Player existPlayer : playerList) {
                             if (!existPlayer.equals(player)) {
                                 adventureServer.sendMessage(existPlayer.getConnectionID(), player.getId() + " says: " +
                                         e.getData().substring(4));
                             }
                         }
-                    } else if(input.equals("wait") && input.equals("getMessages")){
-
-                    } else if ( input.equals ( "shutdown" ) && player.isHost()) {
+                    } else if(player != null && input.equals("wait") || input.equals("getMessages")){
+                            //allows the client to get new messeges
+                    } else if (player != null && input.equals ( "shutdown" ) && player.isHost()) {
                         stop();
                         stopping = true;
-                    } else if( input.equals("quit")){
+                    } else if( input.equals("quit") && player != null){
                         try {
                             if(player.isHost()){
                                 stop();
@@ -108,8 +108,11 @@ public class TechAdventure implements ConnectionListener {
                         }catch(IOException error){
                             error.printStackTrace();
                         }
-                    } else {
+                    } else if(player != null){
                         adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
+                    } else{
+                        adventureServer.sendMessage(e.getConnectionID(), "You have not created a charector or taken over" +
+                                " one");
                     }
                     break;
                 case CONNECTION_TERMINATED:
