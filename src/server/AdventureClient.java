@@ -22,25 +22,20 @@ public class AdventureClient {
 				String s = "";
 				while (true) {
 					//Gets all ready text from server
-					while (fromServer.ready()) {
-						s = fromServer.readLine();
-						System.out.println(s);
+					if (fromServer.ready()) {
+						while(fromServer.ready()) {
+							s = fromServer.readLine();
+							System.out.println(s);
+						}
+						System.out.print("\n> ");
+						System.out.flush();
 					}
-					//prints "> " and then waits for input
-					System.out.print("> ");
-					System.out.flush();
-					if ((s = keyboardInput.readLine()) == null) {
-						break;
-					}
-					toServer.println(s);
 
-					//Gets all ready text from server
-					while (fromServer.ready()) {
-						s = fromServer.readLine();
-						System.out.println(s);
-					}
-					if (s == null) {
-						break;
+					if(keyboardInput.ready()) {
+						if ((s = keyboardInput.readLine()) == null) {
+							break;
+						}
+						toServer.println(s);
 					}
 				}
 				fromServer.close();
