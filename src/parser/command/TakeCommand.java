@@ -48,14 +48,17 @@ public class TakeCommand extends Command {
         }
 
         private String object = null;
-        private Item thing = null;
+        private Item[] things = null;
+        private Item[] roomthings = null;
+        private Item[] nonstaticroomthings = null;
+        private Item[] yourthings = null;
 
         protected void initialize(String object) {
             this.object = object;
             if(object.equals("all")) {
-                thing = null;
+                things = null;
             } else {
-                thing = Registration.searchOwnerByStr("item_name", object);
+                things = Registration.<Item>searchOwnerByStr("item_name", object).toArray(new Item[]{});
             }
         }
 
@@ -68,14 +71,35 @@ public class TakeCommand extends Command {
         }
 
         private ItemPresence getResult(Player player) {
-            if (thing == null) {
-                if(object.equals("all")) {
-                    return ItemPresence.ALL;
-                }
+            if (this.object.equals("all")) {
+                return ItemPresence.ALL;
+            }
+            if(things.length == 0) {
                 return ItemPresence.FAILURE;
-            } else if (! player.getRoom().getInventoryList().contains(thing)) {
+            }
+
+            ArrayList<Item> roomthings_ = new ArrayList<>();
+            ArrayList<Item> yourthings_ = new ArrayList<>();
+            ArrayList<Item> nonstaticroomthings_ = new ArrayList<>();
+            for(Item thing : things) {
+                if (player.getRoom().getInventoryList().contains(thing)) {
+                    roomthings_.add(thing);
+                    if(! thing.getStatic()) {
+                        nonstaticroomthings_.add(thing);
+                    }
+                }
+                if (player.getInventoryList().contains(thing)) {
+                    yourthings_.add(thing);
+                }
+            }
+            yourthings = yourthings_.toArray(new Item[]{});
+            roomthings = roomthings_.toArray(new Item[]{});
+            nonstaticroomthings = nonstaticroomthings_.toArray(new Item[]{});
+
+            if(roomthings_.size() == 0) {
                 return ItemPresence.NOTPRESENT;
-            } else if(thing.getStatic()) {
+            }
+            if(nonstaticroomthings.length == 0) {
                 return ItemPresence.STATIC;
             }
             return ItemPresence.SUCCESS;
@@ -85,9 +109,15 @@ public class TakeCommand extends Command {
         public String getPlayerMessage(Player player) {
             switch(getResult(player)) {
                 case ALL:
-                    Item[] inv = player.getRoom().getInventory();
+                    List<Item> invl = player.getRoom().getInventoryList();
+                    for(java.util.Iterator<Item> iter = invl.iterator(); iter.hasNext();) {
+                        if(iter.next().getStatic()) {
+                            iter.remove();
+                        }
+                    }
+                    Item[] inv = invl.toArray(new Item[]{});
                     if(inv.length == 0) {
-                        return "You don't see much else to take.";
+                        return "You don't see much worth taking.";
                     } else {
                         StringBuilder itemsDescription = new StringBuilder();
                         itemsDescription.append("You pick up ");
@@ -102,18 +132,15 @@ public class TakeCommand extends Command {
                         return itemsDescription.toString();
                     }
                 case SUCCESS:
-                    return "You pick up the " + thing.getPrimaryName() + ".";
+                    return "You pick up the " + roomthings[0].getPrimaryName() + ".";
                 case STATIC:
-                    return "It doesn't seem like that can be picked up.";
+                    return "It doesn't seem as though anything like that could be picked up.";
                 case NOTPRESENT:
-                    if(player.getInventoryList().contains(thing)) {
+                    if(yourthings.length != 0) {
                         return "You already have that.";
                     }
                 case FAILURE:
                 default:
-                    if(this.object.equals("all")) {
-
-                    }
                     return "You don't see anything like that nearby.";
             }
         }
@@ -123,8 +150,8 @@ public class TakeCommand extends Command {
             ArrayList<Action> actions = new ArrayList<>();
             if(getResult(player) == ItemPresence.SUCCESS) {
                 actions.add( (Player p) -> {
-                    p.getRoom().getInventoryMixin().remove(thing);
-                    p.getInventoryMixin().add(thing);
+                    p.getRoom().getInventoryMixin().remove(nonstaticroomthings[0]);
+                    p.getInventoryMixin().add(nonstaticroomthings[0]);
                 });
             } else if(getResult(player) == ItemPresence.ALL) {
                 actions.add( (Player p) -> {
@@ -132,8 +159,10 @@ public class TakeCommand extends Command {
                     InventoryMixin<?> playInvMix = p.getInventoryMixin();
                     Item[] inv = roomInvMix.get();
                     for(Item item : inv) {
-                        roomInvMix.remove(item);
-                        playInvMix.add(item);
+                        if(! item.getStatic()) {
+                            roomInvMix.remove(item);
+                            playInvMix.add(item);
+                        }
                     }
                 });
             }

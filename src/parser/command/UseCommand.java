@@ -41,11 +41,12 @@ public class UseCommand extends Command {
 
     public Response getResponse(String playerInput) {
         String object = playerInput;
-        Item thing = Registration.searchOwnerByStr("item_name", object);
+        Item thing = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
         usedItem = thing;
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {
+                Item thing = (Registration.<Item>searchOwnerByStr("item_name", object)).get(0);
                 if(thing == null || ! player.getInventoryList().contains(thing)) {
                     return "You're not holding anything like that.";
                 } else {
