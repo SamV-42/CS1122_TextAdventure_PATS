@@ -46,8 +46,10 @@ public class DataLoader {
             @Override
             public boolean isReplace(String playerInput) {
                 String replacement = this.replacementText(playerInput);
-                Command command = (Registration.<Command>searchOwnerByStr("command_name", replacement)).get(0);
-                return (command instanceof DirectionCommand);
+                try {
+                    Command command = (Registration.<Command>searchOwnerByStr("command_name", replacement)).get(0);
+                    return (command instanceof DirectionCommand);
+                } catch(java.lang.IndexOutOfBoundsException e) { return false; }
             }
         };
 
@@ -73,15 +75,14 @@ public class DataLoader {
             if(!(c instanceof DirectionCommand)) { return null; }
 
             DirectionCommand dc = (DirectionCommand)c;
-            Player play = (Player)p;
 
             if(dc.getMixin("id").get() != "north_command") { return null; }
 
-            if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs"))) { return null; }
+            if(! (p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "cobwebs")))) { return null; }
 
-            play.kill();
-            return new Response("As you try to push through the webs, you are suddenly bitten by a massive spider!" +
-                    " You feel it's venom seep into your veins as you collapse. You are dead.", 200);
+            return new Response("As you try to push through the webs, you are suddenly bitten by the massive spider!" +
+                    " You feel it's venom seep into your veins as you collapse. You are dead.",
+                    200, (play) -> { play.kill();} );
         };
 
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(webBlocker);
@@ -128,13 +129,15 @@ public class DataLoader {
             if(!(c instanceof UseCommand)) { return null; }
 
             UseCommand uc = (UseCommand)c;
-            Player play = (Player)p;
 
-            if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "torch"))) { return null; }
+            if(! Registration.getOwnerByStr("item_id", "torch").equals(uc.getUsedItem())) { return null; }
+            if(!p.getInventoryList().contains(uc.getUsedItem())) { return null; }
 
-            play.getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "torch"));
-            play.getInventoryMixin().add(Registration.getOwnerByStr("item_id", "littorch"));
-            return new Response("The torch is set ablaze by the brazier!", 200);
+            return new Response("The torch is set ablaze by the brazier!",
+            200, (play) -> {
+                play.getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "torch"));
+                play.getInventoryMixin().add(Registration.getOwnerByStr("item_id", "littorch"));
+            });
         };
         Registration.<Room>getOwnerByStr("room_id", "chapel").getObjectionMixin().add(replaceTorch);
         //--------------------------------------------------------------------------------------------------------------
@@ -144,13 +147,12 @@ public class DataLoader {
             if(!(c instanceof UseCommand)) { return null; }
 
             UseCommand uc = (UseCommand)c;
-            Player play = (Player)p;
 
-            if(!uc.getUsedItem().equals(Registration.getOwnerByStr("item_id", "littorch"))) { return null; }
+            if(! Registration.getOwnerByStr("item_id", "littorch").equals(uc.getUsedItem())) { return null; }
+            if(!p.getInventoryList().contains(uc.getUsedItem())) { return null; }
 
-            play.getRoom().getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "cobwebs"));
-
-            return new Response("The cobwebs burn away before your torch!", 200);
+            return new Response("The cobwebs burn away before your torch!",
+            200, (play) -> {play.getRoom().getInventoryMixin().remove(Registration.getOwnerByStr("item_id", "cobwebs")); });
         };
         Registration.<Room>getOwnerByStr("room_id", "spider_room").getObjectionMixin().add(burnWebs);
         //--------------------------------------------------------------------------------------------------------------

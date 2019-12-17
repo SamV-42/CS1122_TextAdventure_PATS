@@ -41,13 +41,14 @@ public class UseCommand extends Command {
 
     public Response getResponse(String playerInput) {
         String object = playerInput;
-        Item thing = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
-        usedItem = thing;
+        try {
+            usedItem = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
+        } catch(java.lang.IndexOutOfBoundsException e) { usedItem = null; }
+
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {
-                Item thing = (Registration.<Item>searchOwnerByStr("item_name", object)).get(0);
-                if(thing == null || ! player.getInventoryList().contains(thing)) {
+                if(usedItem == null || ! player.getInventoryList().contains(usedItem)) {
                     return "You're not holding anything like that.";
                 } else {
                     return "You try to use it. Effective?";

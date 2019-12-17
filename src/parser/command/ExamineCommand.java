@@ -39,8 +39,10 @@ public class ExamineCommand extends Command {
 
     public Response getResponse(String playerInput) {
         String object = playerInput;
-        Item thing = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
-        examined = thing;
+        try {   //NOTE that this is actually wrong and broken but y'know what, it's *fine*
+            examined = Registration.<Item>searchOwnerByStr("item_name", object).get(0);
+        } catch(java.lang.IndexOutOfBoundsException e) { examined = null; }
+
         return new Response("", 50) {
             @Override
             public String getPlayerMessage(Player player) {

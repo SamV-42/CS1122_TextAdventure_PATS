@@ -58,7 +58,9 @@ public class DropCommand extends Command {
             if(object.equals("all")) {
                 thing = null;
             } else {
-                thing = (Registration.<Item>searchOwnerByStr("item_name", object)).get(0);
+                try {
+                    thing = (Registration.<Item>searchOwnerByStr("item_name", object)).get(0);
+                } catch(java.lang.IndexOutOfBoundsException e) { thing = null; }
             }
         }
 
