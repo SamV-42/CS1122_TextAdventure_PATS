@@ -3,20 +3,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.net.SocketException;
-import java.util.Scanner;
-import java.io.File;
+import java.net.UnknownHostException;
 
-/**
- *	The Client the player will use
- *
- *       Date Last Modified: 12/18/2019
- *	@author Thomas Grifka, Sam VanderArk, Patrick Philbin, Alex Hromada
- *
- *	CS1122, Fall 2019
- *	Lab Section 2
- */
 
 public class AdventureClient {
 	public static void main ( String[] args ) {
@@ -28,9 +17,6 @@ public class AdventureClient {
 				BufferedReader fromServer = new BufferedReader(new InputStreamReader(server.getInputStream()));
 				PrintWriter toServer = new PrintWriter(server.getOutputStream(), true);
 				BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(System.in));
-				System.out.println("If you are the \"host\" of the game, and the game has not been loaded yet please either " +
-						"load a save by using \"restore (filename)\" or start a " + "new game by using \"new-game\"");
-				System.out.println("then doing the following, or if you are joining a game only do the following: ");
 				System.out.println("Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
 						" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
 				String s = "";
@@ -39,18 +25,7 @@ public class AdventureClient {
 					if (fromServer.ready()) {
 						while(fromServer.ready()) {
 							s = fromServer.readLine();
-							if(s.length() > 4 && s.substring(0,4).toLowerCase().equals("save")){
-								/*
-								try{
-									PrintWriter fileOut = new PrintWriter();
-								} catch(IOException e){
-
-								}
-
-								 */
-							}else {
-								System.out.println(s);
-							}
+							System.out.println(s);
 						}
 						System.out.print("\n> ");
 						System.out.flush();
@@ -59,18 +34,6 @@ public class AdventureClient {
 					if(keyboardInput.ready()) {
 						if ((s = keyboardInput.readLine()) == null) {
 							break;
-						}
-						if(s.length() > 7 && s.substring(0,7).toLowerCase().equals("restore")){
-							try{
-								Scanner fileInput = new Scanner(new File(s.substring(7)));
-								s = "restore ";
-								while(fileInput.hasNext()){
-									s += fileInput.nextLine();
-								}
-								fileInput.close();
-							}catch(IOException e){
-								System.out.println("ERROR: File not Found");
-							}
 						}
 						toServer.println(s);
 					}

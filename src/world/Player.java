@@ -1,8 +1,12 @@
 package world;
 
-import util.*;
-import parser.*;
-import util.mixin.*;
+import parser.Parser;
+import util.Composite;
+import util.Registration;
+import util.mixin.IdMixin;
+import util.mixin.InventoryMixin;
+import util.mixin.ObjectionMixin;
+import util.mixin.PrimaryNameMixin;
 
 /**
  *	Player Object

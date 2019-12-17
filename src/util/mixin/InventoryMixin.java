@@ -4,9 +4,9 @@ import util.Composite;
 import util.StandardMixin;
 import world.Item;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> {
 
