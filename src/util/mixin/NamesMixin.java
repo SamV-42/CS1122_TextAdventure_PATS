@@ -1,12 +1,12 @@
 package util.mixin;
 
 import util.Composite;
-import util.StandardMixin;
 import util.Registration;
+import util.StandardMixin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class NamesMixin<O extends Composite> extends StandardMixin<O, String> {
 

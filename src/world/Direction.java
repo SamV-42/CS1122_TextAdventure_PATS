@@ -1,7 +1,7 @@
 package world;
 
-import util.Registration;
 import util.Composite;
+import util.Registration;
 import util.mixin.IdMixin;
 import util.mixin.PrimaryNameMixin;
 

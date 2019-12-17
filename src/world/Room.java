@@ -1,17 +1,14 @@
 package world;
 
-import util.mixin.ObjectionMixin;
 import util.Composite;
+import util.ListMakerHelper;
 import util.mixin.IdMixin;
 import util.mixin.InventoryMixin;
+import util.mixin.ObjectionMixin;
 import util.mixin.PrimaryNameMixin;
-
-import util.ListMakerHelper;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.lang.StringBuilder;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Room extends Composite

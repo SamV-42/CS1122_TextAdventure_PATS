@@ -1,21 +1,15 @@
 package parser.command;
 
-import java.lang.StringBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
-import world.Direction;
-import world.Player;
-import world.Room;
+import parser.Action;
 import parser.Command;
 import parser.Response;
-import parser.Action;
-import util.*;
-import parser.*;
-import util.mixin.*;
-import parser.command.*;
-import world.*;
+import util.ListMakerHelper;
+import world.Item;
+import world.Player;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /*
  *  Represents a command that shows the room
