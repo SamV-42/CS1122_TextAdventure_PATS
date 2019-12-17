@@ -7,7 +7,7 @@ import util.mixin.*;
 /**
  *	Player Object
  *
- *       Date Last Modified: 12/15/2019
+ *       Date Last Modified: 12/18/2019
  *	@author Thomas Grifka, Sam VanderArk, Patrick Philbin, Alex Hromada
  *
  *	CS1122, Fall 2019
