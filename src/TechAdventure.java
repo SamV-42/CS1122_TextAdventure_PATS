@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.HashMap;
 
 /**
  *	The text adventure game
@@ -35,6 +38,7 @@ public class TechAdventure implements ConnectionListener {
     private boolean stopping; //whereter or not the server is stopping, controlls how discconects work
     boolean started; //wherter or not a world has actually been loaded
     private Minotaur mino = null; //the minotaur of the world, ie boss
+    private HashMap<String, String> saves = new HashMap<>();  //a map of saves and their names
 
     /**
      * the constructor of the TechAdventure
@@ -46,6 +50,8 @@ public class TechAdventure implements ConnectionListener {
         started = false;
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
+
+        saves.put("testing", "spider_room\ntorch");
     }
 
     /**
@@ -69,7 +75,7 @@ public class TechAdventure implements ConnectionListener {
     @Override
     public void handle(ConnectionEvent e) {
         System.out.println(String.format("connectionId=%d, data=%s", e.getConnectionID(), e.getData()));
-        String input = e.getData().toLowerCase();
+        String input = e.getData().toLowerCase().trim();
         try {
             switch (e.getCode()) {
                 case CONNECTION_ESTABLISHED:
@@ -144,6 +150,43 @@ public class TechAdventure implements ConnectionListener {
                             } catch (IOException error) {
                                 error.printStackTrace();
                             }
+
+                        } else if( input.length() > 4 && input.substring(0,5).equals("save ") ) {
+
+                        } else if( input.length() > 7 && input.substring(0,8).equals("restore ") ) {
+
+                            Room targetRoom;
+                            ArrayList<Item> itemsHeld = new ArrayList<>();
+
+                    		try( Scanner fileInput = new Scanner(saves.get(input.substring(8)))   ){
+
+                                targetRoom = Registration.<Room>getOwnerByStr("room_id", fileInput.next());
+                                while(fileInput.hasNext()) {
+                                    itemsHeld.add(Registration.<Item>getOwnerByStr("item_id", fileInput.next()));
+                                }
+
+                    		} catch(NullPointerException ex){
+                    			adventureServer.sendMessage(player.getConnectionID(), "Sorry, we couldn't find a restore file with that name.");
+                                break;
+                            } catch(NoSuchElementException ex){
+                                adventureServer.sendMessage(player.getConnectionID(), "Sorry, something went wrong with the file you specified.");
+                                break;
+                            }
+
+                            parser.runPlayerInput(player, "drop all");
+                            player.setRoom(targetRoom);
+                            java.util.Set<InventoryMixin> allTheInventories = Registration.<InventoryMixin>getAllOfType();
+                            for(Item item : itemsHeld) {
+                                for(InventoryMixin im : allTheInventories) {
+                                    if(im.itemPresent(item)) {
+                                        im.remove(item);
+                                    }
+                                }
+                                player.getInventoryMixin().add(item);
+                            }
+                            adventureServer.sendMessage(player.getConnectionID(), "Game restored.");
+                            break;
+
                          //handles part of the go command before sending it to the parser, as it determines if mino
                          //should kill them or not
                         } else if (player != null && e.getData().length() > 3 && e.getData().substring(0, 2).equals("go")) {

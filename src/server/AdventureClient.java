@@ -39,18 +39,7 @@ public class AdventureClient {
 					if (fromServer.ready()) {
 						while(fromServer.ready()) {
 							s = fromServer.readLine();
-							if(s.length() > 4 && s.substring(0,4).toLowerCase().equals("save")){
-								/*
-								try{
-									PrintWriter fileOut = new PrintWriter();
-								} catch(IOException e){
-
-								}
-
-								 */
-							}else {
 								System.out.println(s);
-							}
 						}
 						System.out.print("\n> ");
 						System.out.flush();
@@ -60,18 +49,7 @@ public class AdventureClient {
 						if ((s = keyboardInput.readLine()) == null) {
 							break;
 						}
-						if(s.length() > 7 && s.substring(0,7).toLowerCase().equals("restore")){
-							try{
-								Scanner fileInput = new Scanner(new File(s.substring(7)));
-								s = "restore ";
-								while(fileInput.hasNext()){
-									s += fileInput.nextLine();
-								}
-								fileInput.close();
-							}catch(IOException e){
-								System.out.println("ERROR: File not Found");
-							}
-						}
+
 						toServer.println(s);
 					}
 				}
@@ -87,4 +65,5 @@ public class AdventureClient {
 			}
 		}
 	}
+
 }
