@@ -76,7 +76,7 @@ public class Room extends Composite
     }
 
     public Player[] getPlayers() {
-        java.util.Set<Player> stuff = util.Registration.<Player>getAllOfType();
+        java.util.Set<Player> stuff = util.Registration.<Player>getAllOfType(Player.class);
         for(java.util.Iterator<Player> iter = stuff.iterator() ; iter.hasNext(); ) {
             if(! iter.next().getRoom().equals(this)) {
                 iter.remove();

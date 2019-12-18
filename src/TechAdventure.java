@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.HashMap;
+import java.lang.StringBuilder;
 
 /**
  *	The text adventure game
@@ -151,7 +152,20 @@ public class TechAdventure implements ConnectionListener {
                                 error.printStackTrace();
                             }
 
-                        } else if( input.length() > 4 && input.substring(0,5).equals("save ") ) {
+                        } else if( input.length() > 5 && input.substring(0,5).equals("save ") ) {
+
+                            String target = input.substring(5);
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append( player.getRoom().getId() );
+                            for(Item item : player.getInventory()) {
+                                sb.append("\n");
+                                sb.append(item.getId());
+                            }
+                            saves.put(target, sb.toString());
+
+                            adventureServer.sendMessage(player.getConnectionID(), "Location and items saved to \"" + target + "\"");
+                            break;
 
                         } else if( input.length() > 7 && input.substring(0,8).equals("restore ") ) {
 
@@ -175,7 +189,7 @@ public class TechAdventure implements ConnectionListener {
 
                             parser.runPlayerInput(player, "drop all");
                             player.setRoom(targetRoom);
-                            java.util.Set<InventoryMixin> allTheInventories = Registration.<InventoryMixin>getAllOfType();
+                            java.util.Set<InventoryMixin> allTheInventories = Registration.<InventoryMixin>getAllOfType(InventoryMixin.class);
                             for(Item item : itemsHeld) {
                                 for(InventoryMixin im : allTheInventories) {
                                     if(im.itemPresent(item)) {

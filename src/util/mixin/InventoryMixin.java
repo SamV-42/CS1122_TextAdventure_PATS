@@ -3,6 +3,8 @@ package util.mixin;
 import util.Composite;
 import util.StandardMixin;
 import world.Item;
+import util.*;
+import util.mixin.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
     }
 
     private ArrayList<Item> items;
+    private Registration<InventoryMixin> compRegistrationInventory = null;
 
     @Override
     public String getMixinId() { return "inventory"; }
@@ -34,6 +37,9 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
     public InventoryMixin(O owner, String className, List<Item> items) {
         super(owner, className);
         this.items = new ArrayList<>(items);
+
+        String id_name = className + "_inventory";
+        compRegistrationInventory = new Registration<>(this, id_name, ((IdMixin.Id)(owner)).getId() );
     }
 
     public InventoryMixin(O owner, String className, Item... items) {

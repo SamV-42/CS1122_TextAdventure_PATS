@@ -74,14 +74,12 @@ public class Registration<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Set<T> getAllOfType() {
-        Set<T> output = new java.util.TreeSet<>();
+    public static <T> Set<T> getAllOfType(Class<T> cls) {
+        Set<T> output = new java.util.HashSet<>();
         for(HashMap<String, ?> map : registered.values() ) {
             for(Object t : map.values() ) {
-                try {
+                if(cls.isInstance(t)) {
                     output.add((T)t);
-                } catch(java.lang.ClassCastException e) {
-
                 }
             }
         }
