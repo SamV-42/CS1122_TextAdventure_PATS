@@ -23,7 +23,7 @@ public class Minotaur extends Item {
             prevRoom = room;
             int num = (int) (Math.random() * directions.length);
             room = room.getConnection(directions[num]);
-        } else {
+        } else if(directions.length != 0) {
             Room nextRoom = prevRoom;
             while (prevRoom.equals(nextRoom)) {
                 int num = (int) (Math.random() * directions.length);

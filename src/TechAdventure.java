@@ -21,13 +21,14 @@ import java.util.HashMap;
 import java.lang.StringBuilder;
 
 /**
- *	The text adventure game
+ * The text adventure game
+ * <p>
+ * Date Last Modified: 12/18/2019
  *
- *       Date Last Modified: 12/18/2019
- *	@author Thomas Grifka, Sam VanderArk, Patrick Philbin, Alex Hromada
- *
- *	CS1122, Fall 2019
- *	Lab Section 2
+ * @author Thomas Grifka, Sam VanderArk, Patrick Philbin, Alex Hromada
+ * <p>
+ * CS1122, Fall 2019
+ * Lab Section 2
  */
 
 public class TechAdventure implements ConnectionListener {
@@ -51,12 +52,11 @@ public class TechAdventure implements ConnectionListener {
         started = false;
         adventureServer = new AdventureServer();
         adventureServer.setOnTransmission(this);
-
-        saves.put("testing", "spider_room\ntorch");
     }
 
     /**
      * the main method
+     *
      * @param args gets the port number
      */
     public static void main(String[] args) {
@@ -91,15 +91,36 @@ public class TechAdventure implements ConnectionListener {
                             break;
                         }
                     }
+                    if (player != null && player.isDead()) {
+                        adventureServer.sendMessage(e.getConnectionID(), "You have died and therefore have been " +
+                                "disconnected from the server");
+                        playerList.remove(player);
+                        try {
+                            adventureServer.disconnect(e.getConnectionID());
+                        } catch (IOException eIO) {
+                            System.out.println("ERROR: Disconnecting dead player");
+                        }
+                    }
+                    if(player != null && player.hasWon()){
+                        for (int x = 0; x < playerList.size(); x++) {
+                            Player temp = playerList.get(x);
+                            adventureServer.sendMessage(temp.getConnectionID(), player.getId() + " has killed the minotaur!! You all" +
+                                    " you all have won!! \n You will now be discconected from the server");
+                            try {
+                                adventureServer.disconnect(temp.getConnectionID());
+                            }catch(IOException ioe){
+                                System.out.println("ERROR: Cannot discconect player after win");
+                            }
+
+                        }
+                        adventureServer.stopServer();
+                    }
                     //forces the user to either load or start a new game
                     if (input.length() >= 8 && started == false && input.substring(0, 8).equals("new-game")) {
                         started = true;
                         initialize();
                         adventureServer.sendMessage(e.getConnectionID(), "NEW Game has finished loading, please procced " +
                                 "by making a charactor with \"new (NAME OF CHARACTOR)\"");
-                    } else if (input.length() > 7 && started == false && input.substring(0, 7).equals("restore")) {
-                        //do something
-                        started = true;
                     } else if (started == true) {
                         //once a game has been loaded this is the only section to run
 
@@ -118,13 +139,13 @@ public class TechAdventure implements ConnectionListener {
                             if (!found) {
                                 adventureServer.sendMessage(e.getConnectionID(), "Unable to find a charactor with name: " + input.substring(9));
                             }
-                         //handles assigning a new charactor to the user
+                            //handles assigning a new charactor to the user
                         } else if (input.length() > 4 && input.substring(0, 3).equals("new") && player == null) {
                             Player newPlayer = new Player(input.substring(4), e.getConnectionID());
                             newPlayer.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
                             playerList.add(newPlayer);
                             adventureServer.sendMessage(e.getConnectionID(), "New Player created: " + newPlayer.getId());
-                         //the say command is handled here
+                            //the say command is handled here
                         } else if (player != null && input.length() > 4 && input.substring(0, 3).equals("say")) {
                             for (Player existPlayer : playerList) {
                                 if (!existPlayer.equals(player)) {
@@ -132,14 +153,28 @@ public class TechAdventure implements ConnectionListener {
                                             e.getData().substring(4));
                                 }
                             }
-                         //the wait command handled here
+                        } else if (player != null && input.length() > 3 && input.substring(0,2).equals("go") &&
+                                player.inLab()) {
+                            parser.runPlayerInput(player, input);
+                            parser.getMinotaur().move();
+                            System.out.println(parser.getMinotaur().getRoom().getTitle());
+                            if (parser.getMinotaur().getRoom().equals(player.getRoom())) {
+                                adventureServer.sendMessage(e.getConnectionID(), "You have moved into the next room " +
+                                        "just to find the Minotaur racing towards you, it strike you square in the chest" +
+                                        "and you die.");
+                                player.kill();
+                            } else {
+                                adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, "look"));
+                            }
+
+                            //the wait command handled here
                         } else if (player != null && input.equals("wait") || input.equals("getMessages")) {
                             //allows the client to get new messeges
-                         //shutdown command handled
+                            //shutdown command handled
                         } else if (player != null && input.equals("shutdown") && player.isHost()) {
                             stop();
                             stopping = true;
-                         //handles a player wanting to quit
+                            //handles a player wanting to quit
                         } else if (input.equals("quit") && player != null) {
                             try {
                                 if (player.isHost()) {
@@ -152,13 +187,13 @@ public class TechAdventure implements ConnectionListener {
                                 error.printStackTrace();
                             }
 
-                        } else if( input.length() > 5 && input.substring(0,5).equals("save ") ) {
+                        } else if (input.length() > 5 && input.substring(0, 5).equals("save ")) {
 
                             String target = input.substring(5);
 
                             StringBuilder sb = new StringBuilder();
-                            sb.append( player.getRoom().getId() );
-                            for(Item item : player.getInventory()) {
+                            sb.append(player.getRoom().getId());
+                            for (Item item : player.getInventory()) {
                                 sb.append("\n");
                                 sb.append(item.getId());
                             }
@@ -166,23 +201,23 @@ public class TechAdventure implements ConnectionListener {
 
                             adventureServer.sendMessage(player.getConnectionID(), "Location and items saved to \"" + target + "\"");
                             break;
-
-                        } else if( input.length() > 7 && input.substring(0,8).equals("restore ") ) {
+                            //handles restoring
+                        } else if (input.length() > 7 && input.substring(0, 8).equals("restore ")) {
 
                             Room targetRoom;
                             ArrayList<Item> itemsHeld = new ArrayList<>();
 
-                    		try( Scanner fileInput = new Scanner(saves.get(input.substring(8)))   ){
+                            try (Scanner fileInput = new Scanner(saves.get(input.substring(8)))) {
 
                                 targetRoom = Registration.<Room>getOwnerByStr("room_id", fileInput.next());
-                                while(fileInput.hasNext()) {
+                                while (fileInput.hasNext()) {
                                     itemsHeld.add(Registration.<Item>getOwnerByStr("item_id", fileInput.next()));
                                 }
 
-                    		} catch(NullPointerException ex){
-                    			adventureServer.sendMessage(player.getConnectionID(), "Sorry, we couldn't find a restore file with that name.");
+                            } catch (NullPointerException ex) {
+                                adventureServer.sendMessage(player.getConnectionID(), "Sorry, we couldn't find a restore file with that name.");
                                 break;
-                            } catch(NoSuchElementException ex){
+                            } catch (NoSuchElementException ex) {
                                 adventureServer.sendMessage(player.getConnectionID(), "Sorry, something went wrong with the file you specified.");
                                 break;
                             }
@@ -190,9 +225,9 @@ public class TechAdventure implements ConnectionListener {
                             parser.runPlayerInput(player, "drop all");
                             player.setRoom(targetRoom);
                             java.util.Set<InventoryMixin> allTheInventories = Registration.<InventoryMixin>getAllOfType(InventoryMixin.class);
-                            for(Item item : itemsHeld) {
-                                for(InventoryMixin im : allTheInventories) {
-                                    if(im.itemPresent(item)) {
+                            for (Item item : itemsHeld) {
+                                for (InventoryMixin im : allTheInventories) {
+                                    if (im.itemPresent(item)) {
                                         im.remove(item);
                                     }
                                 }
@@ -201,7 +236,7 @@ public class TechAdventure implements ConnectionListener {
                             adventureServer.sendMessage(player.getConnectionID(), "Game restored.");
                             break;
 
-                         //handles all other commands
+                            //handles all other commands
                         } else if (player != null) {
                             adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
                             //handles if the user has not created/taken over a charactor
@@ -209,11 +244,10 @@ public class TechAdventure implements ConnectionListener {
                             adventureServer.sendMessage(e.getConnectionID(), "You have not created a charector or taken over" +
                                     " one");
                         }
-                     //handles if the game has not been loaded
+                        //handles if the game has not been loaded
                     } else {
-                        adventureServer.sendMessage(e.getConnectionID(), "The server has not been loaded with" +
-                                " information please either load a save by using \"restore (filename)\" or start a " +
-                                "new game by using \"new\"");
+                        adventureServer.sendMessage(e.getConnectionID(), "The server has not been started with" +
+                                " \"new-game\"");
                     }
                     break;
                 case CONNECTION_TERMINATED:
@@ -224,13 +258,14 @@ public class TechAdventure implements ConnectionListener {
             }
         } catch (
                 UnknownConnectionException unknownConnectionException) {
-            unknownConnectionException.printStackTrace();
+            System.out.println("ERROR: UnkownConnection, no big deal, does not affect server");
         }
 
     }
 
     /**
      * starts the server
+     *
      * @param port port to start the server on
      */
     public void start(int port) {
@@ -239,6 +274,7 @@ public class TechAdventure implements ConnectionListener {
 
     /**
      * stops the server and handles all players
+     *
      * @throws UnknownConnectionException if a connection can not be discconnected
      */
     public void stop() throws UnknownConnectionException {
@@ -254,7 +290,7 @@ public class TechAdventure implements ConnectionListener {
             try {
                 adventureServer.disconnect(existPlayer.getConnectionID());
             } catch (IOException error) {
-                error.printStackTrace();
+                System.out.println("Error discconnecting players on server stop");
             }
         }
         adventureServer.stopServer();
@@ -272,6 +308,7 @@ public class TechAdventure implements ConnectionListener {
 
     /**
      * gets the Minotaur
+     *
      * @return mino
      */
     public Minotaur getMino() {

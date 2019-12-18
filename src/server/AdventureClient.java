@@ -28,9 +28,11 @@ public class AdventureClient {
 				BufferedReader fromServer = new BufferedReader(new InputStreamReader(server.getInputStream()));
 				PrintWriter toServer = new PrintWriter(server.getOutputStream(), true);
 				BufferedReader keyboardInput = new BufferedReader(new InputStreamReader(System.in));
-				System.out.println("If you are the \"host\" of the game, and the game has not been loaded yet please either " +
-						"load a save by using \"restore (filename)\" or start a " + "new game by using \"new-game\"");
+				System.out.println("If you are the \"host\" of the game, and the game has not been loaded yet please  " +
+						"start a " + "new game by using \"new-game\"");
+				System.out.println();
 				System.out.println("then doing the following, or if you are joining a game only do the following: ");
+				System.out.println();
 				System.out.println("Please enter either \"EXISTING (NAME OF CHARACTOR)\"" +
 						" or \"NEW (NAME OF NEW CHARACTOR\")\n Otherwise you will not be able to do ANYTHING");
 				String s = "";

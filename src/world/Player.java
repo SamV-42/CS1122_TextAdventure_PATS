@@ -25,6 +25,9 @@ public class Player extends Composite
     private boolean host; //if the player is host or not
     private long connectionId; //the connectionID of the player
     private Parser parser = new Parser(); //parser to handle the kill command
+    private boolean alive = true; //whether or not the player is alive
+    private boolean inLab = false; //whether or not the player is in the labryinth
+    private boolean hasWon = false; //whether or not the minotaur has been killed yet
 
     /**
      * Constructor for the player object
@@ -90,7 +93,46 @@ public class Player extends Composite
      */
     public void kill(){
         parser.runPlayerInput(this, "drop all");
-        this.setRoom(Registration.getOwnerByStr("room_id", "entrance"));
+        alive = false;
+        room = new Room("hell");
     }
 
+    /**
+     * returns wheter or not the player is alive
+     * @return !alive
+     */
+    public boolean isDead(){
+        return !alive;
+    }
+
+    /**
+     * sets the boolean inLab to true idicating the player is in the labryinth
+     */
+    public void setInLab(){
+        inLab = true;
+    }
+
+    /**
+     * returns true if the player is in the labryinth
+     * @return
+     */
+    public boolean inLab(){
+        return inLab;
+    }
+
+    /**
+     * sets the haswon boolean
+     * @param hasWon only used if true
+     */
+    public void setHasWon(boolean hasWon) {
+        this.hasWon = hasWon;
+    }
+
+    /**
+     * returns if the players have won or not
+     * @return hasWon
+     */
+    public boolean hasWon() {
+        return hasWon;
+    }
 }

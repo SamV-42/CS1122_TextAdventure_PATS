@@ -99,6 +99,7 @@ public class DataLoader {
                 public String getPlayerMessage(Player player) {
 
                     if( checkPlayerHasKey(player) ) {
+                        player.setInLab();
                         return "You unlock the gate and pass through it. It swings closed behind you with a loud, ominous *CRUNCH*.\n" + cR[0].getPlayerMessage(p);
                     }
                     return "The gate is locked.";
@@ -170,7 +171,7 @@ public class DataLoader {
 
             ExamineCommand ec = (ExamineCommand)c;
 
-            if(!ec.getExamined().equals(Registration.getOwnerByStr("item_id", "skeleton"))) { return null; }
+            if(!Registration.getOwnerByStr("item_id", "skeleton").equals(ec.getExamined())) { return null; }
             if(!p.getRoom().getInventoryList().contains(Registration.getOwnerByStr("item_id", "key"))) { return null; }
 
             return new Response(cR[0].getPlayerMessage(p) + "\n...Hey, you hadn't noticed that key before!", 200, (play) -> { Registration.<Item>getOwnerByStr("item_id", "key").setHidden(false); });
@@ -187,7 +188,8 @@ public class DataLoader {
             if(room.equals(Registration.<Room>getOwnerByStr("room_id", "cutscene"))) {
                 if(c instanceof UseCommand) {
                     UseCommand uc = ((UseCommand)c);
-                    if(uc.getUsedItem().equals(Registration.<Item>getOwnerByStr("item_id", "golden_axe"))) {
+                    if(Registration.<Item>getOwnerByStr("item_id", "golden_axe").equals(uc.getUsedItem())) {
+                        p.setHasWon(true);
                         return new Response("You swing the golden axe with virtuous force! The minotaur topples over, defeated.\n\n***** YOU HAVE WON *****", 150,
                         (play) -> {
                             mino.setRoom(Registration.<Room>getOwnerByStr("room_id", "min_den"));
