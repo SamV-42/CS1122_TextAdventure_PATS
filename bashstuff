@@ -1,3 +1,0 @@
-alias mk='javac src/*.java src/game/*.java src/util/*.java src/util/mixin/*.java src/parser/*.java src/parser/command/*.java src/world/*.java src/server/*.java -d build -Xlint:unchecked'
-alias runclient='pushd build ; java AdventureClient ; pop'
-alias runserver='pushd build ; java TechAdventure ; pop'

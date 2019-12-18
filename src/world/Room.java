@@ -57,6 +57,7 @@ public class Room extends Composite
         }
 
         List<Player> _myplayers = new java.util.ArrayList<Player>(java.util.Arrays.asList(getPlayers() ));
+        _myplayers.remove(player);
         Player[] myplayers = _myplayers.toArray(new Player[]{});
         if(myplayers.length == 0) {
 
