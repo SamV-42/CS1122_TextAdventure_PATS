@@ -13,5 +13,10 @@ import world.Player;
  */
 
 public interface Action {
+    /*
+     * Define a new action easily with lambdas:
+     * eg (play) -> { play.kill(); }
+     * @param player the player to whom we apply the action
+     */
     public void run(Player player);
 }

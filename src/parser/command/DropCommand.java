@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-// TODO: "take _ from _" functionality
-// TODO: "take" -> "Take what?"
-// DONE: "take all"
-
-
+/*
+ *  Represents a command that drops an item
+ *
+ *  Date Last Modified: 12/05/19
+ *	@author Sam VanderArk, Patrick Philbin, Thomas Grifka, Alex Hromada
+ *	CS1122, Fall 2019
+ *	Lab Section 2
+ */
 
 public class DropCommand extends Command {
 
@@ -50,9 +52,13 @@ public class DropCommand extends Command {
             super("", severity);
         }
 
-        private String object = null;
-        private Item thing = null;
+        private String object = null;     // as in, a noun phrase
+        private Item thing = null;        // what we're dropping
 
+        /*
+         * create this response
+         * @param object the noun phrase of this command
+         */
         protected void initialize(String object) {
             this.object = object;
             if(object.equals("all")) {
@@ -64,6 +70,7 @@ public class DropCommand extends Command {
             }
         }
 
+        // How and where the 'thing' is
         private static enum ItemPresence {
             SUCCESS,
             NOTPRESENT,     //can include present in container nearby
@@ -71,6 +78,11 @@ public class DropCommand extends Command {
             ALL
         }
 
+        /*
+         * Gets whether the item is accessible
+         * @param player the player who's dropping
+         * @return How and where the 'thing' is
+         */
         private ItemPresence getResult(Player player) {
             if (thing == null) {
                 if(object.equals("all")) {
@@ -83,6 +95,11 @@ public class DropCommand extends Command {
             return ItemPresence.SUCCESS;
         }
 
+        /*
+         * Gets the message to the player, the result of dropping
+         * @param player the player who's dropping
+         * @return the message to the player
+         */
         @Override
         public String getPlayerMessage(Player player) {
             switch(getResult(player)) {
@@ -112,6 +129,11 @@ public class DropCommand extends Command {
             }
         }
 
+        /*
+         * Gets the actions implementing dropping
+         * @param player the player who's dropping
+         * @return the actions implementing dropping
+         */
         @Override
         public ArrayList<Action> getActions(Player player) {
             ArrayList<Action> actions = new ArrayList<>();

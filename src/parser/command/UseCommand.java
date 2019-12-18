@@ -35,10 +35,19 @@ public class UseCommand extends Command {
         this(id, new ArrayList<String>(Arrays.asList(names)));
     }
 
+    /*
+     * What item was being used
+     * @return What item was being used, or null if bad noun
+     */
     public Item getUsedItem(){
         return usedItem;
     }
 
+    /*
+     * The response to this command
+     * @param playerInput The player input that led to this command
+     * @return The response to this command
+     */
     public Response getResponse(String playerInput) {
         String object = playerInput;
         try {

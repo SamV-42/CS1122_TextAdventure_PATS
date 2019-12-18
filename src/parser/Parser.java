@@ -36,15 +36,19 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         );
     }
 
-    private Minotaur minotaur;
+    private Minotaur minotaur;  //The minotaur. It's an Item, so we really shouldn't need this, actually.
 
     public Parser() {
         addMixin(new ObjectionMixin<>(this, "parser"));
 
-        /*DataLoader dataLoader = new DataLoader();
-        dataLoader.generateCommands();*/
     }
 
+    /*
+     * Runs player input. Changes the world state. Returns what they see.
+     * @param player Who's doing import junit.framework.TestCase;
+     * @param playerInput What they're trying to do
+     * @return What the player sees in response.
+     */
     public String runPlayerInput(Player player, String playerInput) {
         playerInput = playerInput.toLowerCase().trim();
         String[] inputStuff = playerInput.split("\\s+");
@@ -104,10 +108,18 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         return mostUrgentResponse;
     }
 
+    /*
+     * Gets the minotaur
+     * @return the minotaur
+     */
     public Minotaur getMinotaur() {
         return minotaur;
     }
 
+    /*
+     * Sets the minotaur
+     * @param minotaur the minotaur
+     */
     public void setMinotaur(Minotaur minotaur) {
         this.minotaur = minotaur;
     }

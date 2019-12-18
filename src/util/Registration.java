@@ -3,23 +3,52 @@ package util;
 import java.util.*;
 import util.mixin.IdMixin;
 
+/**
+*	This class handles static registration across the program.
+*   Note this essentially implies that, barring a prefix on the identifier name, there's only one server instance on the same program.
+*   A Registration object stores a reference in the global static HashMap, letting you relate identifiers to objects under a particular general identifier_name
+*
+*   Date Last Modified: 12/18/19
+*	@author Thomas Grifka, Sam VanderArk, Patrick Philbin, Alex Hromada
+*
+*	CS112, Fall 2019
+*	Lab Section 2
+*/
+
 
 public class Registration<T> {
 
-    //maps table name to (maps name/id/etc to the obj)
-    private static HashMap<String, HashMap<String, ?> > registered = new HashMap<>();
+    private static HashMap<String, HashMap<String, ?> > registered = new HashMap<>();   //maps table name to (maps name/id/etc to the obj)
 
+    /*
+     * Gets a particular mixin based on its identifier name and identifier
+     * @param identifierName for instance, "item_id"
+     * @param identifier for instance, "golden_axe"
+     * @return The mixin, or null if no such thing has been registered
+     */
     @SuppressWarnings("unchecked")
     public static <T> T getByStr(String identifierName, String identifier) {
         return (T)(getMapOrThrow(identifierName).get(identifier));
     }
 
+    /*
+     * Gets a particular mixin's owner based on its identifier name and identifier
+     * @param identifierName for instance, "item_id"
+     * @param identifier for instance, "golden_axe"
+     * @return The mixin's owner, or null if no such thing has been registered
+     */
     @SuppressWarnings("unchecked")
     public static <T extends Composite> T getOwnerByStr(String identifierName, String identifier) {
         Mixin mix = getByStr(identifierName, identifier);
         return (mix == null) ? null : (T)(mix.getOwner());
     }
 
+    /*
+     * Gets a list of mixins fuzzily-matching the search query
+     * @param identifierName for instance, "item_id"
+     * @param input for instance, "torch" or whatever the player entered
+     * @return A list of objects matching the search
+     */
     @SuppressWarnings("unchecked")
     public static <T> List<T> searchByStr(String identifierName, String input) {
         String[] identifiers = searchIdentifierByStr(identifierName, input).toArray(new String[]{});
@@ -31,9 +60,9 @@ public class Registration<T> {
     }
 
     /*
-     * Returns a registered object if one of its names (case insensitive) (either primary or alt) matches
+     * Returns a list of matching identifiers -- if one of the names (case insensitive) matches
      * @param input The selected bit of input. If multiple words (eg WAKE UP, LOOK UNDER), it'll first try 1 word, then 2-word, etc. for the input
-     * @return null if no such Command is found, or the chosen command if found.
+     * @return A list of matching identifiers
      */
     public static List<String> searchIdentifierByStr(String identifierName, String input) {
         input = input.toLowerCase();
@@ -53,6 +82,12 @@ public class Registration<T> {
         return names;
     }
 
+    /*
+     * Gets a list of mixins' owners fuzzily-matching the search query
+     * @param identifierName for instance, "item_id"
+     * @param input for instance, "torch" or whatever the player entered
+     * @return A list of owners matching the search
+     */
     @SuppressWarnings("unchecked")
     public static <T extends Composite> List<T> searchOwnerByStr(String identifierName, String input) {
         List<Mixin> mix = Registration.<Mixin>searchByStr(identifierName, input);
@@ -63,7 +98,12 @@ public class Registration<T> {
         return owners;
     }
 
-
+    /*
+     * Gets a particular map based on identifier names
+     * @param identifierName for instance, "item_id"
+     * @throws NoSuchElementException if no such map exists
+     * @return the given map
+     */
     @SuppressWarnings("unchecked")
     private static <T> HashMap<String, T> getMapOrThrow(String identifierName) {
         HashMap<String, T> map = (HashMap<String, T>)registered.get(identifierName);
@@ -74,6 +114,11 @@ public class Registration<T> {
         return map;
     }
 
+    /*
+     * Gets all mixins of a given type
+     * @param The class to be searched -- eg, IdMixin.class
+     * @return A Set<> of the mixins
+     */
     @SuppressWarnings("unchecked")
     public static <T> Set<T> getAllOfType(Class<T> cls) {
         Set<T> output = new java.util.HashSet<>();
@@ -87,6 +132,11 @@ public class Registration<T> {
         return output;
     }
 
+    /*
+     * Gets all owners of a given type that implement IdMixin.Id
+     * @param The class to be searched -- eg, Item.class or Player.class
+     * @return A Set<> of the objects
+     */
     @SuppressWarnings("unchecked")
     public static <T> Set<T> getAllOwnersOfType(Class<T> cls) {
         Set<IdMixin> ids = getAllOfType(IdMixin.class);
@@ -100,8 +150,8 @@ public class Registration<T> {
     }
 
 
-    private String identifierName;
-    private T owner;
+    private String identifierName;      //the identifier name this Registration handles
+    private T owner;                    //the owner of this Registration (probably a mixin)
 
     private Registration() {};
 
@@ -119,6 +169,11 @@ public class Registration<T> {
         addIdentifier(identifier);
     }
 
+    /*
+     * Add a particular identifier
+     * @param the identifier to be added
+     * @return whether or not it overwrote a previous identifier (try to avoid this)
+     */
     @SuppressWarnings("unchecked")
     public boolean addIdentifier(String identifier) {
         T oldval = Registration.<T>getMapOrThrow(identifierName).put(identifier, owner);
@@ -131,6 +186,11 @@ public class Registration<T> {
         return true;
     }
 
+    /*
+     * Remove a particular identifier
+     * @param the identifier to be removed
+     * @return whether or not it actually removed anything
+     */
     public boolean removeIdentifier(String identifier) {
         return (Registration.<T>getMapOrThrow(identifierName).remove(identifier) != null);
     }

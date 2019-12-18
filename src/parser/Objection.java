@@ -18,8 +18,10 @@ import world.Player;
 public interface Objection {
     /*
      * Checks if it's applicable to the action, and returns a runnable response if so.
-     * @param The proposed action
-     * @return null if this objection doesn't apply; a Response if it does.
+     * @param player The player taking the action
+     * @param command The proposed command
+     * @param currentResponses Other responses to the action. currentResponses[0] should be the actual command's response.
+     * @return null if this objection doesn't apply; a Response replacing the old if it does.
      */
     public Response check(Player player, Command command, Response... currentResponses);
 }

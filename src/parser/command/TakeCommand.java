@@ -14,6 +14,15 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/*
+ *  Represents a command that takes an item
+ *
+ *  Date Last Modified: 12/05/19
+ *	@author Sam VanderArk, Patrick Philbin, Thomas Grifka, Alex Hromada
+ *	CS1122, Fall 2019
+ *	Lab Section 2
+ */
+
 // TODO: "take _ from _" functionality
 // TODO: "take" -> "Take what?"
 // DONE: "take all"
@@ -50,12 +59,16 @@ public class TakeCommand extends Command {
             super("", severity);
         }
 
-        private String object = null;
-        private Item[] things = null;
-        private Item[] roomthings = null;
-        private Item[] nonstaticroomthings = null;
-        private Item[] yourthings = null;
+        private String object = null;   // as in, a noun phrase
+        private Item[] things = null;   //All things that might match the description
+        private Item[] roomthings = null;   //All such things in the room
+        private Item[] nonstaticroomthings = null;  //All such things that aren't static
+        private Item[] yourthings = null;   //All such things that you already have
 
+        /*
+         * create this response
+         * @param object the noun phrase of this command
+         */
         protected void initialize(String object) {
             this.object = object;
             if(object.equals("all")) {
@@ -65,6 +78,7 @@ public class TakeCommand extends Command {
             }
         }
 
+        // How and where the 'thing' is
         private static enum ItemPresence {
             SUCCESS,
             STATIC,
@@ -73,6 +87,11 @@ public class TakeCommand extends Command {
             ALL
         }
 
+        /*
+         * Gets whether the item is accessible
+         * @param player the player who's taking
+         * @return How and where the 'thing' is
+         */
         private ItemPresence getResult(Player player) {
             if (this.object.equals("all")) {
                 return ItemPresence.ALL;
@@ -108,6 +127,11 @@ public class TakeCommand extends Command {
             return ItemPresence.SUCCESS;
         }
 
+        /*
+         * Gets the message to the player, the result of taking
+         * @param player the player who's taking
+         * @return the message to the player
+         */
         @Override
         public String getPlayerMessage(Player player) {
             switch(getResult(player)) {
@@ -148,6 +172,11 @@ public class TakeCommand extends Command {
             }
         }
 
+        /*
+         * Gets the actions implementing taking
+         * @param player the player who's taking
+         * @return the actions implementing taking
+         */
         @Override
         public ArrayList<Action> getActions(Player player) {
             ArrayList<Action> actions = new ArrayList<>();

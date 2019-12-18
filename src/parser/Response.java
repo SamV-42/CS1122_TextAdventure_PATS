@@ -52,7 +52,10 @@ public class Response {
         this(playerMessage, 0);
     }
 
-
+    /*
+     * Runs this Response' actions
+     * @param player The player who's doing this response
+     */
     public void run(Player player) {
         for(Action action : getActions(player) ) {
             action.run(player);
@@ -61,26 +64,51 @@ public class Response {
 
     //Boilerplate below
 
+
+    /*
+     * Gets the severity
+     * @return the severity
+     */
     public int getSeverity() {
         return severity;
     }
 
+    /*
+     * Sets the severity
+     * @param severity the severity
+     */
     public void setSeverity(int severity) {
         this.severity = severity;
     }
 
+    /*
+     * Gets the player message
+     * @return the player message
+     */
     public String getPlayerMessage(Player player) {
         return playerMessage;
     }
 
+    /*
+     * Sets the player message
+     * @param playerMessage the player message
+     */
     public void setPlayerMessage(String playerMessage) {
         this.playerMessage = playerMessage;
     }
 
+    /*
+     * Gets the response's actions
+     * @return the response's actions
+     */
     public ArrayList<Action> getActions(Player player) {
         return actions; //yes I am aware I should call clone(). No I won't do it.
     }
 
+    /*
+     * Sets the response's actions
+     * @param actions response's actions
+     */
     public void setActions(ArrayList<Action> actions) {
         this.actions = actions;
     }
