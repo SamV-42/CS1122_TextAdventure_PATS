@@ -201,26 +201,6 @@ public class TechAdventure implements ConnectionListener {
                             adventureServer.sendMessage(player.getConnectionID(), "Game restored.");
                             break;
 
-                         //handles part of the go command before sending it to the parser, as it determines if mino
-                         //should kill them or not
-                        } else if (player != null && e.getData().length() > 3 && e.getData().substring(0, 2).equals("go")) {
-                            Room room = player.getRoom();
-                            if (room.getId().substring(0, 3).equals("lab") || room.getId().substring(0, 3).equals("axe") || room.getId().substring(0, 3).equals("min")
-                                    || room.getId().equals("tunnel")) {
-                                mino.move();
-                            }
-                            adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
-                            if (mino.getRoom().equals(player.getRoom())) {
-                                player.kill();
-                                System.out.println(player + " died to the Minotaur");
-                                adventureServer.sendMessage(e.getConnectionID(), "You have died to the minotaur and " +
-                                        "will be discconnected from the game!");
-                                try {
-                                    adventureServer.disconnect(e.getConnectionID());
-                                } catch (IOException minoE) {
-                                    System.out.println("Unable to discconnect: " + e.getConnectionID());
-                                }
-                            }
                          //handles all other commands
                         } else if (player != null) {
                             adventureServer.sendMessage(e.getConnectionID(), parser.runPlayerInput(player, input));
@@ -286,9 +266,8 @@ public class TechAdventure implements ConnectionListener {
      * loads all the info on a new game
      */
     public void initialize() {
-        anotherLoader.loadStuff();
         parser = new Parser();
-        mino = new Minotaur(Registration.<Room>getOwnerByStr("room_id", "min_den"));
+        anotherLoader.loadStuff(parser);
     }
 
     /**

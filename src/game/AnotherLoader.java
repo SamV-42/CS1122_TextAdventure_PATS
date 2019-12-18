@@ -3,6 +3,8 @@ package game;
 import util.Registration;
 import world.Item;
 import world.Room;
+import world.Minotaur;
+import parser.Parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import java.util.Scanner;
 public class AnotherLoader {
 
     @SuppressWarnings("unchecked")
-    public void loadStuff() {
+    public void loadStuff(Parser parser) {
         DataLoader dl = new DataLoader();
         dl.generateCommands();
 
@@ -22,7 +24,8 @@ public class AnotherLoader {
             this.subLoadStuff(target);
         }
 
-        dl.putRoomBlockers();
+        parser.setMinotaur(new Minotaur(Registration.<Room>getOwnerByStr("room_id", "min_den")));
+        dl.putRoomBlockers(parser);
     }
 
     private void subLoadStuff(String target) {

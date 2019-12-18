@@ -38,7 +38,7 @@ public class DirectionCommand extends Command {
                 Room target = targetRoom(player);
                 if(target != null) {
                     message.append("You go " + direction.getMixin("primaryname").get() + ".\n\n");
-                    message.append(target.look());     //Print room description on entering room
+                    message.append(target.look(player));     //Print room description on entering room
                 } else {
                     message.append("There doesn't appear to be an exit in that direction.");
                 }

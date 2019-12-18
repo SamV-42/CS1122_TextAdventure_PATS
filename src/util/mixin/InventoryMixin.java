@@ -50,6 +50,7 @@ public class InventoryMixin<O extends Composite> extends StandardMixin<O, Item> 
     public Item[] get() {
         return items.toArray(new Item[]{});
     }
+    static int __i = 0;
 
     @Override
     public void add(Item t) {

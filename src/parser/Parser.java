@@ -3,7 +3,7 @@ package parser;
 import util.Composite;
 import util.Registration;
 import util.mixin.ObjectionMixin;
-import world.Player;
+import world.*;
 
 import java.util.ArrayList;
 
@@ -35,6 +35,8 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
             new ArrayList<String>()
         );
     }
+
+    private Minotaur minotaur;
 
     public Parser() {
         addMixin(new ObjectionMixin<>(this, "parser"));
@@ -100,6 +102,14 @@ public class Parser extends Composite implements ObjectionMixin.Objections {
         }
 
         return mostUrgentResponse;
+    }
+
+    public Minotaur getMinotaur() {
+        return minotaur;
+    }
+
+    public void setMinotaur(Minotaur minotaur) {
+        this.minotaur = minotaur;
     }
 
 }

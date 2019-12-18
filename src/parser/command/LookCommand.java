@@ -26,7 +26,7 @@ public class LookCommand extends Command {
         super(register, id, new Response("", 50, new Action[]{}) {
             @Override
             public String getPlayerMessage(Player player) {
-                return player.getRoom().look();
+                return player.getRoom().look(player);
             }
         }, names);
     }

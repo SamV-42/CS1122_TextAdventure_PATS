@@ -25,7 +25,7 @@ public class ListMakerHelper {
                 return ", and ";
             }
         } else if(index == length) {
-            return ".";
+            return finalSep;
         } else {
             throw new java.lang.RuntimeException("Room Look Too Much");
         }

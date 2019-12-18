@@ -26,7 +26,7 @@ public class Room extends Composite
         addMixin(new PrimaryNameMixin<>(this, "room", ""));
     }
 
-    public String look() {
+    public String look(Player player) {
         StringBuilder fullDescription = new StringBuilder();
 
         fullDescription.append("--- ");
@@ -56,6 +56,19 @@ public class Room extends Composite
             }
         }
 
+        List<Player> _myplayers = new java.util.ArrayList<Player>(java.util.Arrays.asList(getPlayers() ));
+        Player[] myplayers = _myplayers.toArray(new Player[]{});
+        if(myplayers.length == 0) {
+
+        } else {
+            fullDescription.append("\nYou can see ");
+            ListMakerHelper help = new ListMakerHelper(myplayers.length, " standing here.\n");
+            for(Player p : myplayers) {
+                fullDescription.append(p.getMixin("primaryname").get());
+                fullDescription.append(help.getNextSeparator());
+            }
+        }
+
         if( connections.size() == 0) {
 
         } else if( connections.size() == 1 ) {
@@ -76,7 +89,7 @@ public class Room extends Composite
     }
 
     public Player[] getPlayers() {
-        java.util.Set<Player> stuff = util.Registration.<Player>getAllOfType(Player.class);
+        java.util.Set<Player> stuff = util.Registration.<Player>getAllOwnersOfType(Player.class);
         for(java.util.Iterator<Player> iter = stuff.iterator() ; iter.hasNext(); ) {
             if(! iter.next().getRoom().equals(this)) {
                 iter.remove();

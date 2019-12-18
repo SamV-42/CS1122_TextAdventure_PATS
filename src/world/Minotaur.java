@@ -1,12 +1,16 @@
 package world;
 
-public class Minotaur{
+public class Minotaur extends Item {
     private Room room;
     private Room prevRoom;
     private int attemptCount = 0;
 
     public Minotaur(Room start){
+        super("minotaur", "minotaur");
+        this.setStatic(true);
+
         room = start;
+        setRoom(room);
     }
 
     public Room getRoom() {
@@ -31,13 +35,15 @@ public class Minotaur{
                     move();
                 }
             }
-            prevRoom = room;
-            room = nextRoom;
+
+            setRoom(nextRoom);
         }
     }
 
     public void setRoom(Room room) {
+        if(prevRoom != null) { prevRoom.getInventoryMixin().remove(this); }
         prevRoom = this.room;
+        if(room != null) { room.getInventoryMixin().add(this); }
         this.room = room;
     }
 }

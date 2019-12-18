@@ -1,6 +1,7 @@
 package util;
 
 import java.util.*;
+import util.mixin.IdMixin;
 
 
 public class Registration<T> {
@@ -85,6 +86,19 @@ public class Registration<T> {
         }
         return output;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Set<T> getAllOwnersOfType(Class<T> cls) {
+        Set<IdMixin> ids = getAllOfType(IdMixin.class);
+        Set<T> owners = new HashSet<>();
+        for(IdMixin id : ids) {
+            if(cls.isInstance(id.getOwner())) {
+                owners.add((T)(id.getOwner()));
+            }
+        }
+        return owners;
+    }
+
 
     private String identifierName;
     private T owner;

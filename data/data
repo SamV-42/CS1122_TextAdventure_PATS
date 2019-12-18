@@ -9,6 +9,7 @@ id>spider_room
 title>Cobwebbed Tunnel
 description>Thick cobwebs block the path to the north. Light spills from the room to the west.
 stuff>cobwebs
+stuff>spider
 connection>north dungeon_hall_1
 connection>south entrance
 connection>west chapel
@@ -149,7 +150,7 @@ type>item
 id>torch
 name>Wood
 altname>stick
-description>A piece of wood. It looks quite flammable; perhaps it was originally cut for that purpose.
+description>A piece of wood. It looks quite flammable; perhaps it was originally cut for that purpose. Could you USE it in some way?
 
 type>item
 id>littorch
@@ -205,3 +206,9 @@ id>golden_axe
 name>Golden Axe
 altname>axe
 description>The blade is made of solid gold, and the handle a hearty mahogany. It shines with unknown power.
+
+type>item
+id>spider
+name>Spider
+description>The spider hisses threateningly at you. You probably don't want to get caught in its webs. I wonder if there were something you could USE to fix that problem...
+attribute>static
